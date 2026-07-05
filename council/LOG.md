@@ -19,3 +19,21 @@ Rejected: none. Disputed: none carried by user; cross-check items for round 2:
 - To Claude seat: do the applied fixes resolve its majors 1–7?
 
 PLAN.md v2 written. Round 2 = cross-examination on the updated plan.
+
+## Round 2 (packets: round-2-packet-claude.md / round-2-packet-codex.md)
+Verdict tally on carried points: ZERO rebuttals both directions.
+- Codex on Claude's 15 points: 10 AGREE, 5 AGREE WITH CHANGE → all settled.
+- Claude on Codex's 14 points: 11 AGREE, 3 AGREE WITH CHANGE → all settled.
+
+New concerns merged into 8 refinements; user verdicts:
+1. Inventory count corrected 55→67 (65 lifecycle + 2 meta); Tier 3 (14) becomes named backlog authored on pilot demand — ACCEPTED
+2. Distribution: .agents/skills default consumer path; manual copy default until gh skill proven; pin syntax skill@vX.Y.Z; Phase 0 proves 3 flows; skills-ref proven in Phase A or local validator — ACCEPTED
+3. Eval runner: user doesn't use Copilot CLI → delegated decision: Claude Code headless proxy + authoritative manual VS Code Copilot Chat smoke tests; Copilot CLI upgrade path; thresholds before first-5 gate; budget in Phase A — ACCEPTED (echo-checked)
+4. Tag hygiene: retag by true basis; Cursor upgraded to [CONFIRMED] (official docs); stale Claude Code 250-char figure refreshed; context field matrix row — ACCEPTED
+5. Governance: user fills script-reviewer/source-re-verifier/VERIFICATION-LOG.md owner roles at launch; effort estimate in Phase A; pilot measures maintenance burden — ACCEPTED
+6. Scope honesty: non-goals paragraph; Scrum-facilitation skills pilot-conditional — ACCEPTED
+7. Privacy boundary: build/evals on personal machine with library content only; org side offline-Copilot-only — ACCEPTED
+8. Small fixes a–h (verified URLs in SOURCES, Markdown/HTML primary for decks, non-legal-advice boundary, CI policy-vs-spec messages, voice split, ISTQB note, README drift CI, meta counted in Phase A) — ACCEPTED
+
+Rejected: none. Disputed: none. PLAN.md v3 written.
+Exit-check status: round 2 raised new majors (count, gh-skill proof, skills-ref, privacy boundary, tag inflation) — all fixed in v3. Round 3 = optional verification pass; user to decide (rounds ≤5).
