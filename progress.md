@@ -24,7 +24,9 @@
 
 ## Blockers
 - Phase 0 not yet run (org verification is user-only).
-- Repo not pushed to GitHub yet (private repo intended).
+
+## Repo
+- 2026-07-06 pushed to https://github.com/KaliPoduri/Fable_Skills (master). Visibility: private intended — user to confirm in browser (gh CLI not authenticated locally).
 
 ## Testing results
 - (none yet — implementation not started)

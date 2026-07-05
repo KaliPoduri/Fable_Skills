@@ -11,5 +11,5 @@ Key decisions (details in PLAN.md):
 - Security gate: no allowed-tools pre-approval; user reviews every script-bearing skill.
 - Privacy: build/evals on this personal machine, library content only; org side offline.
 Rules for implementer: keep implementation-notes.md (decisions + Deviations); verify [CANDIDATE] before use; raise [OPEN] with user, never guess; [CONFIRMED] (user approved) tool/version claims still need verification.
-Known issues: [OPEN] list in PLAN.md §7; repo not yet pushed to GitHub (private repo pending).
+Known issues: [OPEN] list in PLAN.md §7. Repo pushed to github.com/KaliPoduri/Fable_Skills.
 Handoff artifacts: PLAN.md (authoritative), UNKNOWNS.md, progress.md, council/LOG.md.
