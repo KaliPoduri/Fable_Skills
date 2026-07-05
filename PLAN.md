@@ -1,6 +1,6 @@
 # PLAN.md — Fable Skills: End-to-End Software Engineering Skill Library
 
-Draft v3 (after council round 2). Tags: `[USER]` said in interview · `[CONFIRMED]` user-approved or tool-verified (basis noted) · `[CANDIDATE]` unverified suggestion — verify before use · `[OPEN]` unresolved.
+FINAL (v3, after 2 council rounds — Claude + Codex seats, zero unresolved disputes; user exited at round 2 of 5). Tags: `[USER]` said in interview · `[CONFIRMED]` user-approved or tool-verified (basis noted) · `[CANDIDATE]` unverified suggestion — verify before use · `[OPEN]` unresolved.
 
 ## 1. Project summary
 
@@ -162,3 +162,19 @@ Tier check: T1 = 21, T2 = 30, T3 = 14 → 65 lifecycle + 2 meta = 67. ✓
 - [CONFIRMED] (user approved) Teammates' setups match the user's (VS Code + Copilot Chat; Phase 0 verifies skills actually load in-org).
 - [CONFIRMED] (user approved) Scope = the 67-skill inventory with tier gates and Tier-3 backlog as defined in §3/§5.
 - [CONFIRMED] (user approved) AI coding agents execute the build phase by phase, with user review at the gates.
+
+---
+
+> **Instructions for the implementing agent:**
+> - Keep a file called `implementation-notes.md`. Log decisions as you make them.
+> - Log EVERY deviation from this plan under a "Deviations" heading, with a
+>   one-line reason.
+> - Where the plan is silent and you must improvise, choose the most
+>   conservative option and log it.
+> - Items tagged `[CANDIDATE]` must be verified before use — log the
+>   verification result in `implementation-notes.md`. Items tagged `[OPEN]`
+>   must be raised with the user, never guessed.
+> - Items tagged `[CONFIRMED] (user approved)` that name a concrete tool,
+>   library, API, version, price, product capability, or legal/compliance
+>   claim were approved, not verified — verify them before use, like
+>   `[CANDIDATE]` items.
