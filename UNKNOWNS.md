@@ -30,13 +30,16 @@
 - [OPEN] Whether Copilot CLI honors ~/.claude/skills/ (documented for VS Code only) — low impact.
 - [OPEN] GA-vs-preview status of Agent Skills in Visual Studio/JetBrains (user doesn't use them; low impact).
 - [OPEN] Review cadence length (quarterly proposed, not yet confirmed).
-- [OPEN] python-pptx/python-docx permitted offline in org, or Markdown/HTML fallback needed.
-- [OPEN] License choice for the private repo.
-- [OPEN] Per-project skill subsets vs all-50 install (trigger-dilution tradeoff).
-- [OPEN] gh skill install repo-layout requirements (skills/ convention inferred).
+- [OPEN] python-pptx/python-docx permitted offline in org — folded into Phase 0 gate.
+- RESOLVED (round 1): License = internal-use notice, non-blocking.
+- RESOLVED (round 1): subsets question → install packs (4–6, ≤15/project) are first-class.
+- RESOLVED (round 1): gh skill install auto-discovers skills/*/SKILL.md — verified via gh manual by council Claude seat.
 - [OPEN] Copilot-side skill listing/count limits (none documented).
-- [OPEN] Antigravity setup rests on community article, not official docs.
-- [OPEN] Unverified standard versions (Conventional Commits 1.0.0, SemVer 2.0.0, Keep a Changelog 1.1.0, ISO 25010:2023, PMBOK 7, OpenSLO, CWE Top 25 2025, book editions) — verify during authoring.
+- [OPEN] Cursor compat-scan + Antigravity paths community-sourced only — labeled [CANDIDATE] in COMPATIBILITY.md.
+- [OPEN] Whether Copilot cloud agent honors user-invocable/argument-hint (VS Code yes; cloud-agent docs silent).
+- [OPEN] Exact eval pass-threshold numbers (set in Phase A).
+- [OPEN] Pack composition (finalized in Phase A with user).
+- [OPEN] Unverified standard versions (Conventional Commits 1.0.0, SemVer 2.0.0, Keep a Changelog 1.1.0, ISO 25010:2023, PMBOK 7, OpenSLO, CWE Top 25 2025 edition, DORA capabilities state, book editions) — verify during authoring.
 
 ## Phase 1 blindspots (taught, now tracked)
 - B1: RESOLVED — Copilot supports SKILL.md natively (see Known knowns).
