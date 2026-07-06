@@ -1,0 +1,26 @@
+{
+  "skill": "readme-writer",
+  "cases": [
+    { "prompt": "Write a README for this repository", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Improve our README", "expect": "trigger", "note": "direct keyword, overhaul" },
+    { "prompt": "Our README is out of date, can you fix it?", "expect": "trigger", "note": "trigger phrase" },
+    { "prompt": "This project has no readme.md — create one", "expect": "trigger", "note": "lowercase filename variant" },
+    { "prompt": "Add a quick start and installation section to the README", "expect": "trigger", "note": "section-level README work" },
+    { "prompt": "Overhaul the README so new contributors can get set up in five minutes", "expect": "trigger", "note": "indirect, audience-framed" },
+    { "prompt": "The setup instructions in our README don't match the current scripts anymore — update it", "expect": "trigger", "note": "stale-claims phrasing" },
+    { "prompt": "Write the front-page doc for this repo: what it does, how to install, how to run it", "expect": "trigger", "note": "indirect, no README keyword" },
+    { "prompt": "Generate a README with badges, usage examples, and a license note for my CLI tool", "expect": "trigger", "note": "content keywords" },
+    { "prompt": "Make the GitHub landing page of this repo explain the project properly", "expect": "trigger", "note": "indirect, repo landing page" },
+    { "prompt": "Document the environment variables and configuration in the README", "expect": "trigger", "note": "config section" },
+    { "prompt": "We are open-sourcing this repo next week — get the README ready", "expect": "trigger", "note": "indirect, release-driven" },
+    { "prompt": "Rewrite the README of the docs/ package to match its published API", "expect": "trigger", "note": "sub-package README" },
+    { "prompt": "Write a step-by-step user guide for the admin console", "expect": "no-trigger", "note": "owned by user-guide-writer" },
+    { "prompt": "Create a tutorial that walks users through building their first plugin", "expect": "no-trigger", "note": "owned by user-guide-writer (tutorial)" },
+    { "prompt": "Edit this design doc for clarity and tighten the wording", "expect": "no-trigger", "note": "owned by tech-writer" },
+    { "prompt": "Proofread and improve the tone of our release announcement", "expect": "no-trigger", "note": "owned by tech-writer (arbitrary prose)" },
+    { "prompt": "Write a PRD for the new export feature", "expect": "no-trigger", "note": "owned by prd-writer" },
+    { "prompt": "Read the README and tell me how to install this project", "expect": "no-trigger", "note": "consuming a README, not writing one" },
+    { "prompt": "Add docstrings to the functions in utils.py", "expect": "no-trigger", "note": "code documentation, unrelated" },
+    { "prompt": "Set up a CONTRIBUTING.md and code of conduct for the org", "expect": "no-trigger", "note": "community files, not the README itself" }
+  ]
+}

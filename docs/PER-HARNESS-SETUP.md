@@ -4,8 +4,8 @@ Master setup guide. Per-skill READMEs link here for the common steps and
 only carry the quick-install table. See COMPATIBILITY.md for the full
 support matrix and evidence.
 
-**Install method: manual copy is the default** until Phase 0 proves
-`gh skill install` works in-org (this line flips after the gate).
+**Install method: copy the skill folder into your project.** That is the
+whole mechanism — no CLI tools, no package manager.
 
 **Keep ≤15 skills installed per project.** Installing everything dilutes
 skill selection on every known harness (Codex and Claude Code have hard
@@ -16,12 +16,10 @@ README) plus at most a few singles.
 
 | Tool | Version | Note |
 |---|---|---|
-| gh CLI | ≥ 2.90.0 | `gh skill` is public preview; 2.80.0 lacks it |
-| Python (build machine) | 3.13.7 | org Python version: pending Phase 0 |
+| Python (build machine) | 3.13.7 | validation tooling only — skills ship no scripts |
 | skills-ref / agentskills CLI | 0.1.1 | build machine only, format validation |
-| VS Code / Copilot Chat ext | pending Phase 0 | record versions when the gate runs |
 
-## Manual install (all harnesses)
+## Install (all harnesses)
 
 1. Pick the skill folder from this repo's `skills/`.
 2. Copy the WHOLE folder (SKILL.md alone is not enough — references,
@@ -40,22 +38,10 @@ README) plus at most a few singles.
 | Codex | `.agents/skills/<name>/` | |
 | Antigravity | `.agents/skills/<name>/` (project) | [CANDIDATE] community-sourced; global `~/.gemini/config/skills/`; verify locally |
 
-## `gh skill` install (pending Phase 0 — do not document to the team yet)
-
-```
-gh skill install KaliPoduri/Fable_Skills <skill-name>          # latest
-gh skill install KaliPoduri/Fable_Skills <skill-name>@v1.2.0   # pinned tag
-```
-
-Requires gh ≥2.90.0 authenticated to an account that can read this private
-repo. Installs into `.agents/skills/`. If Phase 0 records this as
-unavailable, distribution stays manual-only and this section gets replaced
-by that finding.
-
 ## Updating / removing
 
-- Update: re-copy the folder (or `gh skill install ...@<newer-tag>`);
-  check CHANGELOG.md for breaking changes.
+- Update: re-copy the folder from a newer library version; check
+  CHANGELOG.md for breaking changes.
 - Remove: delete the skill folder from the project skill directory.
 
 ## Troubleshooting
@@ -65,5 +51,3 @@ by that finding.
   trigger phrasing from the skill's README example prompts.
 - Triggers but ignores references/scripts: the folder was copied
   partially — re-copy the whole folder.
-- Script fails: run it directly (`python <path>/scripts/<script>.py`)
-  and check the Python version against the table above.

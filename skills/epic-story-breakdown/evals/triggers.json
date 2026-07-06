@@ -1,0 +1,27 @@
+{
+  "skill": "epic-story-breakdown",
+  "cases": [
+    { "prompt": "Break this PRD into stories.", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Split this epic into smaller pieces we can actually finish in a sprint.", "expect": "trigger", "note": "direct keyword — split epic" },
+    { "prompt": "Create a backlog from this feature description.", "expect": "trigger", "note": "direct keyword — backlog from feature" },
+    { "prompt": "Here's our requirements doc for the loyalty program — turn it into epics and stories.", "expect": "trigger", "note": "indirect — epics and stories from doc" },
+    { "prompt": "Decompose the checkout redesign feature into a story backlog.", "expect": "trigger", "note": "synonym — decompose" },
+    { "prompt": "This story is way too big for one sprint, how should we split it?", "expect": "trigger", "note": "oversized item needs splitting patterns" },
+    { "prompt": "Use SPIDR to break down our reporting epic.", "expect": "trigger", "note": "names SPIDR explicitly" },
+    { "prompt": "What are the epics hiding in this spec, and what stories fall under each?", "expect": "trigger", "note": "indirect — epic extraction" },
+    { "prompt": "Slice this 'manage users' epic by CRUD operations.", "expect": "trigger", "note": "CRUD splitting" },
+    { "prompt": "We just finished the PRD for invoicing. Draft the initial product backlog.", "expect": "trigger", "note": "PRD to backlog handoff" },
+    { "prompt": "Break the onboarding flow into thin vertical slices with dependencies noted.", "expect": "trigger", "note": "vertical slicing + dependencies" },
+    { "prompt": "Give me story candidates for the notifications epic with rough S/M/L sizes.", "expect": "trigger", "note": "story candidates + sizing hints" },
+    { "prompt": "Our epic 'payments v2' has been stuck in refinement for a month — carve it up.", "expect": "trigger", "note": "colloquial split request" },
+    { "prompt": "Write a user story for password reset with acceptance criteria.", "expect": "no-trigger", "note": "owned by user-story-writer — single story" },
+    { "prompt": "Is this story INVEST? 'As an admin I want to export logs so that I can audit access.'", "expect": "no-trigger", "note": "owned by user-story-writer — INVEST check" },
+    { "prompt": "Add Gherkin scenarios to the login story.", "expect": "no-trigger", "note": "owned by user-story-writer — Gherkin" },
+    { "prompt": "Write a PRD for our new referral feature.", "expect": "no-trigger", "note": "owned by prd-writer — upstream doc" },
+    { "prompt": "Draft the requirements document for the mobile app rewrite.", "expect": "no-trigger", "note": "owned by prd-writer — requirements authoring" },
+    { "prompt": "Split this pull request into smaller commits.", "expect": "no-trigger", "note": "code operation, not backlog work" },
+    { "prompt": "How do I split a string into words in Python?", "expect": "no-trigger", "note": "unrelated — programming question" },
+    { "prompt": "Plan the sprint schedule and ceremonies for the next quarter.", "expect": "no-trigger", "note": "process planning, not backlog decomposition" }
+  ],
+  "_authoring_note": "13 should-trigger + 9 near-miss/no-trigger; user-story-writer and prd-writer (siblings named in description) each covered by near-misses."
+}

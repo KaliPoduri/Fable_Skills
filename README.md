@@ -7,16 +7,17 @@ architect). Agent Skills open standard (`SKILL.md` folders); primary
 harness: GitHub Copilot Chat in VS Code; also works in Claude Code, Codex,
 Cursor (and, community-verified, Antigravity).
 
-**Status: Phase A (foundation).** No skills are released yet. The only
-folder under `skills/` today is a throwaway Phase 0 canary. Inventory
-below is the committed catalog (PLAN.md §3).
+**Status: Tier 1 authored.** All 21 Tier 1 skills plus the 2 meta skills
+are authored, source-verified, and validator-clean under `skills/`
+(everything marked T1 or Meta below). Tier 2 (30) and the Tier 3 backlog
+(14) are catalog-only for now.
 
 ## Install
 
-**Manual copy is the current method** — copy a whole skill folder into
-your project's skill directory (Copilot VS Code: `.agents/skills/<name>/`).
-Full steps + all harnesses: [docs/PER-HARNESS-SETUP.md](docs/PER-HARNESS-SETUP.md).
-`gh skill install` support is pending the Phase 0 gate.
+Copy a whole skill folder into your project's skill directory
+(Copilot VS Code: `.agents/skills/<name>/`) and reload the editor. That is
+the entire mechanism. Full steps + all harnesses:
+[docs/PER-HARNESS-SETUP.md](docs/PER-HARNESS-SETUP.md).
 
 **Install a pack, not the whole library** — keep ≤15 skills per project;
 more dilutes skill triggering on every known harness.
@@ -86,7 +87,6 @@ procurement/change management.
 | `docs/COMPATIBILITY.md` | support matrix + evidence |
 | `template/` | blank scaffold for new skills |
 | `tools/validate_skills.py` | library-policy CI validator |
-| `phase0/PHASE0-CHECKLIST.md` | in-org go/no-go gate (throwaway) |
 | `VERIFICATION-LOG.md` | source re-verification governance |
 
 Validation (build machine): `python tools/validate_skills.py --run-scripts`

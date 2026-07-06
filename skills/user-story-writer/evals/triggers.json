@@ -1,0 +1,27 @@
+{
+  "skill": "user-story-writer",
+  "cases": [
+    { "prompt": "Write a user story for password reset.", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Add acceptance criteria to this story: as a shopper I want to save my cart.", "expect": "trigger", "note": "direct keyword — acceptance criteria" },
+    { "prompt": "Gherkin scenarios for the login story, please.", "expect": "trigger", "note": "direct keyword — Gherkin" },
+    { "prompt": "Is this story INVEST? 'As an admin I want to export logs so that I can audit access.'", "expect": "trigger", "note": "direct keyword — INVEST check" },
+    { "prompt": "Turn 'E2-S3: Agent can apply a canned reply to a ticket' into a full story ready for sprint planning.", "expect": "trigger", "note": "one-liner candidate from epic-story-breakdown handoff" },
+    { "prompt": "Rewrite this story so it's testable — right now it just says the search should be fast.", "expect": "trigger", "note": "refining a single story (Testable)" },
+    { "prompt": "Give me Given/When/Then for the refund flow story.", "expect": "trigger", "note": "Given/When/Then synonym" },
+    { "prompt": "Does this backlog item meet a definition of ready?", "expect": "trigger", "note": "definition-of-ready sanity check" },
+    { "prompt": "As a... I want... so that... — fill this in properly for two-factor authentication setup.", "expect": "trigger", "note": "narrative template completion" },
+    { "prompt": "Review my story's acceptance criteria — they mention clicking specific buttons everywhere.", "expect": "trigger", "note": "criteria style refinement" },
+    { "prompt": "This story has no benefit clause. What goes after 'so that'?", "expect": "trigger", "note": "role-goal-benefit repair" },
+    { "prompt": "Write failure-path scenarios for the card payment story.", "expect": "trigger", "note": "scenario variations for one story" },
+    { "prompt": "Make a user story out of this bug report about CSV import truncating names.", "expect": "trigger", "note": "single request to story" },
+    { "prompt": "Break this PRD into epics and stories.", "expect": "no-trigger", "note": "owned by epic-story-breakdown — whole PRD" },
+    { "prompt": "Split this epic into sprint-sized pieces using SPIDR.", "expect": "no-trigger", "note": "owned by epic-story-breakdown — epic split" },
+    { "prompt": "Create a backlog from the notifications feature description.", "expect": "no-trigger", "note": "owned by epic-story-breakdown — backlog creation" },
+    { "prompt": "Write the PRD for our referral program.", "expect": "no-trigger", "note": "owned by prd-writer — upstream doc" },
+    { "prompt": "Draft a requirements document for the mobile rewrite.", "expect": "no-trigger", "note": "owned by prd-writer — requirements authoring" },
+    { "prompt": "Write cucumber step definitions in Java for this feature file.", "expect": "no-trigger", "note": "test automation code, not acceptance criteria authoring" },
+    { "prompt": "Tell me a story about a user who gets locked out of their account.", "expect": "no-trigger", "note": "unrelated — narrative fiction" },
+    { "prompt": "Estimate this story in story points for the team.", "expect": "no-trigger", "note": "sizing is owned by the Developers, not this skill" }
+  ],
+  "_authoring_note": "13 should-trigger + 8 near-miss/no-trigger; epic-story-breakdown and prd-writer (siblings named in description) each covered by near-misses."
+}

@@ -1,0 +1,25 @@
+{
+  "skill": "test-strategist",
+  "cases": [
+    { "prompt": "Write a test strategy for our new billing module", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "I need a test plan for the mobile app release", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "What should we test before we ship this?", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Help me decide which test levels apply to this microservice", "expect": "trigger", "note": "ISTQB levels" },
+    { "prompt": "Do a risk-based prioritization of our testing for the migration", "expect": "trigger", "note": "risk-based" },
+    { "prompt": "Define entry and exit criteria for system testing on this project", "expect": "trigger", "note": "entry/exit criteria" },
+    { "prompt": "What test types do we need for the payments API - functional and non-functional?", "expect": "trigger", "note": "test types" },
+    { "prompt": "We have two weeks of QA time - what do we test first and what do we drop?", "expect": "trigger", "note": "indirect - prioritization" },
+    { "prompt": "Draft the QA approach section for our project plan", "expect": "trigger", "note": "indirect - approach doc" },
+    { "prompt": "What environments and test data will we need to test the reporting feature?", "expect": "trigger", "note": "environments/data" },
+    { "prompt": "Which parts of the system can we safely NOT test, and how do I justify it?", "expect": "trigger", "note": "out-of-scope reasoning" },
+    { "prompt": "Put together a testing roadmap for the beta program using ISTQB terminology", "expect": "trigger", "note": "ISTQB keyword" },
+    { "prompt": "How should acceptance testing be organized for this contract delivery?", "expect": "trigger", "note": "acceptance level planning" },
+    { "prompt": "Write integration tests for the order service", "expect": "no-trigger", "note": "owned by test-automation-engineer" },
+    { "prompt": "Our Selenium tests are flaky, fix them", "expect": "no-trigger", "note": "owned by test-automation-engineer" },
+    { "prompt": "Guide me through building this feature test-first, red-green-refactor", "expect": "no-trigger", "note": "owned by tdd-developer" },
+    { "prompt": "Review this code before I merge", "expect": "no-trigger", "note": "owned by code-reviewer" },
+    { "prompt": "Set up the CI pipeline stages for our test suites", "expect": "no-trigger", "note": "owned by cicd-pipeline-designer" },
+    { "prompt": "Explain what a unit test is", "expect": "no-trigger", "note": "concept question, no strategy deliverable" },
+    { "prompt": "Summarize the results of last night's test run", "expect": "no-trigger", "note": "unrelated - reporting, not planning" }
+  ]
+}

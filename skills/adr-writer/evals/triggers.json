@@ -1,0 +1,25 @@
+{
+  "skill": "adr-writer",
+  "cases": [
+    { "prompt": "Write an ADR for choosing PostgreSQL over MongoDB", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Record this decision: we're standardizing on Kafka for events", "expect": "trigger", "note": "record this decision" },
+    { "prompt": "Create an architecture decision record about the new caching layer", "expect": "trigger", "note": "full phrase" },
+    { "prompt": "We just decided to split the monolith — write it up as an ADR", "expect": "trigger", "note": "indirect" },
+    { "prompt": "Document why we picked REST over gRPC as a decision record", "expect": "trigger", "note": "decision record variant" },
+    { "prompt": "Draft a MADR for adopting feature flags", "expect": "trigger", "note": "MADR keyword" },
+    { "prompt": "Add a new entry to docs/decisions for the auth provider choice", "expect": "trigger", "note": "decision log path" },
+    { "prompt": "Our caching ADR is obsolete — supersede it with the new approach", "expect": "trigger", "note": "supersession" },
+    { "prompt": "Mark ADR-0012 as deprecated and explain the status change", "expect": "trigger", "note": "status lifecycle" },
+    { "prompt": "Log the trade-offs behind moving to a message queue so future devs know why", "expect": "trigger", "note": "rationale capture, no keyword" },
+    { "prompt": "Set up a decision log for this repo and write the first record", "expect": "trigger", "note": "bootstrap log" },
+    { "prompt": "Turn the outcome of yesterday's database debate into a decision record with the options we compared", "expect": "trigger", "note": "options + outcome" },
+    { "prompt": "We evaluated three CI systems and chose one — capture that formally", "expect": "trigger", "note": "indirect, options compared" },
+    { "prompt": "Write an architecture document for this repository", "expect": "no-trigger", "note": "owned by architecture-doc-writer" },
+    { "prompt": "Document our whole system architecture with arc42", "expect": "no-trigger", "note": "owned by architecture-doc-writer" },
+    { "prompt": "Write an RFC proposing the new event-driven architecture for team feedback", "expect": "no-trigger", "note": "owned by rfc-writer (future)" },
+    { "prompt": "Draft a design proposal for discussion about splitting the billing domain", "expect": "no-trigger", "note": "owned by rfc-writer (future)" },
+    { "prompt": "Draw a C4 container diagram of our system", "expect": "no-trigger", "note": "owned by c4-diagrammer" },
+    { "prompt": "Write meeting minutes for today's architecture sync", "expect": "no-trigger", "note": "minutes, not a decision record" },
+    { "prompt": "Update the CHANGELOG for this release", "expect": "no-trigger", "note": "unrelated" }
+  ]
+}

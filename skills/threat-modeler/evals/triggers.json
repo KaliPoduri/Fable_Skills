@@ -1,0 +1,26 @@
+{
+  "skill": "threat-modeler",
+  "cases": [
+    { "prompt": "Threat model this design: API gateway, three microservices, shared Postgres", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Run a STRIDE analysis on our new checkout flow", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "What are the security threats in this architecture?", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Do a design-stage security analysis of the file upload feature before we build it", "expect": "trigger", "note": "design-stage analysis" },
+    { "prompt": "Identify the trust boundaries and attack surface in this system diagram", "expect": "trigger", "note": "decomposition vocabulary" },
+    { "prompt": "Build a threat register for the payments service design", "expect": "trigger", "note": "threat register" },
+    { "prompt": "What could an attacker do to this architecture: mobile app, REST backend, Redis cache?", "expect": "trigger", "note": "indirect phrasing" },
+    { "prompt": "We're adding a third-party webhook integration — what new threats does that introduce?", "expect": "trigger", "note": "delta threat modeling" },
+    { "prompt": "STRIDE-per-element walkthrough for the ingestion pipeline, please", "expect": "trigger", "note": "STRIDE-per-element keyword" },
+    { "prompt": "Rank the risks in this design and propose mitigations for each threat", "expect": "trigger", "note": "risk ranking + mitigations" },
+    { "prompt": "Draw the data flow diagram with trust boundaries for our SaaS and list what can go wrong", "expect": "trigger", "note": "DFD + four questions" },
+    { "prompt": "Before the architecture review, document spoofing and tampering risks in the auth design", "expect": "trigger", "note": "STRIDE categories named" },
+    { "prompt": "Is our multi-tenant isolation design secure? Enumerate the threats", "expect": "trigger", "note": "design threat enumeration" },
+    { "prompt": "Review this pull request for SQL injection and XSS vulnerabilities", "expect": "no-trigger", "note": "owned by security-code-reviewer" },
+    { "prompt": "Scan this codebase for hardcoded secrets and insecure crypto usage", "expect": "no-trigger", "note": "owned by security-code-reviewer" },
+    { "prompt": "Code review this module for readability and maintainability", "expect": "no-trigger", "note": "owned by code-reviewer" },
+    { "prompt": "Write testable security requirements for the new API before launch", "expect": "no-trigger", "note": "owned by security-requirements-writer" },
+    { "prompt": "Design a REST API for our order management service", "expect": "no-trigger", "note": "owned by api-designer" },
+    { "prompt": "Pentest our staging environment and report exploitable vulnerabilities", "expect": "no-trigger", "note": "penetration testing, out of scope" },
+    { "prompt": "Why does login fail with a 401 after the token refresh?", "expect": "no-trigger", "note": "debugging, unrelated" }
+  ],
+  "_authoring_note": "13 should-trigger + 7 near-miss/no-trigger; near-misses cover code-reviewer, security-code-reviewer, and security-requirements-writer as named in the description, plus api-designer and pentest adjacents."
+}

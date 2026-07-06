@@ -1,0 +1,25 @@
+{
+  "skill": "sql-optimizer",
+  "cases": [
+    { "prompt": "This query takes 30 seconds, here's the EXPLAIN ANALYZE output - make it faster.", "expect": "trigger", "note": "direct keyword + plan" },
+    { "prompt": "Optimize this SQL query.", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Why is Postgres doing a Seq Scan here instead of using my index?", "expect": "trigger", "note": "plan reading" },
+    { "prompt": "Help me read this MySQL EXPLAIN output - what does Using filesort mean?", "expect": "trigger", "note": "EXPLAIN interpretation" },
+    { "prompt": "The orders page query got slow once we passed 10M rows. Tune it.", "expect": "trigger", "note": "indirect, slow query" },
+    { "prompt": "What composite index should I add for WHERE tenant_id = ? AND created_at > ? ORDER BY created_at?", "expect": "trigger", "note": "index selection" },
+    { "prompt": "Is WHERE YEAR(order_date) = 2026 killing my index? Rewrite it if so.", "expect": "trigger", "note": "SARGability" },
+    { "prompt": "Our ORM fires one query per row in this loop - fix the N+1 with a single SQL statement.", "expect": "trigger", "note": "N+1 rewrite" },
+    { "prompt": "Pagination with OFFSET 500000 is timing out. What's the better pattern?", "expect": "trigger", "note": "keyset pagination" },
+    { "prompt": "Should this be a hash join or nested loop? The plan picks nested loop and it's slow.", "expect": "trigger", "note": "join strategy" },
+    { "prompt": "Review this report query for SQL anti-patterns like SELECT * and NOT IN.", "expect": "trigger", "note": "anti-pattern sweep" },
+    { "prompt": "SQL Server shows a Key Lookup executed 800k times in this plan - what do I do?", "expect": "trigger", "note": "vendor plan symptom" },
+    { "prompt": "Give me before/after rewrites for the three slowest queries in this file.", "expect": "trigger", "note": "output-shaped request" },
+    { "prompt": "Design the tables and relationships for our new invoicing feature.", "expect": "no-trigger", "note": "owned by db-schema-designer" },
+    { "prompt": "Write the migration to add this index to production without downtime.", "expect": "no-trigger", "note": "owned by db-migration-planner" },
+    { "prompt": "The API endpoint is slow but the SQL is fine - profile the application code and add caching.", "expect": "no-trigger", "note": "owned by performance-optimizer" },
+    { "prompt": "Should we normalize this table or keep the JSON column? Pick data types too.", "expect": "no-trigger", "note": "owned by db-schema-designer" },
+    { "prompt": "Check this query for SQL injection.", "expect": "no-trigger", "note": "owned by security-code-reviewer" },
+    { "prompt": "Write a query that returns monthly revenue by region.", "expect": "no-trigger", "note": "unrelated (query authoring, not tuning)" },
+    { "prompt": "Set up PostgreSQL replication for the analytics cluster.", "expect": "no-trigger", "note": "unrelated (ops)" }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "skill": "library-maintainer",
+  "cases": [
+    { "prompt": "Re-verify the library sources", "expect": "trigger", "note": "direct keyword: re-verify sources" },
+    { "prompt": "Check for stale skills", "expect": "trigger", "note": "direct keyword: stale skills" },
+    { "prompt": "Bump the version of prd-writer", "expect": "trigger", "note": "direct keyword: version bump" },
+    { "prompt": "Deprecate the phase0-canary skill", "expect": "trigger", "note": "direct keyword: deprecate" },
+    { "prompt": "Which skills have a last-verified date older than 90 days?", "expect": "trigger", "note": "staleness sweep, indirect" },
+    { "prompt": "OWASP released a new Top 10 — update the skills that cite it", "expect": "trigger", "note": "source change ripple, re-verification + bump" },
+    { "prompt": "Run the validators across the whole library and fix what fails", "expect": "trigger", "note": "full-library validation" },
+    { "prompt": "Do the quarterly source re-check and log it in VERIFICATION-LOG.md", "expect": "trigger", "note": "re-verification + governance log" },
+    { "prompt": "The install table in code-reviewer's README looks out of date, check all skills", "expect": "trigger", "note": "consistency: install-table drift" },
+    { "prompt": "Make sure every sibling boundary is still named both ways", "expect": "trigger", "note": "consistency: reciprocal boundaries" },
+    { "prompt": "sql-optimizer got a new reference file — what version bump does that need?", "expect": "trigger", "note": "SemVer triage" },
+    { "prompt": "Mark test-strategist deprecated and point people to test-automation-engineer", "expect": "trigger", "note": "deprecation with replacement" },
+    { "prompt": "Refresh the last-verified dates after checking each SOURCES.md row", "expect": "trigger", "note": "re-verification phrasing" },
+    { "prompt": "Add a Changed entry to the changelog for the adr-writer update", "expect": "trigger", "note": "CHANGELOG upkeep for an existing skill" },
+    { "prompt": "Create a new skill for SQL query optimization", "expect": "no-trigger", "note": "owned by skill-creator" },
+    { "prompt": "Add a skill for postmortem writing to the library", "expect": "no-trigger", "note": "owned by skill-creator" },
+    { "prompt": "Author a brand-new skill from the template for API design", "expect": "no-trigger", "note": "owned by skill-creator" },
+    { "prompt": "Scaffold skills/threat-modeler from template/ and fill it in", "expect": "no-trigger", "note": "owned by skill-creator (new folder from template)" },
+    { "prompt": "Bump the npm package version in package.json for our web app", "expect": "no-trigger", "note": "unrelated: version bump outside the skill library" },
+    { "prompt": "Deprecate the v1 REST endpoint in our API", "expect": "no-trigger", "note": "unrelated: deprecation outside the skill library" }
+  ],
+  "_authoring_note": "Near-miss set covers skill-creator (the only sibling named in the description boundary) plus out-of-library lookalikes for bump/deprecate verbs."
+}

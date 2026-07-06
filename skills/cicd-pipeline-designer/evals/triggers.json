@@ -1,0 +1,26 @@
+{
+  "skill": "cicd-pipeline-designer",
+  "cases": [
+    { "prompt": "Design our CI/CD pipeline", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "What pipeline stages should we have for this repo?", "expect": "trigger", "note": "direct keyword - stages" },
+    { "prompt": "Set up quality gates for CI", "expect": "trigger", "note": "direct keyword - quality gates" },
+    { "prompt": "Our CI takes 40 minutes, how should we restructure the pipeline and add caching?", "expect": "trigger", "note": "indirect - caching/speed" },
+    { "prompt": "Where should security scanning go in our build pipeline?", "expect": "trigger", "note": "indirect - security checks placement" },
+    { "prompt": "Propose a build-test-deploy workflow for a new Python service", "expect": "trigger", "note": "indirect - no CI/CD keyword" },
+    { "prompt": "How should artifacts be versioned and promoted between staging and prod in CI?", "expect": "trigger", "note": "artifact versioning flow" },
+    { "prompt": "We want to align our delivery process with DORA metrics — what should the pipeline look like?", "expect": "trigger", "note": "DORA alignment" },
+    { "prompt": "Which tests should block a merge and which can run nightly?", "expect": "trigger", "note": "test tiers / gate scope" },
+    { "prompt": "Review our .gitlab-ci.yml and suggest a better stage layout", "expect": "trigger", "note": "platform-specific input, pipeline design ask" },
+    { "prompt": "Add a deployment stage with a manual approval gate to our Jenkins pipeline design", "expect": "trigger", "note": "Jenkins + gates" },
+    { "prompt": "What is a sensible failure policy when integration tests are flaky in CI?", "expect": "trigger", "note": "failure policy" },
+    { "prompt": "Should we build the Docker image once and promote it, or rebuild per environment?", "expect": "trigger", "note": "build-once principle" },
+    { "prompt": "How do I do a canary rollout with automatic rollback?", "expect": "no-trigger", "note": "owned by deployment-strategist" },
+    { "prompt": "Plan a blue-green deployment switchover for our API", "expect": "no-trigger", "note": "owned by deployment-strategist" },
+    { "prompt": "Cut the 2.3.0 release and write the release notes", "expect": "no-trigger", "note": "owned by release-manager" },
+    { "prompt": "Should this change bump the major or minor version?", "expect": "no-trigger", "note": "owned by release-manager" },
+    { "prompt": "Should we use GitFlow or trunk-based branching?", "expect": "no-trigger", "note": "owned by git-workflow-expert" },
+    { "prompt": "Write a commit message convention for the team", "expect": "no-trigger", "note": "owned by git-workflow-expert" },
+    { "prompt": "Why is my Dockerfile failing to build locally?", "expect": "no-trigger", "note": "unrelated - local debugging" },
+    { "prompt": "Write unit tests for the auth module", "expect": "no-trigger", "note": "unrelated - test authoring" }
+  ]
+}

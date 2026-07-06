@@ -28,9 +28,9 @@ LIB_DESC_MAX = 500          # library policy (chars)
 LIB_BODY_MAX_LINES = 500    # library policy
 STALE_DAYS = 90             # warning aid for the re-verification owner
 
-# Throwaway Phase 0 canary: exempt from library completeness rules
-# (SOURCES.md, evals). Format rules still apply. Delete after the gate.
-COMPLETENESS_EXEMPT = {"phase0-canary"}
+# Skills exempt from library completeness rules (SOURCES.md, evals).
+# Format rules still apply. Keep empty unless a throwaway needs it.
+COMPLETENESS_EXEMPT = set()
 
 NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 BACKSLASH_PATH_RE = re.compile(r"[A-Za-z0-9_.)\]]+\\[A-Za-z0-9_]")
@@ -88,6 +88,17 @@ def validate_skill(skill_dir, run_scripts=False):
             errors.append(f"SPEC: name '{fm_name}' not lowercase-hyphen")
         if len(fm_name) > SPEC_NAME_MAX:
             errors.append(f"SPEC: name exceeds {SPEC_NAME_MAX} chars")
+
+    # --- YAML safety: unquoted "key: v: w" breaks real YAML parsers even
+    # though our minimal parser tolerates it ---
+    for line in text.splitlines()[1:]:
+        if line.strip() == "---":
+            break
+        m = re.match(r"^(name|description):\s+(.*)$", line)
+        if m and not m.group(2).startswith(('"', "'")) and ": " in m.group(2):
+            errors.append(
+                f"SPEC-YAML: {m.group(1)} contains ': ' but is unquoted — "
+                "invalid YAML for real parsers; wrap the value in quotes")
 
     # --- description (spec + library policy) ---
     desc = fm.get("description", "")

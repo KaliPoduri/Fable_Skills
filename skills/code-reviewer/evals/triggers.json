@@ -1,0 +1,26 @@
+{
+  "skill": "code-reviewer",
+  "cases": [
+    { "prompt": "Review this code", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Can you do a code review of this function?", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Review my PR before I merge it", "expect": "trigger", "note": "direct - PR" },
+    { "prompt": "Please review this diff", "expect": "trigger", "note": "direct - diff" },
+    { "prompt": "Take a look at my changes and tell me if anything blocks merge", "expect": "trigger", "note": "indirect - blocks merge" },
+    { "prompt": "Here's a patch, give me feedback on readability and naming", "expect": "trigger", "note": "indirect - review dimensions" },
+    { "prompt": "Does this pull request look good to you?", "expect": "trigger", "note": "indirect - LGTM ask" },
+    { "prompt": "Check this code for bugs and design problems before I commit", "expect": "trigger", "note": "indirect - correctness + design" },
+    { "prompt": "I pasted a snippet below - critique it like a senior engineer would in review", "expect": "trigger", "note": "indirect - persona review" },
+    { "prompt": "Is this change too complex? Review it", "expect": "trigger", "note": "complexity review" },
+    { "prompt": "Review these changes for consistency with the rest of the codebase", "expect": "trigger", "note": "consistency review" },
+    { "prompt": "Give me severity-tagged review findings for this file", "expect": "trigger", "note": "output-format keyword" },
+    { "prompt": "Are the tests in this diff good enough? Full review please", "expect": "trigger", "note": "tests within general review" },
+    { "prompt": "Second pair of eyes on this changelist?", "expect": "trigger", "note": "indirect - CL phrasing" },
+    { "prompt": "Do a security review of this login handler for injection and auth flaws", "expect": "no-trigger", "note": "owned by security-code-reviewer" },
+    { "prompt": "This endpoint is slow - profile the code and optimize the hot loop", "expect": "no-trigger", "note": "owned by performance-optimizer" },
+    { "prompt": "This SQL query does a full table scan, can you tune it and suggest indexes?", "expect": "no-trigger", "note": "owned by sql-optimizer" },
+    { "prompt": "Write a test plan for the checkout feature", "expect": "no-trigger", "note": "owned by test-strategist" },
+    { "prompt": "Write unit tests for this module", "expect": "no-trigger", "note": "owned by test-automation-engineer" },
+    { "prompt": "Rename this variable across the repo", "expect": "no-trigger", "note": "refactor task, not a review" },
+    { "prompt": "Summarize what this file does", "expect": "no-trigger", "note": "unrelated - explanation, not review" }
+  ]
+}

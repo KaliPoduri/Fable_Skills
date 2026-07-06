@@ -43,13 +43,10 @@ but only WORK where listed. (Spec: agentskills.io/specification.)
 
 ## Distribution
 
-| Mechanism | Status | Notes |
-|---|---|---|
-| Manual folder copy | [CONFIRMED] default | works everywhere; documented per skill |
-| `gh skill install <owner>/Fable_Skills <skill>[@tag]` | [CONFIRMED] syntax (gh manual); [OPEN] in-org availability | public preview, needs gh ≥2.90.0; auto-discovers `skills/*/SKILL.md`; installs to `.agents/skills/`; **pending Phase 0** |
+Manual folder copy only (user decision, 2026-07-06) — works everywhere,
+documented per skill. Version discipline: git tags + CHANGELOG.md.
 
 ## Timeline footnotes
 
 - Copilot Agent Skills GA'd in waves: github.blog changelog 2025-12-18;
   VS Code stable ~Jan 2026 — exact date unpinned [OPEN].
-- `gh skill` CLI public preview since Apr 2026.

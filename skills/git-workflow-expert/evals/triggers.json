@@ -1,0 +1,26 @@
+{
+  "skill": "git-workflow-expert",
+  "cases": [
+    { "prompt": "Write a commit message for this change — it adds OAuth login and removes the old session endpoint.", "expect": "trigger", "note": "direct keyword 'commit message for'" },
+    { "prompt": "Format this as a conventional commit: fixed the pagination bug in the search API.", "expect": "trigger", "note": "direct keyword 'conventional commits'" },
+    { "prompt": "What branching strategy should our 6-person team use? We deploy weekly.", "expect": "trigger", "note": "direct keyword 'branching strategy'" },
+    { "prompt": "How should I structure this PR? It touches the parser, the CLI, and the docs.", "expect": "trigger", "note": "direct keyword 'structure this PR'" },
+    { "prompt": "Should I rebase or merge my feature branch back into main?", "expect": "trigger", "note": "rebase vs merge decision" },
+    { "prompt": "I need to undo the last two commits but they're already pushed to main.", "expect": "trigger", "note": "undo on shared history — revert vs reset" },
+    { "prompt": "Is git flow still a good idea, or should we do trunk-based development?", "expect": "trigger", "note": "strategy comparison" },
+    { "prompt": "My PR is 3000 lines and reviewers are complaining. How do I split it?", "expect": "trigger", "note": "PR hygiene / size" },
+    { "prompt": "Is it safe to do an interactive rebase on this branch? Two of the commits are pushed.", "expect": "trigger", "note": "history hygiene — rewrite safety" },
+    { "prompt": "Someone committed node_modules and a .env file. How do we clean this up?", "expect": "trigger", "note": ".gitignore discipline + secret handling" },
+    { "prompt": "Our team's commit messages are a mess — propose a convention we can enforce.", "expect": "trigger", "note": "indirect — commit convention" },
+    { "prompt": "I accidentally reset --hard and lost a commit. Can I get it back?", "expect": "trigger", "note": "recovery — reflog recipe" },
+    { "prompt": "When should we cut a release branch instead of shipping from main?", "expect": "trigger", "note": "release-branch strategy criteria (working discipline, not tagging)" },
+    { "prompt": "Tag v2.0.0 and update the CHANGELOG for this release.", "expect": "no-trigger", "note": "owned by release-manager" },
+    { "prompt": "What version number should this breaking change get under SemVer?", "expect": "no-trigger", "note": "owned by release-manager" },
+    { "prompt": "Design the CI pipeline that runs tests and deploys on merge to main.", "expect": "no-trigger", "note": "owned by cicd-pipeline-designer" },
+    { "prompt": "Our GitHub Actions workflow is slow — restructure the build stages.", "expect": "no-trigger", "note": "owned by cicd-pipeline-designer" },
+    { "prompt": "Debug this: git push fails with 'RPC failed; curl 55'.", "expect": "no-trigger", "note": "owned by systematic-debugger — failure diagnosis, not workflow advice" },
+    { "prompt": "Review this pull request's code for bugs and maintainability.", "expect": "no-trigger", "note": "owned by code-reviewer — content review, not PR structure" },
+    { "prompt": "Write a README for this repository.", "expect": "no-trigger", "note": "unrelated — owned by readme-writer" }
+  ],
+  "_authoring_note": "20 cases: 13 should-trigger, 7 near-miss/no-trigger. Siblings named in the description (release-manager, cicd-pipeline-designer) each have near-miss cases."
+}

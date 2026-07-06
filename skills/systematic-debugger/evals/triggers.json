@@ -1,0 +1,26 @@
+{
+  "skill": "systematic-debugger",
+  "cases": [
+    { "prompt": "Debug this: the export job crashes with a NullPointerException in ReportWriter.", "expect": "trigger", "note": "direct keyword 'debug this'" },
+    { "prompt": "Why is this failing? The integration test passes locally but dies on CI.", "expect": "trigger", "note": "direct keyword 'why is this failing'" },
+    { "prompt": "We have an intermittent bug in checkout — about 1 in 20 requests returns a 500.", "expect": "trigger", "note": "direct keyword 'intermittent bug'" },
+    { "prompt": "Works on my machine but the same request 404s in staging. Help me figure out why.", "expect": "trigger", "note": "direct keyword 'works on my machine'" },
+    { "prompt": "The nightly batch started producing wrong totals sometime this month and I have no idea which change caused it.", "expect": "trigger", "note": "indirect — regression hunt, bisect territory" },
+    { "prompt": "Help me track down why the app freezes after roughly an hour of uptime.", "expect": "trigger", "note": "indirect — no 'debug' keyword" },
+    { "prompt": "I keep getting 'connection reset by peer' from the payment service but only under load.", "expect": "trigger", "note": "indirect — intermittent under load" },
+    { "prompt": "This function returns the wrong date for users in UTC+13 and I can't see why.", "expect": "trigger", "note": "indirect — wrong output, cause unknown" },
+    { "prompt": "Our flaky test suite fails randomly on about every fifth run. How do I find the cause?", "expect": "trigger", "note": "flaky/nondeterministic diagnosis" },
+    { "prompt": "I've tried three fixes for this crash and none of them worked. What now?", "expect": "trigger", "note": "looping on guesses — needs the method" },
+    { "prompt": "Which commit broke the login flow? It worked in the last release.", "expect": "trigger", "note": "history bisect request" },
+    { "prompt": "Can you help me reproduce this bug a customer reported? I only have a screenshot of the error.", "expect": "trigger", "note": "reproduction-first request" },
+    { "prompt": "The service works in dev, fails in prod with identical config as far as I can tell.", "expect": "trigger", "note": "environment-difference diagnosis" },
+    { "prompt": "I know the root cause now — write a failing test for it and implement the fix.", "expect": "no-trigger", "note": "owned by tdd-developer (cause already known)" },
+    { "prompt": "Review this pull request for code quality and maintainability issues.", "expect": "no-trigger", "note": "owned by code-reviewer" },
+    { "prompt": "Add unit tests for the new pricing module using TDD.", "expect": "no-trigger", "note": "owned by tdd-developer (no failure to diagnose)" },
+    { "prompt": "Refactor this class to reduce duplication.", "expect": "no-trigger", "note": "unrelated — refactoring, nothing is failing" },
+    { "prompt": "Explain how git bisect works.", "expect": "no-trigger", "note": "conceptual question, no active failure to diagnose" },
+    { "prompt": "Write a commit message for this bug fix.", "expect": "no-trigger", "note": "owned by git-workflow-expert" },
+    { "prompt": "Set up structured logging for the order service.", "expect": "no-trigger", "note": "unrelated — observability setup, no bug in play" }
+  ],
+  "_authoring_note": "20 cases: 13 should-trigger, 7 near-miss/no-trigger. Siblings named in the description (tdd-developer, code-reviewer) each have a near-miss case."
+}

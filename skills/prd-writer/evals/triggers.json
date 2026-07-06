@@ -1,0 +1,26 @@
+{
+  "skill": "prd-writer",
+  "cases": [
+    { "prompt": "Write a PRD for our new bulk-export feature", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "I need a product requirements document for the SSO rollout", "expect": "trigger", "note": "direct keyword, spelled out" },
+    { "prompt": "Can you draft a requirements doc for the notifications revamp?", "expect": "trigger", "note": "trigger phrase variant" },
+    { "prompt": "Turn these meeting notes into a proper PRD", "expect": "trigger", "note": "input-artifact phrasing" },
+    { "prompt": "Create a requirements document covering goals, scope, and success metrics for the mobile checkout", "expect": "trigger", "note": "section keywords" },
+    { "prompt": "We're kicking off the payments project — write up the problem statement, goals, non-goals, and requirements", "expect": "trigger", "note": "indirect, PRD contents named" },
+    { "prompt": "Our stakeholders keep arguing about scope; produce a doc with in-scope, out-of-scope, and open questions for feature X", "expect": "trigger", "note": "indirect, scope framing" },
+    { "prompt": "Draft the functional and non-functional requirements for the reporting module", "expect": "trigger", "note": "requirements-focused" },
+    { "prompt": "Review this PRD draft and fill in the missing sections", "expect": "trigger", "note": "overhaul existing PRD" },
+    { "prompt": "What should go in a PRD for an internal admin tool? Write one", "expect": "trigger", "note": "question + write request" },
+    { "prompt": "Document the target users, risks, and success metrics for the beta launch as a requirements doc", "expect": "trigger", "note": "section keywords, varied order" },
+    { "prompt": "Nuestro equipo necesita un PRD para la nueva funcion de busqueda — write it in English", "expect": "trigger", "note": "mixed-language, PRD keyword" },
+    { "prompt": "Help me spec out the requirements before we start building the API gateway", "expect": "trigger", "note": "indirect, pre-build spec" },
+    { "prompt": "Break this PRD down into epics and user stories", "expect": "no-trigger", "note": "owned by epic-story-breakdown" },
+    { "prompt": "Write the product vision statement for the next three years", "expect": "no-trigger", "note": "owned by product-vision-writer" },
+    { "prompt": "Put together our product roadmap for 2027 by quarter", "expect": "no-trigger", "note": "owned by product-roadmap-writer" },
+    { "prompt": "Write acceptance criteria for the login user story", "expect": "no-trigger", "note": "owned by user-story-writer" },
+    { "prompt": "Map the user journey into a story map for the onboarding flow", "expect": "no-trigger", "note": "owned by user-story-mapper" },
+    { "prompt": "Write a README for this repository", "expect": "no-trigger", "note": "owned by readme-writer" },
+    { "prompt": "Summarize the requirements section of this RFC in two sentences", "expect": "no-trigger", "note": "summarization, not authoring a PRD" },
+    { "prompt": "Fix the failing unit tests in the requirements parser module", "expect": "no-trigger", "note": "unrelated coding task" }
+  ]
+}

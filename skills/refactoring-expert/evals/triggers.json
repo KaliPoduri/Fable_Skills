@@ -1,0 +1,26 @@
+{
+  "skill": "refactoring-expert",
+  "cases": [
+    { "prompt": "Refactor this class", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Clean up this code without changing what it does", "expect": "trigger", "note": "clean-up phrasing" },
+    { "prompt": "This function is too long — break it up", "expect": "trigger", "note": "long function smell" },
+    { "prompt": "Remove the duplication between these two modules", "expect": "trigger", "note": "duplicated code smell" },
+    { "prompt": "What code smells do you see in this file, and which named refactorings fix them?", "expect": "trigger", "note": "smell diagnosis" },
+    { "prompt": "Extract this block into its own function safely", "expect": "trigger", "note": "Extract Function by name" },
+    { "prompt": "Untangle this god class without altering behavior", "expect": "trigger", "note": "large class smell" },
+    { "prompt": "Apply Fowler's catalog to this repeated switch statement", "expect": "trigger", "note": "catalog + repeated switches" },
+    { "prompt": "OrderService keeps reaching into Customer's data — fix the feature envy", "expect": "trigger", "note": "smell by name" },
+    { "prompt": "Simplify these nested conditionals with guard clauses", "expect": "trigger", "note": "named refactoring" },
+    { "prompt": "This long parameter list is unmanageable — introduce a parameter object or whatever fits", "expect": "trigger", "note": "long parameter list smell" },
+    { "prompt": "Tidy up this module's structure before we add the next feature", "expect": "trigger", "note": "preparatory refactoring" },
+    { "prompt": "Rename these misleading identifiers and restructure the helpers, behavior unchanged", "expect": "trigger", "note": "mysterious name smell" },
+    { "prompt": "Add a new export-to-CSV feature with tests", "expect": "no-trigger", "note": "owned by tdd-developer (new behavior)" },
+    { "prompt": "Implement this user story test-first", "expect": "no-trigger", "note": "owned by tdd-developer" },
+    { "prompt": "This endpoint is slow — optimize the query", "expect": "no-trigger", "note": "owned by performance-optimizer" },
+    { "prompt": "Reduce the memory footprint of this batch job", "expect": "no-trigger", "note": "owned by performance-optimizer" },
+    { "prompt": "Fix the ESLint warnings about semicolons and quote style", "expect": "no-trigger", "note": "style-only lint, not refactoring" },
+    { "prompt": "Find out why checkout intermittently returns 500", "expect": "no-trigger", "note": "owned by systematic-debugger (diagnosis)" },
+    { "prompt": "Write a README for this package", "expect": "no-trigger", "note": "unrelated: documentation" }
+  ],
+  "_authoring_note": "13 should-trigger + 7 near-miss/no-trigger; includes near-misses for both siblings named in the description (tdd-developer, performance-optimizer) plus the style-only-lint boundary."
+}

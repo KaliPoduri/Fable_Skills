@@ -1,0 +1,26 @@
+{
+  "skill": "postmortem-writer",
+  "cases": [
+    { "prompt": "Write a postmortem for yesterday's outage", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Draft the incident retrospective for INC-4211", "expect": "trigger", "note": "direct keyword - incident retrospective" },
+    { "prompt": "We need an RCA document for the database failover incident", "expect": "trigger", "note": "direct keyword - RCA" },
+    { "prompt": "Turn this incident Slack thread into a proper post-incident report", "expect": "trigger", "note": "indirect - from channel log" },
+    { "prompt": "Build the timeline from detection to resolution for last week's checkout failure", "expect": "trigger", "note": "timeline reconstruction" },
+    { "prompt": "Quantify the impact of the API outage and write it up", "expect": "trigger", "note": "impact quantification" },
+    { "prompt": "The incident is resolved — document what went wrong and the follow-up actions", "expect": "trigger", "note": "indirect - post-resolution writeup" },
+    { "prompt": "Write up contributing causes for the deploy that took prod down, without blaming anyone", "expect": "trigger", "note": "blameless causes" },
+    { "prompt": "Create action items with owners and deadlines from these incident findings", "expect": "trigger", "note": "action items step" },
+    { "prompt": "Our postmortem draft blames the on-call engineer — rewrite it blamelessly", "expect": "trigger", "note": "blameless rewrite" },
+    { "prompt": "Summarize what went well and where we got lucky during the S3 misconfiguration incident", "expect": "trigger", "note": "well/badly/lucky section" },
+    { "prompt": "Prepare the post-incident review doc for tomorrow's review meeting", "expect": "trigger", "note": "indirect - review doc" },
+    { "prompt": "Do we even need a postmortem for a 5-minute blip nobody noticed?", "expect": "trigger", "note": "trigger-criteria question" },
+    { "prompt": "Production is down right now, help me mitigate", "expect": "no-trigger", "note": "owned by incident-responder" },
+    { "prompt": "Who should we page and what do we roll back? The incident is ongoing", "expect": "no-trigger", "note": "owned by incident-responder" },
+    { "prompt": "Write a runbook for handling database failover", "expect": "no-trigger", "note": "owned by runbook-writer" },
+    { "prompt": "Turn the postmortem's mitigation steps into an on-call operational procedure", "expect": "no-trigger", "note": "owned by runbook-writer" },
+    { "prompt": "Facilitate our sprint retrospective for this iteration", "expect": "no-trigger", "note": "owned by retrospective-facilitator" },
+    { "prompt": "What should we discuss in the team retro about our velocity?", "expect": "no-trigger", "note": "owned by retrospective-facilitator" },
+    { "prompt": "Debug why the service crashed with this stack trace", "expect": "no-trigger", "note": "unrelated - live debugging" },
+    { "prompt": "Write release notes for the hotfix we shipped", "expect": "no-trigger", "note": "unrelated - owned by release-manager" }
+  ]
+}

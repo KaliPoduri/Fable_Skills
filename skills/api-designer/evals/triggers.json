@@ -1,0 +1,27 @@
+{
+  "skill": "api-designer",
+  "cases": [
+    { "prompt": "Design an API for our inventory management system", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "REST API design for a booking service — what endpoints do we need?", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Write an OpenAPI spec for the user service", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "What API error format should we standardize on?", "expect": "trigger", "note": "direct keyword — RFC 9457 territory" },
+    { "prompt": "How should we version our public HTTP API?", "expect": "trigger", "note": "versioning strategy" },
+    { "prompt": "Add pagination and filtering conventions to our list endpoints", "expect": "trigger", "note": "pagination/filtering" },
+    { "prompt": "Should this endpoint be a PUT or a PATCH, and what status code should it return?", "expect": "trigger", "note": "method/status-code discipline" },
+    { "prompt": "We need application/problem+json error responses — define the shape", "expect": "trigger", "note": "RFC 9457 keyword" },
+    { "prompt": "Sketch the resource model and endpoints for a multi-tenant todo app", "expect": "trigger", "note": "resource modeling" },
+    { "prompt": "How do I make our payment POST endpoint safe to retry?", "expect": "trigger", "note": "idempotency" },
+    { "prompt": "Create an OpenAPI 3.2 skeleton for these five endpoints", "expect": "trigger", "note": "OpenAPI skeleton" },
+    { "prompt": "Review this API design — are the status codes and verbs right?", "expect": "trigger", "note": "design critique against conventions" },
+    { "prompt": "Expose our reporting module over REST for third-party integrators", "expect": "trigger", "note": "indirect — new API surface" },
+    { "prompt": "What's a clean URL structure for nested resources like stores and orders?", "expect": "trigger", "note": "resource naming" },
+    { "prompt": "Design the database schema for our orders and customers tables", "expect": "no-trigger", "note": "owned by data-modeler" },
+    { "prompt": "Model the entities and relationships for the inventory domain in an ER diagram", "expect": "no-trigger", "note": "owned by data-modeler" },
+    { "prompt": "Write the security requirements our API must meet before launch", "expect": "no-trigger", "note": "owned by security-requirements-writer" },
+    { "prompt": "What are the security threats in our API gateway architecture?", "expect": "no-trigger", "note": "owned by threat-modeler" },
+    { "prompt": "Run a STRIDE analysis on the new checkout design", "expect": "no-trigger", "note": "owned by threat-modeler" },
+    { "prompt": "Why is this fetch call returning CORS errors in the browser?", "expect": "no-trigger", "note": "debugging, not API design" },
+    { "prompt": "Optimize this slow SQL query on the orders table", "expect": "no-trigger", "note": "unrelated" }
+  ],
+  "_authoring_note": "14 should-trigger + 7 near-miss/no-trigger; near-misses cover data-modeler, security-requirements-writer, and threat-modeler as named in the description."
+}

@@ -1,0 +1,25 @@
+{
+  "skill": "architecture-doc-writer",
+  "cases": [
+    { "prompt": "Write an architecture document for this repository", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Document our system architecture", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Create an arc42 doc for the payment service", "expect": "trigger", "note": "arc42 keyword" },
+    { "prompt": "We need full architecture documentation with diagrams for onboarding", "expect": "trigger", "note": "indirect, doc + diagrams" },
+    { "prompt": "Generate an arc42 architecture description of this codebase", "expect": "trigger", "note": "arc42 variant" },
+    { "prompt": "Produce a software architecture document covering context, building blocks and deployment", "expect": "trigger", "note": "names arc42 sections" },
+    { "prompt": "Write up the architecture of this system so auditors can review it", "expect": "trigger", "note": "indirect, audience-driven" },
+    { "prompt": "Our architecture doc is outdated — rewrite it against the current code", "expect": "trigger", "note": "update existing doc" },
+    { "prompt": "I need a document describing quality goals, constraints and the solution strategy of our platform", "expect": "trigger", "note": "arc42 section names, no keyword" },
+    { "prompt": "Can you draft the architecture handbook for the new microservice landscape?", "expect": "trigger", "note": "synonym: handbook" },
+    { "prompt": "Summarize this system's architecture into a structured doc with runtime and deployment views", "expect": "trigger", "note": "views named" },
+    { "prompt": "Make an architecture overview document including C4 diagrams for each level", "expect": "trigger", "note": "doc with embedded C4" },
+    { "prompt": "Fill in the arc42 template for our inventory system", "expect": "trigger", "note": "template fill" },
+    { "prompt": "Draw a container diagram of our system", "expect": "no-trigger", "note": "owned by c4-diagrammer" },
+    { "prompt": "Give me a C4 context diagram for the order service", "expect": "no-trigger", "note": "owned by c4-diagrammer" },
+    { "prompt": "Record our decision to switch from REST to gRPC as an ADR", "expect": "no-trigger", "note": "owned by adr-writer" },
+    { "prompt": "Write an architecture decision record about the new caching layer", "expect": "no-trigger", "note": "owned by adr-writer" },
+    { "prompt": "Write an RFC proposing the new event-driven design for team discussion", "expect": "no-trigger", "note": "owned by rfc-writer (future)" },
+    { "prompt": "Document the REST API endpoints of this service", "expect": "no-trigger", "note": "API reference, not architecture doc" },
+    { "prompt": "Write a README for this repo", "expect": "no-trigger", "note": "unrelated doc type" }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "skill": "release-manager",
+  "cases": [
+    { "prompt": "Cut a release", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "What version should this be?", "expect": "trigger", "note": "direct keyword - version decision" },
+    { "prompt": "Write the changelog for this release", "expect": "trigger", "note": "direct keyword - changelog" },
+    { "prompt": "Write release notes for everything since v2.1.0", "expect": "trigger", "note": "direct keyword - release notes" },
+    { "prompt": "We removed a deprecated endpoint and added two features — major or minor bump?", "expect": "trigger", "note": "SemVer classification" },
+    { "prompt": "Prepare 3.0.0-rc.1 for the beta testers", "expect": "trigger", "note": "pre-release versioning" },
+    { "prompt": "Update CHANGELOG.md and tag the release", "expect": "trigger", "note": "changelog + tagging" },
+    { "prompt": "Production is broken and we need to ship a hotfix off the last release", "expect": "trigger", "note": "hotfix path" },
+    { "prompt": "Walk me through freezing, tagging, and publishing this version", "expect": "trigger", "note": "release-cut checklist" },
+    { "prompt": "Move the Unreleased section into a new version entry", "expect": "trigger", "note": "Keep a Changelog mechanics" },
+    { "prompt": "Is renaming a config key a breaking change for versioning purposes?", "expect": "trigger", "note": "SemVer edge case" },
+    { "prompt": "Turn these merged PRs into human-readable release notes", "expect": "trigger", "note": "indirect - notes from PRs" },
+    { "prompt": "We're still on 0.9.x — when should we call it 1.0.0?", "expect": "trigger", "note": "0.y.z / stability declaration" },
+    { "prompt": "Design the CI/CD pipeline that builds and publishes our releases", "expect": "no-trigger", "note": "owned by cicd-pipeline-designer" },
+    { "prompt": "What quality gates should block a deploy to production?", "expect": "no-trigger", "note": "owned by cicd-pipeline-designer" },
+    { "prompt": "Define a commit message convention like Conventional Commits for the team", "expect": "no-trigger", "note": "owned by git-workflow-expert" },
+    { "prompt": "Should release branches come off main or develop in our branching model?", "expect": "no-trigger", "note": "owned by git-workflow-expert" },
+    { "prompt": "Summarize this sprint for the stakeholder update", "expect": "no-trigger", "note": "unrelated - status reporting" },
+    { "prompt": "Fix the failing unit test in the payment module", "expect": "no-trigger", "note": "unrelated - bug fixing" },
+    { "prompt": "How do I install this package from npm?", "expect": "no-trigger", "note": "unrelated - consumer question" }
+  ]
+}

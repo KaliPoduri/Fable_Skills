@@ -1,0 +1,26 @@
+{
+  "skill": "skill-creator",
+  "cases": [
+    { "prompt": "Create a new skill for SQL query optimization", "expect": "trigger", "note": "direct keyword: create a new skill" },
+    { "prompt": "Add a skill for postmortem writing to the library", "expect": "trigger", "note": "direct keyword: add a skill" },
+    { "prompt": "Author a skill that reviews Terraform code", "expect": "trigger", "note": "direct keyword: author a skill" },
+    { "prompt": "Let's build the adr-writer skill from the catalog", "expect": "trigger", "note": "catalog-name phrasing" },
+    { "prompt": "I want a new Fable skill for accessibility audits — set it up", "expect": "trigger", "note": "indirect: set up a new skill" },
+    { "prompt": "Scaffold skills/threat-modeler from the template and fill it in", "expect": "trigger", "note": "template-copy phrasing" },
+    { "prompt": "Write a SKILL.md folder for API design following our authoring guide", "expect": "trigger", "note": "indirect: SKILL.md folder" },
+    { "prompt": "Start the next Tier 1 skill: test-strategist", "expect": "trigger", "note": "catalog tier phrasing" },
+    { "prompt": "We need a skill that generates runbooks — take it from scope to validation", "expect": "trigger", "note": "end-to-end authoring" },
+    { "prompt": "Draft the description and evals for a brand-new skill on release management", "expect": "trigger", "note": "authoring sub-artifacts of a NEW skill" },
+    { "prompt": "Turn the template into a working code-reviewer skill", "expect": "trigger", "note": "template-based creation" },
+    { "prompt": "Add sql-optimizer to skills/ and run both validators on it", "expect": "trigger", "note": "create + validate flow" },
+    { "prompt": "Create a skill for user story writing, including sources and trigger evals", "expect": "trigger", "note": "full deliverable list" },
+    { "prompt": "Re-verify the library sources", "expect": "no-trigger", "note": "owned by library-maintainer" },
+    { "prompt": "Check for stale skills — anything past 90 days?", "expect": "no-trigger", "note": "owned by library-maintainer (staleness sweep)" },
+    { "prompt": "Bump the version of prd-writer and update the changelog", "expect": "no-trigger", "note": "owned by library-maintainer (version bump)" },
+    { "prompt": "Deprecate the phase0-canary skill", "expect": "no-trigger", "note": "owned by library-maintainer (deprecation)" },
+    { "prompt": "Update the description of the existing code-reviewer skill", "expect": "no-trigger", "note": "owned by library-maintainer (existing skill edit)" },
+    { "prompt": "Create a new React component for the settings page", "expect": "no-trigger", "note": "unrelated: 'create a new' but not a skill" },
+    { "prompt": "How do I install a Fable skill into my Cursor project?", "expect": "no-trigger", "note": "unrelated: install question, see PER-HARNESS-SETUP" }
+  ],
+  "_authoring_note": "Near-miss set covers library-maintainer (the only sibling named in the description boundary) plus unrelated lookalikes."
+}

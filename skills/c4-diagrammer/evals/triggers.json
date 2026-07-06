@@ -1,0 +1,25 @@
+{
+  "skill": "c4-diagrammer",
+  "cases": [
+    { "prompt": "Draw a C4 diagram of our system", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Give me a context diagram for the order service", "expect": "trigger", "note": "context diagram keyword" },
+    { "prompt": "Create a container diagram of our system", "expect": "trigger", "note": "container diagram keyword" },
+    { "prompt": "Diagram this architecture", "expect": "trigger", "note": "direct trigger phrase" },
+    { "prompt": "Make a component diagram of the billing service internals", "expect": "trigger", "note": "component level" },
+    { "prompt": "Show a dynamic diagram of the checkout flow across our containers", "expect": "trigger", "note": "dynamic view" },
+    { "prompt": "Sketch a system landscape diagram of all our platforms", "expect": "trigger", "note": "landscape view" },
+    { "prompt": "Visualize who talks to what in this codebase as a diagram", "expect": "trigger", "note": "indirect, structure viz" },
+    { "prompt": "I need a Mermaid diagram of our microservices and their databases", "expect": "trigger", "note": "mermaid + architecture" },
+    { "prompt": "Turn this architecture description into C4 diagrams", "expect": "trigger", "note": "conversion request" },
+    { "prompt": "Draw the system context: users, our app, and the external payment provider", "expect": "trigger", "note": "context elements listed" },
+    { "prompt": "Our container diagram is stale — regenerate it from the current repo", "expect": "trigger", "note": "update existing diagram" },
+    { "prompt": "Add technology labels and a legend to this C4 container diagram", "expect": "trigger", "note": "notation cleanup" },
+    { "prompt": "Diagram how the API gateway, services and queue interact", "expect": "trigger", "note": "indirect container-level" },
+    { "prompt": "Write an architecture document for this repository", "expect": "no-trigger", "note": "owned by architecture-doc-writer" },
+    { "prompt": "Document our system architecture with arc42", "expect": "no-trigger", "note": "owned by architecture-doc-writer" },
+    { "prompt": "Draw an ER diagram of our database schema", "expect": "no-trigger", "note": "owned by data-modeler (future)" },
+    { "prompt": "Model the entities and relations for the customer tables", "expect": "no-trigger", "note": "owned by data-modeler (future)" },
+    { "prompt": "Record the decision to adopt Kafka as an ADR", "expect": "no-trigger", "note": "owned by adr-writer" },
+    { "prompt": "Make a Gantt chart of the project timeline", "expect": "no-trigger", "note": "unrelated diagram type" }
+  ]
+}

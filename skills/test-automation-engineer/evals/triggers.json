@@ -1,0 +1,25 @@
+{
+  "skill": "test-automation-engineer",
+  "cases": [
+    { "prompt": "Write automated tests for the payment service", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Our tests are flaky, can you fix them?", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Help me with integration test setup for the repository layer", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Write unit tests for this parser, including edge cases", "expect": "trigger", "note": "unit tests" },
+    { "prompt": "This test passes locally but fails in CI randomly - diagnose it", "expect": "trigger", "note": "flakiness diagnosis" },
+    { "prompt": "Should this be a unit test or an end-to-end test?", "expect": "trigger", "note": "pyramid layer choice" },
+    { "prompt": "We have way too many Selenium tests and hardly any unit tests - rebalance our suite", "expect": "trigger", "note": "ice-cream cone rebalance" },
+    { "prompt": "Add tests for this bug so it can't regress", "expect": "trigger", "note": "regression test writing" },
+    { "prompt": "Our test suite is order-dependent - tests fail when run in parallel", "expect": "trigger", "note": "isolation problem" },
+    { "prompt": "How should I manage test data for these database tests?", "expect": "trigger", "note": "test data management" },
+    { "prompt": "Rewrite these tests to Arrange-Act-Assert with better names", "expect": "trigger", "note": "structure and naming" },
+    { "prompt": "There are sleep(5) calls all over our async tests - clean that up", "expect": "trigger", "note": "async wait remediation" },
+    { "prompt": "Mock or real database for testing this DAO? Set it up either way", "expect": "trigger", "note": "doubles vs real deps" },
+    { "prompt": "Write a test plan for the checkout feature", "expect": "no-trigger", "note": "owned by test-strategist" },
+    { "prompt": "What should we test before the release, and what can we skip?", "expect": "no-trigger", "note": "owned by test-strategist" },
+    { "prompt": "Design the CI pipeline stages and gates for our repo", "expect": "no-trigger", "note": "owned by cicd-pipeline-designer" },
+    { "prompt": "Walk me through building this feature test-first with red-green-refactor", "expect": "no-trigger", "note": "owned by tdd-developer" },
+    { "prompt": "Review this code before I merge it", "expect": "no-trigger", "note": "owned by code-reviewer" },
+    { "prompt": "Why did last night's deployment fail?", "expect": "no-trigger", "note": "unrelated - incident, not tests" },
+    { "prompt": "Explain the difference between verification and validation", "expect": "no-trigger", "note": "concept question, no tests to write" }
+  ]
+}

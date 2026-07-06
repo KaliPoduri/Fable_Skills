@@ -1,0 +1,26 @@
+{
+  "skill": "tdd-developer",
+  "cases": [
+    { "prompt": "Implement this feature with TDD", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Let's build the discount calculator test-first", "expect": "trigger", "note": "test-first keyword" },
+    { "prompt": "Write the failing test first, then make it pass", "expect": "trigger", "note": "failing-test-first phrasing" },
+    { "prompt": "Add pagination to the products endpoint using red-green-refactor", "expect": "trigger", "note": "loop name" },
+    { "prompt": "I want to TDD this new validation rule", "expect": "trigger", "note": "TDD as verb" },
+    { "prompt": "Start with a test list for the CSV parser, then drive it out one test at a time", "expect": "trigger", "note": "test list technique" },
+    { "prompt": "We already know the cause is the off-by-one in the loop bound — pin it with a failing test and fix it", "expect": "trigger", "note": "bugfix with known cause" },
+    { "prompt": "Use triangulation to generalize this faked return value", "expect": "trigger", "note": "triangulation keyword" },
+    { "prompt": "Drive the new API client from unit tests, tests before code", "expect": "trigger", "note": "tests-before-code phrasing" },
+    { "prompt": "Do this kata strictly red, green, refactor", "expect": "trigger", "note": "loop spelled out" },
+    { "prompt": "Implement the password strength checker; I want to see each test fail before you write the code", "expect": "trigger", "note": "watch-it-fail phrasing" },
+    { "prompt": "Add a regression test that reproduces this confirmed rounding bug, then apply the fix", "expect": "trigger", "note": "regression-test-first bugfix" },
+    { "prompt": "Build the rate limiter the Kent Beck way: smallest step to green each time", "expect": "trigger", "note": "indirect, method by author name" },
+    { "prompt": "Clean up this function without changing what it does", "expect": "no-trigger", "note": "owned by refactoring-expert" },
+    { "prompt": "This method is 300 lines long — refactor it", "expect": "no-trigger", "note": "owned by refactoring-expert" },
+    { "prompt": "The app crashes intermittently and we have no idea why — investigate", "expect": "no-trigger", "note": "owned by systematic-debugger (cause unknown)" },
+    { "prompt": "Figure out why this test only fails on CI", "expect": "no-trigger", "note": "owned by systematic-debugger (diagnosis)" },
+    { "prompt": "Run the existing test suite and summarize the results", "expect": "no-trigger", "note": "unrelated: test execution, no development" },
+    { "prompt": "Write API documentation for the auth module", "expect": "no-trigger", "note": "unrelated: documentation" },
+    { "prompt": "Make this database query faster", "expect": "no-trigger", "note": "unrelated: performance work" }
+  ],
+  "_authoring_note": "13 should-trigger + 7 near-miss/no-trigger; includes one near-miss per sibling named in the description (refactoring-expert, systematic-debugger)."
+}

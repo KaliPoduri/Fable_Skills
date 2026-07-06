@@ -1,0 +1,26 @@
+{
+  "skill": "security-code-reviewer",
+  "cases": [
+    { "prompt": "Do a security review of this pull request before we merge.", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Check this login handler for vulnerabilities.", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "Is this query string concatenation SQL injection? If so, fix it.", "expect": "trigger", "note": "injection + fix" },
+    { "prompt": "Review src/api for XSS and CSRF issues.", "expect": "trigger", "note": "category keywords" },
+    { "prompt": "I think we hardcoded an API key somewhere in the config loader — find and fix any secrets in code.", "expect": "trigger", "note": "secrets in code" },
+    { "prompt": "Audit this file upload endpoint for security problems.", "expect": "trigger", "note": "indirect, endpoint audit" },
+    { "prompt": "Does this webhook fetcher have an SSRF hole?", "expect": "trigger", "note": "SSRF keyword" },
+    { "prompt": "We're using pickle on data from the queue — is that safe? Review the deserialization code.", "expect": "trigger", "note": "insecure deserialization" },
+    { "prompt": "Check whether our password hashing and token generation are cryptographically sound.", "expect": "trigger", "note": "crypto misuse" },
+    { "prompt": "Can users access other users' orders by changing the ID in this route? Review the authorization.", "expect": "trigger", "note": "IDOR / authz" },
+    { "prompt": "Run an OWASP Top 10 review on the payments module.", "expect": "trigger", "note": "standard name" },
+    { "prompt": "Give me CWE-tagged security findings with fixes for this diff.", "expect": "trigger", "note": "output-shaped request" },
+    { "prompt": "Make sure nothing sensitive is being written to the logs in this service.", "expect": "trigger", "note": "logging failures" },
+    { "prompt": "Harden this Express route: validate inputs at the trust boundary and fix anything exploitable.", "expect": "trigger", "note": "input validation phrasing" },
+    { "prompt": "We haven't written any code yet — help me threat model the new payments architecture.", "expect": "no-trigger", "note": "owned by threat-modeler (design-stage)" },
+    { "prompt": "Review this PR for readability, naming, and test coverage.", "expect": "no-trigger", "note": "owned by code-reviewer (non-security review)" },
+    { "prompt": "Which of our npm dependencies have known CVEs right now?", "expect": "no-trigger", "note": "owned by dependency-auditor (live CVEs, offline-impossible)" },
+    { "prompt": "Our chatbot can be prompt-injected into leaking its system prompt — review the LLM pipeline.", "expect": "no-trigger", "note": "owned by llm-app-security-reviewer" },
+    { "prompt": "Draw a data flow diagram and enumerate STRIDE threats for the design doc.", "expect": "no-trigger", "note": "owned by threat-modeler" },
+    { "prompt": "Why is this endpoint slow? Profile it and speed it up.", "expect": "no-trigger", "note": "unrelated (performance)" },
+    { "prompt": "Write unit tests for the parser module.", "expect": "no-trigger", "note": "unrelated" }
+  ]
+}
