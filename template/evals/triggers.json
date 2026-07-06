@@ -1,0 +1,10 @@
+{
+  "skill": "skill-name-here",
+  "cases": [
+    { "prompt": "<clear should-trigger prompt>", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "<varied should-trigger phrasing>", "expect": "trigger", "note": "indirect" },
+    { "prompt": "<near-miss that belongs to sibling skill X>", "expect": "no-trigger", "note": "owned by <sibling-skill>" },
+    { "prompt": "<unrelated request>", "expect": "no-trigger", "note": "unrelated" }
+  ],
+  "_authoring_note": "Target ~20 cases: varied should-trigger + near-miss should-NOT-trigger, including every sibling skill named in the description boundary."
+}

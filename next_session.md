@@ -1,15 +1,14 @@
 # next_session.md
 
-Task: IMPLEMENT PLAN.md (final v3) — Fable Skills library, 67 skills (65 lifecycle + 2 meta), Agent Skills/SKILL.md format, Copilot-first.
-Status: Planning complete (PlanGenie + 2 council rounds, committed). Implementation NOT started.
-Current phase: Phase 0 — USER must run in-org go/no-go (PLAN.md §5): (1) manual-copy a throwaway skill → triggers in org VS Code Copilot Chat? (2) gh skill install works (gh ≥2.90)? (3) Python script runs; pptx/docx libs allowed?
-If Phase 0 passed → Phase A: scaffold repo per PLAN.md §2.2 tree; write AUTHORING-GUIDE, PER-HARNESS-SETUP, COMPATIBILITY matrix, template/, CI validator, eval harness; set provisional eval thresholds; finalize packs with user; build skill-creator + library-maintainer. Then FIRST-5 GATE (user review) before mass generation.
-Key decisions (details in PLAN.md):
-- skills/<name>/ source tree; consumers install to .agents/skills/ (manual copy default until gh skill proven).
-- Description ≤500 chars, triggers+negative boundary in first 250; body <500 lines; imperative body / third-person description.
-- Every skill: README (per-harness usage), references/SOURCES.md (version+URL+last-verified), evals/, one-line constraints; scripts stdlib-only, no network, Windows-tested.
-- Security gate: no allowed-tools pre-approval; user reviews every script-bearing skill.
-- Privacy: build/evals on this personal machine, library content only; org side offline.
-Rules for implementer: keep implementation-notes.md (decisions + Deviations); verify [CANDIDATE] before use; raise [OPEN] with user, never guess; [CONFIRMED] (user approved) tool/version claims still need verification.
-Known issues: [OPEN] list in PLAN.md §7. Repo pushed to github.com/KaliPoduri/Fable_Skills.
-Handoff artifacts: PLAN.md (authoritative), UNKNOWNS.md, progress.md, council/LOG.md.
+Task: IMPLEMENT PLAN.md (final v3) — Fable Skills, 67 skills, Agent Skills format, Copilot-first.
+Status: Phase A ~70% done. Phase 0 kit READY — USER runs phase0/PHASE0-CHECKLIST.md in-org (canary at skills/phase0-canary, throwaway; delete both after gate).
+Done this session: scaffold (docs/, template/, tools/), AUTHORING-GUIDE (provisional eval thresholds §10), COMPATIBILITY, PER-HARNESS-SETUP, root README catalog+draft packs, LICENSE/CHANGELOG/VERIFICATION-LOG/.gitignore, tools/validate_skills.py (library policy) — all validated.
+Verified: skills-ref 0.1.1 PROVEN (.venv, `agentskills validate` → Valid skill); validator PASS incl. Windows --self-test; build machine Python 3.13.7, pptx/docx importable.
+Next steps (Phase A remainder):
+1. Build meta skills: skill-creator (uses template/, enforces AUTHORING-GUIDE) + library-maintainer.
+2. Per-skill effort estimate to reality-test Phase B (PLAN §5).
+3. Finalize pack composition with USER (draft in README, marked [OPEN]).
+4. When user brings Phase 0 results → log in implementation-notes + VERIFICATION-LOG, flip PER-HARNESS-SETUP install line, decide gh-vs-manual + pptx/docx, delete phase0/ + canary.
+Then FIRST-5 GATE (user review vs provisional thresholds) before mass generation.
+Rules: implementation-notes.md has Decisions/Deviations — keep logging; verify [CANDIDATE]+[CONFIRMED-tool-claims] before use; raise [OPEN] with user.
+Convention: work on master; agentskills validates spec, tools/validate_skills.py validates library policy; template/ excluded from CI.

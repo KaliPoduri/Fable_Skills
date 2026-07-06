@@ -1,0 +1,14 @@
+INTERNAL USE LICENSE
+
+Copyright (c) 2026 Kali Poduri.
+
+This repository and its contents (the "Library") are for internal use by
+the owner and the owner's team only. No license is granted to copy,
+distribute, sublicense, or use the Library outside that team without the
+owner's written permission.
+
+The Library distills third-party standards and publications (OWASP, ISTQB,
+arc42, and others); those remain the property of their respective owners
+and are cited in each skill's references/SOURCES.md.
+
+THE LIBRARY IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
