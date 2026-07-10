@@ -1,11 +1,8 @@
 # next_session.md
 
-Task: IMPLEMENT PLAN.md (v3, with user-directed deviations) — Fable Skills library.
-Status: Tier 1 (21) + meta (2) = 23 skills AUTHORED, source-verified, both validators green (tools/validate_skills.py 23/23 PASS; agentskills validate 0 failures). Consistency pass done, 6 findings fixed. Committed + pushed.
-Deviations in force (implementation-notes.md): Phase 0 WAIVED; manual-copy-only distribution (no gh skill docs); no scripts in any skill; first-5 gate → post-hoc user review.
-Next steps (pick per user demand):
-1. USER: review authored skills at leisure; install a pack in a real project (copy folders to .agents/skills/) and smoke-test triggering in org Copilot Chat — first real-world proof.
-2. Eval EXECUTION not done: trigger/output evals authored per skill but never run. Stand up Claude Code headless proxy runner if quality measurement wanted (AUTHORING-GUIDE §10 thresholds are provisional).
-3. Tier 2 (30 skills) on demand — same subagent pipeline worked well (batch 2-3 skills/agent, verify sources, validator loop, consistency pass, quote YAML-risky descriptions).
-4. Remaining unverified standards (Tier 2/3 only): ISO 25010:2023, PMBOK 7, OpenSLO.
-Conventions: master branch; validator = tools/validate_skills.py (library policy, now catches unquoted ':' YAML) + .venv agentskills CLI (spec); template/ excluded from CI; VERIFICATION-LOG.md rows per verification event.
+Task: PlanGenie run — Spark ETL Assistant Suite plan (3 skills: etl-knowledge-builder, etl-assistant, spark-performance-advisor + sharded KB). NOT the old skills-library plan (archived at archive/2026-06-skills-library-plan/; its status: 23 skills authored/validated/pushed, eval execution pending).
+Status: PLAN.md v3 written. Council round 1 DONE (verdicts in council/LOG.md: R1–R9+R11 accepted, R10 rejected). Round 2 cross-examination packets/dispatch next.
+Key decisions: Copilot-only harness (org has no Claude Code); ops deferred, devs only; Skill C built first (M0 spike → M1 C → M2 KB pilot → M3 B); authoritative job seed; redaction + PR playbook governance; AQE default-on only since Spark 3.2 → minor version blocking (U1).
+Council mechanics: council skill at ~/.claude/skills/council/SKILL.md; Codex via codex-companion.mjs task --background + ONE background poll loop; Claude seat = general-purpose agent, model fable, reads packet file. 5 rounds max (PlanGenie override). Cross-exam carry-over points listed at end of council/LOG.md.
+Next steps: (1) write round-2 per-seat packets (full PLAN v3 + other seat's carried points, verdict instruction AGREE/AGREE WITH CHANGE/REBUT); (2) dispatch both seats; (3) merge, user arbitrates via AskUserQuestion (batched multi-select, pros/cons in question text — user cannot see mid-turn text before tool calls); (4) commit each round; (5) Phase 5 final PLAN.md with implementing-agent block.
+Known issues: user answers with own words → echo-check required (PlanGenie rule 2). All Spark config specifics stay [CANDIDATE] until authored against docs.

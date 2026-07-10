@@ -1,168 +1,133 @@
 BEGIN COUNCIL REVIEW PACKET
+
 You are a critical reviewer of a software project plan. You have no other
 context; everything you need is below.
+
 Critique this plan on: (1) feasibility, (2) completeness — what unknowns did
 the planner miss?, (3) risks, (4) simpler alternatives, (5) fact-hunt:
 actively try to refute every named tool, library, API, version, price,
 product capability, or legal/compliance claim — flag anything you cannot
 verify or suspect is made up.
+
 Reply as a numbered list of major concerns, then minor concerns, then
 concrete refinements — most important first. Be specific and brief.
 
-Context for tags used in the plan: [USER] = the project owner said it in an
-interview; [CONFIRMED] = owner-approved or verified with a real tool (noted
-which); [CANDIDATE] = unverified suggestion that must be checked before use;
-[OPEN] = unresolved question.
+Background for tags used in the plan: `[USER]` = the requesting user said it
+in a planning interview; `[CONFIRMED]` = user-approved or verified (basis
+noted); `[CANDIDATE]` = planner proposal, must be verified before use;
+`[OPEN]` = unresolved question. Untagged lines are headings/formatting.
 
 --- PLAN BEGINS ---
-# PLAN.md — Fable Skills: End-to-End Software Engineering Skill Library
 
-Draft v1 (Phase 3). Tags: `[USER]` said in interview · `[CONFIRMED]` user-approved or tool-verified (noted which) · `[CANDIDATE]` unverified suggestion — verify before use · `[OPEN]` unresolved.
+# PLAN.md — Spark ETL Assistant Suite (draft v2, entering council review)
 
-## 1. Project summary
+Tags: `[USER]` = said in interview · `[CONFIRMED]` = user-approved or verified (basis noted) · `[CANDIDATE]` = proposal, verify before use · `[OPEN]` = unresolved.
+Register: UNKNOWNS.md. Previous plan archived at `archive/2026-06-skills-library-plan/`.
 
-- [USER] Build a complete, exhaustive library of AI-agent skills covering everything needed to complete a software engineering project end to end — artifact skills (PRD, design docs, stories, slide decks…) and expert-role skills (code reviewer, OWASP security scanner, SQL optimizer, architect…).
-- [USER] Primary harness: GitHub Copilot (user's surface: VS Code Copilot Chat); design must be harness/platform-agnostic.
-- [USER] Audience: the user's team. Repo will be private.
-- [USER] Success criteria: (1) right skill triggers at the right time, (2) output quality beats raw Copilot, (3) team adoption, (4) full lifecycle coverage.
+## 1. What we're building
 
-## 2. Foundational decisions (hardest to change later)
+- [USER] Two capabilities for Spark-newbie users: (1) a codebase deep-understanding tool for root-cause analysis of job failures, how-it-works questions, and performance advice on repo artifacts; (2) an interactive Spark log/physical-plan performance advisor.
+- [USER] Harness: GitHub Copilot Chat (VS Code, org license) ONLY — the org does not have Claude Code. Org policy allows code and logs in it.
+- [USER] Ecosystem: 3–10 repos, hundreds to ~2000 files — SQL, shell scripts, Python/PySpark, scheduler configs, config/params files. Spark 3.x.
+- [USER] Users: the dev team (repos cloned, Spark newbies). Support/ops are out of scope for now (deferred by user).
+- [USER] Success: #1 correct root causes in minutes not hours; #2 measurable job speedups from the advisor.
+- [USER] Constraints: advise-only (never auto-change code), never touch production, no hard deadline. A non-prod environment exists for safe testing.
 
-### 2.1 Format: Agent Skills open standard
-- [CONFIRMED] (verified via web search, research subagent, July 2026) Each skill is a folder with `SKILL.md` (YAML frontmatter: `name` ≤64 chars lowercase-hyphen matching folder name; `description` ≤1024 chars) per the agentskills.io specification.
-- [CONFIRMED] (verified via web search) GitHub Copilot supports Agent Skills GA since Dec 2025/Jan 2026 across VS Code, Copilot CLI, coding agent, and code review; the same format is read by Claude Code, Cursor, Codex, and Antigravity — this satisfies both "Copilot priority" and "platform-agnostic" with one artifact.
-- [CONFIRMED] (verified via web search) Portable frontmatter recipe: spec fields (`name`, `description`, `license`, `metadata`, `compatibility`) plus `user-invocable` / `disable-model-invocation` / `argument-hint` (honored by Copilot + Claude Code; unknown fields are ignored by other harnesses).
-- [CANDIDATE] Frontmatter `metadata: {version, last-verified}` used for per-skill versioning — verify harnesses tolerate the map before mass-applying.
+## 2. Packaging decision
 
-### 2.2 Repo layout
-- [CONFIRMED] (user approved) `F:\AI_Projects\Fable_Skills` is the single git repo, pushed to GitHub as a private repo; each skill is a plain subfolder.
-- [CANDIDATE] Skills live under a `skills/` parent directory (`skills/<skill-name>/`), matching anthropics/skills and awesome-copilot conventions and enabling `gh skill install <owner>/Fable_Skills <skill>`:
+- [CONFIRMED] (user approved) **Three Agent Skills in the existing Fable Skills library** — same repo, SKILL.md conventions, validators, source-verified references, evals, manual-copy distribution:
+  - Skill A `etl-knowledge-builder` — a developer runs it to (re)generate the knowledge base from the repos. Batch task, run rarely.
+  - Skill B `etl-assistant` — the everyday Q&A skill: paste an error → root cause; ask how a flow works; ask how to improve a repo's SQL/script. Reads the knowledge base.
+  - Skill C `spark-performance-advisor` — interactive tuning interview over physical plans / Spark UI evidence.
+  - Plus the **knowledge base** — the "deep understanding file", actually a small directory of markdown files (§3). Skill names are placeholders — rename freely.
+- [CONFIRMED] (verified against docs/COMPATIBILITY.md, read this session; source-verified 2026-07-06) GitHub Copilot in VS Code reads skills from `.agents/skills/` — the format runs natively in the org's only harness.
+- [CANDIDATE] Alternatives rejected: an MCP server or RAG app needs hosting, auth, and daily-coder maintenance the builder doesn't want; a Claude-Code subagent fails the Copilot-only requirement; a plain prompt document can't carry the reference files and chunking protocol these tools need.
+- [CANDIDATE] Rationale for splitting "Tool 1" into Skills A+B: generation and consumption have different audiences, triggers, and instructions; one skill doing both would bloat every invocation.
+- [CONFIRMED] (per repo handoff notes read this session) Library convention "no scripts inside skills" applies — all three are pure markdown; the LLM does the work at runtime.
 
-```
-Fable_Skills/
-├── README.md                  # catalog: table of all skills, install instructions
-├── LICENSE                    # [OPEN] license choice (private repo; still recommended)
-├── CHANGELOG.md
-├── docs/
-│   ├── PER-HARNESS-SETUP.md   # master setup guide (Copilot VS Code, Cursor, Claude Code, Antigravity, Codex)
-│   └── AUTHORING-GUIDE.md     # the standards below, for future skills
-├── skills/
-│   └── <skill-name>/
-│       ├── SKILL.md
-│       ├── README.md          # per-skill setup+usage per harness (user requirement)
-│       ├── references/        # checklists, deep guidance (one level deep)
-│       ├── assets/            # document templates
-│       ├── scripts/           # Python helpers (only where needed)
-│       └── evals/             # trigger + output test cases
-└── template/                  # blank skill scaffold used by skill-creator
-```
+## 3. The knowledge base (data model — hardest to change, decided first)
 
-### 2.3 Authoring standards (applied to every skill)
-- [CONFIRMED] (verified via web search — agentskills.io, Anthropic engineering, current 2026) Description = what it does + when to use + trigger keywords + negative boundary ("Not for X — use skill Y"), third person, key use case first; body <500 lines / <5k tokens, imperative voice; references one level deep with explicit load conditions ("Read references/x.md when …"); output templates over prose; checklists for multi-step workflows.
-- [CONFIRMED] (user approved) Depth model: concise SKILL.md core + reference files (checklists, templates, examples) loaded only when needed.
-- [CONFIRMED] (user approved) Each skill cites its authoritative sources + a last-verified date (in a Sources section of SKILL.md or references/).
-- [CONFIRMED] (user approved) Helper scripts (Python) included where text alone can't do the job (e.g., PPTX generation).
-- [CONFIRMED] (verified via web search) Script rules: stdlib-only Python preferred; non-interactive; forward slashes in all paths; invoked as `python3 scripts/x.py`; actionable error messages; bounded output; `--dry-run` for anything destructive.
-- [CONFIRMED] (user approved) Hard constraint baked into every skill: never instruct the agent to browse/download from/send data to the external internet; no paid tools/services; company-data privacy respected; English only.
-- [CONFIRMED] (user approved) Technology-agnostic guidance with language-specific notes where it matters; Scrum-based Agile assumed for process skills (Kanban variations noted).
-- [CANDIDATE] PPTX/DOCX generation scripts: if pure-stdlib is impractical, use `python-pptx`/`python-docx` as pre-installed offline dependencies — verify these libraries are permitted/installable inside the org before relying on them; fallback is generating Markdown/HTML content the user converts.
+- [USER] Must be chunk-navigable and efficient for LLM parsing — not one huge file; the consuming skill must know how to manage chunks.
+- [CANDIDATE] Layout (a directory, proposed name `etl-knowledge/`):
 
-### 2.4 Per-skill README (user requirement)
-- [CONFIRMED] (user approved) Every skill folder contains README.md: what the skill does, example prompts, and setup + usage for each harness (GitHub Copilot in VS Code, Cursor, Antigravity, Claude Code, and similar).
-- [CONFIRMED] (verified via web search) Verified per-harness install paths to document: Copilot VS Code (`.github/skills/`, `.claude/skills/`, `.agents/skills/`; personal `~/.copilot/skills/`), Claude Code (`.claude/skills/`, `~/.claude/skills/`), Cursor (`.cursor/skills/`, `.agents/skills/` + compat scan of `.claude/skills/`), Codex (`.agents/skills/`, `~/.agents/skills/`), Antigravity (`.agents/skills/`; global `~/.gemini/config/skills/` — verified via community article, not official docs), plus `gh skill install` (gh ≥2.90.0) for any of them.
-- [CANDIDATE] To avoid 50 near-identical READMEs drifting: per-skill README covers skill-specific usage and links to `docs/PER-HARNESS-SETUP.md` for the common install steps, while still including a short quick-install section inline so it works standalone.
+  | File | Contents | Size budget |
+  |---|---|---|
+  | `INDEX.md` | Ecosystem overview; repo table; job inventory (job → schedule → entry script → repo → 1-line purpose → chunk link); routing guide ("error mentions table T → lineage.md; job J → jobs/J.md") | ~200 lines max |
+  | `jobs/<job>.md` | One per job/pipeline: plain-language flow narrative, entry points, tables/files read & written, key params and where set, upstream/downstream jobs, known failure points, `repo:path` pointers | ~400 lines max each |
+  | `lineage.md` | Table-level lineage: each table → producing jobs → consuming jobs | grows with tables |
+  | `glossary.md` | Org-specific terms, job families, table naming conventions, in newbie language | ~150 lines |
+  | `errors/playbook.md` | Error-pattern → confirmed root cause → fix, appended after each resolved incident (with user consent) — the tool's accumulating memory | grows over time |
+  | `meta/generation.md` | Which repos at which git commits, when generated, explicit coverage gaps ("could not trace X"), build-state checklist for resumable builds | small |
 
-## 3. Skill inventory (research-derived)
+- [CANDIDATE] **Pointers, not copies:** chunk files hold navigation, lineage, and narrative — never pasted code. The live repo stays the single source of truth for code; this is what makes the knowledge base BETTER than live grep (it holds cross-repo flow knowledge grep can't cheaply reconstruct) instead of a stale copy of what grep already does.
+- [CANDIDATE] **Staleness stamps:** every generated file records source commit hashes; the consuming skill compares stamps to the live repo and warns the user when the knowledge base is behind.
+- [CANDIDATE] **Chunk protocol** (written into Skill B): (1) always read `INDEX.md` first, nothing else; (2) open at most the 1–3 chunk files the routing guide points to; (3) follow pointers into live code before stating any conclusion about code; (4) never bulk-read the whole knowledge base.
+- [USER] Regeneration: on demand, by a developer, when they know things changed.
+- [CANDIDATE] Home: a dedicated small repo (or a folder in the primary workspace) that devs clone alongside the code repos — VS Code multi-root workspace makes both visible to Copilot. Decide at M1.
 
-[USER] The user's examples were a starting point; research determines the exhaustive end-to-end list, and skill files are built for all of it.
-[CANDIDATE] The full inventory below came from subagent research (July 2026) with source-version verification; individual skills await user/council review. 50 skills = 48 lifecycle skills + 2 meta skills. [CONFIRMED] (user approved) Building all 50 in tier order (Tier 1 → 2 → 3).
+## 4. Skill A — `etl-knowledge-builder` (generator)
 
-### Meta (build first — they build the rest)
-| Skill | Kind | Purpose |
-|---|---|---|
-| `skill-creator` | Role | [USER-required] Takes user requirements → produces a new skill folder (SKILL.md, README, references, evals) conforming to this library's standards |
-| `library-maintainer` | Role | [CONFIRMED] (user approved) Re-verifies sources, updates stale content, runs validation; documents review cadence. Web re-verification runs outside the org environment |
+- [CANDIDATE] Flow: (1) confirm with the runner which repos and where cloned; (2) per repo, read scheduler configs FIRST to enumerate jobs and dependencies (the interview confirmed these exist in the repos), then trace each job: entry script → SQL/Python it calls → tables read/written → params consumed; (3) write `jobs/` chunks, then `lineage.md`, `glossary.md`, `INDEX.md` last; (4) stamp commits and list coverage gaps honestly in `meta/generation.md`.
+- [USER] Builds run in GitHub Copilot Chat — the org's only harness.
+- [CANDIDATE] **Resumable builds:** Copilot Chat sessions may be too short for a full 10-repo build in one sitting — `meta/generation.md` keeps a build-state checklist (repo/job done or pending) so a build continues across sessions instead of restarting.
+- [CANDIDATE] Incremental mode: regenerate only the chunks belonging to one changed repo, refresh `INDEX.md`/`lineage.md`; keeps on-demand regen cheap.
+- [CANDIDATE] Generation is LLM-driven (the agent reads and traces; no parser program to maintain) — fits a builder who codes a little; cost is long agent sessions per full build (risk R1, mitigated by per-repo batches + resumable builds).
 
-### Product & Discovery (5)
-`prd-writer` (Tier 1) · `product-vision-writer` (2) · `product-roadmap-writer` (2) · `persona-writer` (3) · `user-story-mapper` (2)
+## 5. Skill B — `etl-assistant` (everyday Q&A + RCA)
 
-### Agile Process — Scrum (7)
-`epic-story-breakdown` (1) · `user-story-writer` (1, owns INVEST + Gherkin rules) · `agile-estimator` (2) · `sprint-facilitator` (2) · `retrospective-facilitator` (2) · `backlog-refiner` (2) · `definition-of-done-writer` (3)
+- [USER] Three jobs in one skill (from original request): error → root cause + solution; how does functionality/flow X work; how to improve this SQL/script.
+- [CANDIDATE] **RCA flow:** (1) take the pasted error (and job name if known; full log file if available — the interview confirmed both exist); (2) route via `INDEX.md` → job chunk → follow pointers into LIVE code; (3) check staleness stamp, warn if behind; (4) classify cause as code / data / infra; (5) answer in a fixed template: Root cause (plain language) → Evidence (file:line) → Category → Proposed fix (advise-only) → How to verify safely → Confidence (high/medium/low) and what would raise it.
+- [USER] When the cause is NOT in the code: say so plainly, explain why, and give step-by-step checks the user can run (data file, upstream job, cluster).
+- [CANDIDATE] After a root cause is CONFIRMED by the user, offer to append the case to `errors/playbook.md` — future incidents with matching patterns resolve faster.
+- [CANDIDATE] **Explain flow:** route to job chunk(s), narrate the flow in plain language, cite file pointers for the curious.
+- [CANDIDATE] **Perf-advice flow (static):** for "make this SQL/script better" questions, analyze the artifact plus its context from the knowledge base (data volumes unknown → ask), and hand off to Skill C when the user has runtime evidence (a plan, UI timings). Boundary: Skill B advises from code, Skill C from runtime evidence.
+- [USER] Ops triage mode: deferred — out of scope for now.
 
-### Architecture & Design (9)
-`architecture-doc-writer` (1, arc42 v9 + C4) · `c4-diagrammer` (1, Mermaid/PlantUML) · `adr-writer` (1, MADR 4.0.0) · `rfc-writer` (2) · `api-designer` (1, OpenAPI 3.2.0 + RFC 9457) · `data-modeler` (2) · `threat-modeler` (1, STRIDE) · `design-reviewer` (2) · `tech-spike-planner` (3)
+## 6. Skill C — `spark-performance-advisor` (interactive tuning)
 
-### Implementation (6)
-`tdd-developer` (1) · `refactoring-expert` (1) · `systematic-debugger` (1) · `coding-standards-writer` (3) · `git-workflow-expert` (1, Conventional Commits) · `code-documenter` (3)
+- [USER] Inputs users can obtain: physical plan text (copy-paste) and Spark UI access; full YARN logs also exist. Platform believed on-prem YARN [OPEN U1]; Spark 3.x confirmed.
+- [USER] Must interview the user back-and-forth in plain language before prescribing, then deliver: SQL optimization + specific config parameters for the specific scenario.
+- [CANDIDATE] **Intake interview** (one question at a time, newbie-phrased): which job, what symptom (slow / failing / out-of-memory), what evidence they have; if they lack it, TEACH how to fetch it (where the Spark UI is, how to get a plan) — fetch steps depend on platform verification [OPEN U1, U5].
+- [CANDIDATE] **Reference files** (each source-verified against official Spark 3.x docs at authoring time, per library convention): how to read a physical plan (what the common operators mean in plain words — joins, shuffles/Exchange, scans); diagnosis playbooks for the classic problems (data skew, memory spill, too many/too few partitions, wrong join strategy, small-files, missing filter pushdown); a config reference table (parameter → what it does in plain language → when to change → Spark 3.x notes, e.g. the adaptive query engine) — every named parameter and capability is [CANDIDATE] verify-before-use until authored against docs.
+- [CANDIDATE] **Output template:** Diagnosis (plain language, jargon defined on first use) → Why (evidence from their plan/UI) → Fix: SQL rewrite and/or config change → How to try it in the non-prod environment → How to measure the improvement → Confidence.
+- [USER] A non-prod environment exists — "try it safely" steps target it.
+- [USER] Advise-only; never executes anything against clusters.
 
-### Quality & Testing (6)
-`code-reviewer` (1, Google eng-practices; routes security/perf/SQL findings to sibling skills) · `test-strategist` (1, ISTQB v4.0.1) · `test-automation-engineer` (1) · `performance-tester` (2) · `performance-optimizer` (2) · `accessibility-auditor` (2, WCAG 2.2)
+## 7. Cross-cutting conventions (all three skills)
 
-### Security (5)
-`security-code-reviewer` (1, OWASP Top 10:2025 + Code Review Guide 2.0 + CWE) · `security-requirements-writer` (2, OWASP ASVS 5.0.0) · `dependency-auditor` (2, offline: reasons over lockfiles/SBOMs — no live CVE lookup, limitation stated in skill) · `secrets-hygiene-auditor` (2) · `llm-app-security-reviewer` (3, OWASP LLM Top 10 2025)
+- [USER] Newbie contract: no unexplained jargon; every technical term defined in parentheses on first use; step-by-step instructions assume zero Spark knowledge.
+- [CANDIDATE] Honesty contract: every conclusion carries evidence and a confidence label; the skill says "I cannot tell from what I have" instead of guessing; staleness warnings are mandatory, not optional.
+- [CANDIDATE] Library conventions: SKILL.md + references/ + evals/ structure, both validators green, source-verified references with SOURCES.md, README per skill — as the existing 23 skills do.
 
-### Data & Databases (3)
-`db-schema-designer` (2) · `sql-optimizer` (1) · `db-migration-planner` (2, expand-contract)
+## 8. Build order (no deadline — quality gates instead)
 
-### Delivery & Operations (10)
-`cicd-pipeline-designer` (1, DORA capabilities) · `deployment-strategist` (2) · `release-manager` (1, SemVer + Keep a Changelog) · `iac-reviewer` (3) · `observability-engineer` (2, OpenTelemetry concepts) · `slo-designer` (2, SRE Workbook) · `incident-responder` (2) · `postmortem-writer` (1) · `runbook-writer` (2) · `dora-metrics-analyst` (3)
+- [CANDIDATE] M1: knowledge-base format spec + Skill A; generate the knowledge base for ONE pilot repo in Copilot Chat; builder eyeballs it for accuracy. Gate: pilot INDEX + chunks judged accurate by someone who knows the pipeline; knowledge-base home decided.
+- [CANDIDATE] M2: Skill B; test against a handful of PAST failures whose true root cause is known. Gate: majority correctly diagnosed, zero confidently-wrong answers.
+- [CANDIDATE] M3: Skill C; test on one genuinely slow job end-to-end (advice applied by a human in the non-prod environment, effect measured). Gate: measured improvement or an honest "no safe improvement found".
+- [USER] Ops triage milestone: deferred (out of scope for now).
 
-### Management & Communication (5)
-`project-status-reporter` (2) · `slide-deck-builder` (2, owns deck content structure + PPTX script) · `meeting-notes-writer` (3) · `risk-register-writer` (2) · `estimation-doc-writer` (3)
+## 9. Challenges & Risks
 
-### Documentation (4)
-`readme-writer` (1) · `user-guide-writer` (2, Diátaxis) · `onboarding-guide-writer` (3) · `tech-writer` (2, editing role, owns no templates)
+- [CANDIDATE] R1 Generation cost/length: a full build over up to 10 repos spans multiple long Copilot Chat sessions. Mitigation: per-repo incremental builds, scheduler-configs-first tracing, resumable build-state checklist.
+- [CANDIDATE] R2 Staleness: regen-on-demand means the knowledge base WILL lag the repos. Mitigation: commit stamps + mandatory warnings + Skill B must verify in live code before concluding.
+- [CANDIDATE] R3 Confidently-wrong advice applied by newbies. Mitigation: evidence + confidence labels, advise-only, non-prod testing, M2/M3 gates test for it.
+- [CANDIDATE] R4 Copilot Chat agent limits: session length, context size, and per-session file-reading depth are undocumented — flows must assume short sessions and small context; chunk budgets and resumable builds exist for this.
+- [CONFIRMED] (compatibility doc read this session) R5 Skills format is preview-era and churns; paths and limits re-verified on breakage per library process.
+- [CANDIDATE] R6 Oversized inputs: physical plans and logs can exceed what a user can paste. Mitigation: skills teach extracting the relevant section; accept files placed in the workspace.
+- [CANDIDATE] R7 Knowledge base degenerating into a stale code copy. Mitigation: pointers-not-copies rule is a hard authoring rule for Skill A.
 
-### Overlap boundary rules (written into descriptions and bodies)
-- [CANDIDATE] `code-reviewer` routes, never duplicates: security → `security-code-reviewer`, performance → `performance-optimizer`, SQL → `sql-optimizer`; distinct finding-tag namespaces (REV-/SEC-/PERF-/SQL-).
-- [CANDIDATE] Security triad: `threat-modeler` = design-time · `security-requirements-writer` = gate checklist · `security-code-reviewer` = code-time findings.
-- [CANDIDATE] Data triad: `data-modeler` (logical) → `db-schema-designer` (physical) → `sql-optimizer` (queries); migrations only in `db-migration-planner`.
-- [CANDIDATE] Story chain: `prd-writer` → `user-story-mapper` → `epic-story-breakdown` → `user-story-writer`; only the last defines Gherkin/INVEST rules.
-- [CANDIDATE] Each sibling skill's description names its neighbors ("Not for X — use skill Y") and its evals include the sibling's prompts as should-NOT-trigger cases.
+## 10. Remaining Unknowns
 
-## 4. Quality & testing plan
+- [OPEN] U1 Platform verification: is it really on-prem Hadoop/YARN, and which Spark 3.x minor version? (Affects config advice and every fetch-instruction.)
+- [OPEN] U5 Exact log/plan/UI fetch instructions — blocked on U1.
+- [OPEN] U8 Copilot Chat practical limits (session length, context, agentic depth) — discovered empirically at M1; shapes chunk budgets.
+- Resolved this round: U4 (ops deferred), U6 (non-prod env exists), U7 (single harness now).
 
-- [CONFIRMED] (verified via web search — agentskills.io) Per skill: `skills-ref validate` format check; ~20 labeled trigger queries (should-trigger with varied phrasing + near-miss should-NOT-trigger); ≥3 output eval cases in `evals/evals.json` compared with-skill vs without-skill.
-- [CANDIDATE] CI (local script, no external services): validate frontmatter name/dir match, description length, forward-slash paths, presence of README/Sources/last-verified in every skill.
-- [CANDIDATE] Manual acceptance: user smoke-tests Tier-1 skills in VS Code Copilot Chat in the org environment before mass rollout to the team.
-- [OPEN] Whether the org's VS Code/Copilot policy enables Agent Skills, and which VS Code version the team runs (Stable-channel skill-loading bugs were reported early 2026).
-- [OPEN] Whether Python 3.11+ is available in the org environment for helper scripts.
+## 11. Assumptions register
 
-## 5. Build phases
+- All previous assumptions resolved: A1 no — Copilot Chat only (org has no Claude Code); A2 ops deferred, dev team targeted; A3 yes — non-prod env exists; A4 yes — Fable Skills library (packaging approved).
+- No unconfirmed assumptions currently registered.
 
-- [CANDIDATE] Phase A — Foundation: repo scaffold, git init + private GitHub repo, `docs/AUTHORING-GUIDE.md`, `docs/PER-HARNESS-SETUP.md`, `template/`, root README skeleton, CI validation script, then build `skill-creator` first and use it to generate the rest.
-- [CANDIDATE] Phase B — Tier 1 (18 skills incl. meta): each skill gets research-distilled content (from sources already gathered; any new web research happens outside the org), SKILL.md, README, references, assets, scripts where needed, evals; validate.
-- [CANDIDATE] Phase C — Tier 2 (22 skills), same recipe.
-- [CANDIDATE] Phase D — Tier 3 (10 skills) + `library-maintainer` cadence doc + final catalog polish + team rollout instructions.
-- [CANDIDATE] Build agent uses parallel subagents per category to draft skills, with a single reviewer pass for cross-skill consistency (terminology, boundary lines, tag namespaces).
-
-## 6. Challenges & Risks
-
-- [CANDIDATE] R1 Trigger dilution: 50 skills' descriptions all load into the agent's context list; Claude Code budgets ~1% of context and drops/truncates long listings; Codex caps at 8,000 chars; Copilot limits undocumented. Mitigation: tight descriptions, key use case first; consider advising teams to install per-project subsets rather than all 50.
-- [CANDIDATE] R2 Org policy blocks: Copilot Agent Skills could be disabled by org admin settings; Python may be unavailable. Mitigation: [OPEN] items verified by user in-org before Phase B completes.
-- [CANDIDATE] R3 Staleness: standards drift (OWASP, DORA, spec changes). Mitigation: last-verified dates + `library-maintainer` + [OPEN] cadence (quarterly proposed).
-- [CANDIDATE] R4 Overlap confusion: adjacent skills fire wrongly. Mitigation: boundary sentences in descriptions + near-miss evals.
-- [CANDIDATE] R5 Windows/POSIX drift: team members on different OSes; scripts must avoid backslash paths and exec-bit assumptions. Mitigation: authoring standards + CI check.
-- [CANDIDATE] R6 Content quality risk: LLM-generated skills without domain grounding produce generic advice. Mitigation: every skill distilled from the named authoritative sources, not from model memory alone; citations required.
-- [CANDIDATE] R7 Scale of effort: 50 deep skills (guides + templates + scripts + evals + READMEs) is a large build; risk of inconsistency and fatigue. Mitigation: phased tiers, template-driven generation via `skill-creator`, consistency reviewer pass.
-
-## 7. Remaining Unknowns
-
-- [OPEN] Org enables Copilot Agent Skills in VS Code? (user verifies in-org)
-- [OPEN] Python 3.11+ available in org? (user verifies)
-- [OPEN] `python-pptx`/`python-docx` permitted offline in org, or Markdown/HTML fallback needed?
-- [OPEN] License choice for the private repo.
-- [OPEN] Review cadence length (quarterly proposed, not confirmed).
-- [OPEN] Whether to advise per-project skill subsets vs installing all 50 (trigger-dilution tradeoff).
-- [OPEN] Exact `gh skill install` requirements for repo layout (skills/ folder convention inferred, not verified against gh docs).
-- [OPEN] Copilot-side listing/count limits for skills (none documented; absence unverified).
-- [OPEN] Antigravity setup steps rest on a community article, not official docs.
-- [OPEN] Standards versions not verified this session: Conventional Commits 1.0.0, SemVer 2.0.0, Keep a Changelog 1.1.0, ISO 25010:2023, PMBOK 7, OpenSLO version, CWE Top 25 2025, book editions — verify during authoring of the affected skills.
-
-## 8. Assumptions register
-
-- [CONFIRMED] (user approved) Teammates' setups match the user's: VS Code with Copilot, Agent Skills available, Python installed.
-- [CONFIRMED] (user approved) "Exhaustive" = the 50-skill inventory above, built in tier order (1 → 2 → 3).
-- [CONFIRMED] (user approved) The build is executed by AI coding agents following this plan phase by phase, with user review.
 --- PLAN ENDS ---
+
 END COUNCIL REVIEW PACKET

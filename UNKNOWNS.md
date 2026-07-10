@@ -1,68 +1,67 @@
-# UNKNOWNS.md — Four-Quadrant Register
+# UNKNOWNS.md — Spark Tooling Plan (PlanGenie register)
+
+Plan for: (1) codebase deep-understanding analyzer, (2) Spark log/plan performance advisor.
+Previous plan (skills library) archived at `archive/2026-06-skills-library-plan/`.
+Status: PLAN.md v3 — council round 1 done (R1–R9, R11 accepted; R10 rejected; see council/LOG.md). Round 2 cross-examination next.
+New opens from round 1: U9 scheduler type; U10 adoption plan; assumptions A5–A11 (agent-mode policy, multi-root discovery, repo visibility, scheduler-config completeness, history-server access, config-change scope, log sensitivity) — mostly resolved at M0 spike. U2/U3 note: resolved into PLAN §3 design (staleness stamps + scope statement; KB content = navigation/lineage/narrative, pointers not copies).
 
 ## Known knowns
-- [USER] The project: a complete, exhaustive set of AI-agent skills covering software engineering artifacts (PPTs, design docs, PRDs, features, stories) and roles (developer, code reviewer, OWASP security scanner, code optimizer, SQL optimizer, design architect, and more).
-- [USER] The named examples are a starting point; research determines the exhaustive inventory needed to complete a software engineering project end to end, and skill files are built for the full researched list.
-- [USER] Skills must encode current, globally-followed best practices and standards.
-- [USER] Primary target harness: GitHub Copilot; specifically VS Code Copilot Chat is the surface the user uses.
-- [CONFIRMED] (user approved) Skills should be harness/platform-agnostic in design, Copilot priority.
-- [USER] Must include a "skill creator" skill that converts user requirements into a new skill in this library's format.
-- [CONFIRMED] (user approved) Skill depth: concise core instructions + reference files (checklists, templates, examples) loaded on demand.
-- [CONFIRMED] (user approved) Skills include executable helper scripts where needed (e.g., PPTX generation); Python assumed available.
-- [CONFIRMED] (user approved) Technology-agnostic guidance with language-specific notes where it matters.
-- [USER] Audience: a team (not just the user; not public).
-- [USER] Success = skills trigger correctly in VS Code Copilot + output quality beats raw Copilot + team adoption + full lifecycle coverage.
-- [CONFIRMED] (user approved) Process skills assume Scrum-based Agile, noting Kanban variations.
-- [CONFIRMED] (user approved) Staleness handled via a library-maintainer/refresh skill + documented review cadence.
-- [USER] GitHub repo will be private.
-- [CONFIRMED] (user approved) Each skill cites authoritative sources + last-verified date.
-- [CONFIRMED] (user approved) Hard constraint: skills must never instruct the agent to browse/download from/send data to the external internet (org policy); no paid tools/services beyond Copilot; respect company data privacy; English only. Refresh-with-web-research runs outside the org environment.
-- [CONFIRMED] (user approved) F:\AI_Projects\Fable_Skills itself is the single git repo, pushed to GitHub; each skill is a plain subfolder.
-- [CONFIRMED] (user approved) Every skill folder gets its own README.md with detailed setup + usage instructions per harness (GitHub Copilot in VS Code, Cursor, Antigravity, Claude Code, and similar).
-- [USER] User experience: "I code a little"; somewhat familiar with skill authoring.
-- [CONFIRMED] (verified via web search, research subagent, July 2026) GitHub Copilot supports Agent Skills (SKILL.md directories, agentskills.io open standard) — GA since Dec 2025/Jan 2026 across VS Code, Copilot CLI, Copilot coding agent, Copilot code review; auto-detects .github/skills/, .claude/skills/, .agents/skills/. Frontmatter: name (≤64 chars, lowercase-hyphen, matches dir name), description (≤1024 chars); body best practice <500 lines with references/ one level deep. Distribution via `gh skill install <owner>/<repo>` (GitHub CLI ≥2.90.0, public preview Apr 2026).
-- [CONFIRMED] (verified via web search, research subagent) Custom chat modes (.chatmode.md) are deprecated → renamed to custom agents (.agent.md). Prompt files are IDE-only. Skills are the only mechanism spanning all Copilot agent surfaces.
+
+Idea and scope:
+- [USER] Two tools. Tool 1: analyzes one or more whole repos (scripts, SQL, everything) and generates a "deep understanding" file of the ecosystem.
+- [USER] Tool 1's file must be efficient for LLM parsing — chunk-navigable, not one huge blob; the skill must tell the LLM how to manage chunks and parse efficiently.
+- [USER] Tool 1 is multipurpose: (a) paste a job-failure error → root cause + solution; (b) explain how a functionality/process flow works; (c) advise on performance/efficiency improvements for SQL and scripts.
+- [USER] Tool 2: reads Spark logs (e.g. physical plans), understands the ETL process, interacts back-and-forth asking relevant questions, then provides fixes: SQL optimization + specific config parameters for specific scenarios.
+- [USER] Both tools: end user treated as a total newbie — no Spark infra/jargon/SQL/performance skills assumed.
+- [USER] Packaging (skill vs agent vs other) delegated to planner; proposal goes in the draft plan for user approval. (echo-checked)
+
+Builder:
+- [USER] Codes a little; around the Spark/ETL problem area but not in it daily.
+
+Environment and users (interview):
+- [USER] Q1 Platform (CORRECTED after draft v1): GitHub Copilot Chat (VS Code, org) ONLY — org does not have Claude Code. (echo-checked)
+- [USER] Packaging approved: three Agent Skills in the Fable Skills library. Ops deferred — dev team is the target. A non-prod environment exists for safe testing. (echo-checked)
+- [USER] Q2 Privacy: org policy allows sending both source code and job logs to these AI tools.
+- [USER] Q3 Repo contents: SQL files, shell scripts, Python/PySpark.
+- [USER] Q3b Also: scheduler configs (job definitions/dependencies) and config/params files.
+- [USER] Q4 Scale: 3–10 repos, hundreds to a couple thousand files.
+- [USER] Q5 Platform: believed on-prem Hadoop/YARN — working assumption, NOT verified. (echo-checked)
+- [USER] Q6 End users: support/ops team + dev team (no analysts).
+- [USER] Q8 Access split: ops never need the repos — they do a high-level first-pass triage from the error log and hand off; devs (repos cloned) do the deep RCA. (echo-checked)
+- [USER] Q7 Failure inputs available: scheduler alert + error snippet; full job log file obtainable.
+- [USER] Q9 Freshness: understanding file regenerated on demand by a developer when things changed (no CI/schedule).
+- [USER] Q10 Non-code causes: tool must diagnose "likely data/infra, not code", explain why, and guide step-by-step checks.
+- [USER] Q11 Tool 2 inputs: physical plan text (copy-paste) + Spark UI access. (Full logs also exist per Q7.)
+- [USER] Q12 Success, in priority order: #1 faster correct RCA (hours → minutes), #2 measurable job speedups from Tool 2 advice. Newbie self-sufficiency is secondary. (echo-checked)
+- [USER] Q14 Constraints: no hard deadline; tools must NOT auto-change code (advise only); tools must NOT run anything against production themselves.
+- [USER] Q15 Spark version: 3.x.
 
 ## Known unknowns
-- RESOLVED: skill inventory researched — 50 skills (48 lifecycle + 2 meta), tiered; user approved building all in tier order.
-- [CONFIRMED] (user approved) Teammates share the user's setup (VS Code + Copilot + skills + Python). Still [OPEN]: user to smoke-test that Agent Skills actually load in the org's VS Code before Phase B completes.
-- [CONFIRMED] (user approved) AI coding agents execute the build phase by phase.
-- [OPEN] Whether Copilot CLI honors ~/.claude/skills/ (documented for VS Code only) — low impact.
-- [OPEN] GA-vs-preview status of Agent Skills in Visual Studio/JetBrains (user doesn't use them; low impact).
-- [OPEN] Review cadence length (quarterly proposed, not yet confirmed).
-- [OPEN] python-pptx/python-docx permitted offline in org — folded into Phase 0 gate.
-- RESOLVED (round 1): License = internal-use notice, non-blocking.
-- RESOLVED (round 1): subsets question → install packs (4–6, ≤15/project) are first-class.
-- RESOLVED (round 1): gh skill install auto-discovers skills/*/SKILL.md — verified via gh manual by council Claude seat.
-- [OPEN] Copilot-side skill listing/count limits (none documented).
-- [OPEN] Cursor compat-scan + Antigravity paths community-sourced only — labeled [CANDIDATE] in COMPATIBILITY.md.
-- [OPEN] Whether Copilot cloud agent honors user-invocable/argument-hint (VS Code yes; cloud-agent docs silent).
-- [OPEN] Exact eval pass-threshold numbers (set in Phase A).
-- [OPEN] Pack composition (finalized in Phase A with user).
-- [OPEN] Unverified standard versions (Conventional Commits 1.0.0, SemVer 2.0.0, Keep a Changelog 1.1.0, ISO 25010:2023, PMBOK 7, OpenSLO, CWE Top 25 2025 edition, DORA capabilities state, book editions) — verify during authoring.
 
-## Phase 1 blindspots (taught, now tracked)
-- B1: RESOLVED — Copilot supports SKILL.md natively (see Known knowns).
-- B2: [OPEN] Triggering quality — mitigated by description-writing standards + a triggering test plan; still needs real-world validation.
-- B3: RESOLVED as design decision — progressive disclosure (name+description ~100 tokens always in context; body on activation; references on demand) is native to the skills standard.
-- B4: RESOLVED as design decision — refresh skill + cadence doc (user approved).
-- B5: [OPEN] Overlap boundaries between reviewer/security/optimizer skills — to be addressed by inventory design; council should scrutinize.
-- B6: RESOLVED — SKILL.md is the cross-harness open standard.
+- [OPEN] U1 (was B3/B6): Verify the platform really is on-prem Hadoop/YARN, and which exact Spark 3.x minor version (affects which configs exist/default on). Tools should also detect/ask at runtime.
+- [OPEN] U2 (was B1): "Regen on demand" accepted — but how will a user KNOW the file is stale? Mitigation to design in plan (e.g. stamp the git commit the file was built from and warn on mismatch).
+- [OPEN] U3 (was B4): Exact content design of the understanding file — what must it hold that live repo search can't cheaply reconstruct (cross-repo job→script→SQL→table lineage). Planner proposes in draft.
+- [OPEN] U4: Where do ops (no repos) run their triage and would they have access to a published copy of the understanding file (e.g. a shared analysis repo)?
+- [OPEN] U5 (was B5): Whether ops/devs know HOW to fetch YARN logs / physical plans / Spark UI pages — tools should include fetch-instructions; exact steps depend on U1.
+- [OPEN] U6 (was B6): Safe-verification convention for tuning advice (how a newbie tests a config change off-prod) — depends on what non-prod environments exist. Not asked; raise in plan.
 
 ## Unknown knowns (assumptions dug out)
-- User assumed Copilot could run Claude-style skills — turned out TRUE (verified).
-- [OPEN] User may assume teammates' Copilot setups match theirs (VS Code version, skills feature enabled, Python present).
+
+- Resolved: org permits code+logs to LLM (Q2 — yes). Platform assumption surfaced (Q5 — flagged unverified). Harness assumption surfaced (Q1 — Copilot + Claude Code).
+- [OPEN] U7: User may be assuming Copilot Chat and Claude Code can run the same artifacts identically — capability differences (subagents, scripts, context sizes) must be handled in the plan.
 
 ## Unknown unknowns
-- (Phase 4 council to surface)
+
+- Phase 1 teaching surfaced B1–B6 (now folded into U1–U6). Phase 4 council review pending.
 
 ## Topic checklist
+
 | Topic | Status |
 |---|---|
-| Users | ANSWERED (team, private repo) |
-| Features (skill inventory) | ANSWERED (research-driven exhaustive list + skill-creator + refresh skill) |
-| Data (content sources) | ANSWERED (cited authoritative sources, last-verified dates) |
-| Integrations (Copilot mechanics) | ANSWERED (SKILL.md verified) |
-| Constraints | ANSWERED (offline, no paid tools, privacy, English) |
-| Success criteria | ANSWERED (triggering, quality, adoption, coverage) |
-| Risks | to be drafted in PLAN.md |
+| Users | Answered (ops triage + dev deep-RCA; both Spark newbies) |
+| Features | Answered (Tool 1: RCA/explain/perf-advice; Tool 2: interactive tuning) |
+| Data | Answered (SQL, shell, PySpark, scheduler + param configs; 3–10 repos) |
+| Integrations | Answered w/ opens (Copilot org + Claude Code; YARN unverified → U1) |
+| Constraints | Answered (no deadline; advise-only; never touch prod) |
+| Success criteria | Answered (#1 faster RCA, #2 real speedups) |
+| Risks | Answered as U1–U7 opens |
