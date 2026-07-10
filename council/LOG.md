@@ -43,6 +43,14 @@ Fresh-review merge → 8 refinements; user verdicts (all ACCEPTED):
 
 Applied to PLAN.md v4. User chose ROUND 3 (confirmation pass): both seats verify their round-2 majors are closed in v4; no cross-exam points remain open.
 
+## Round 3 (packets: round-3-packet-claude.md / round-3-packet-codex.md; critiques: round-3-critique-claude.md / round-3-critique-codex.md)
+
+CONFIRMATION PASS — UNANIMOUS CLOSURE. Both seats: 10/10 round-2 majors CLOSED; no new major concerns. Scoped fact-hunt re-verified: usage-based billing (incl. legacy-plan persistence), gh skill CLI (public preview, CLI ≥2.90), agent-mode capabilities (VS Code now frames Agent/Plan/Ask; Edit deprecated), skills directories.
+
+Five polish notes (user ACCEPTED as one bundle, applied to v5): budget cap covers eval runs; cap configured as hard stop; errors/index.md split rule; mode-naming refresh; M1 threshold recorded before runs + M2 sampling explicitly covers params/schedule/dependency claims.
+
+COUNCIL EXIT after 3 of 5 rounds: exit condition met (no major concerns on either seat; user satisfied — chose "Apply + finalize"). Totals: 19 arbitrated refinements — 18 accepted, 1 rejected (R10 native-context trial). PLAN.md finalized as v5 with implementing-agent instructions.
+
 Round 1 carry-over record (was): 
 - To Claude seat (from Codex): (1) Skill A as pure-LLM work still infeasible even with authoritative seed + owner sample gate? (2) staleness-scope statement sufficient for the "stamps are insufficient" concern? (3) user rejected the native-context trial — does the KB-first approach stand without that comparison?
 - To Codex seat (from Claude): (1) smoke-tests-inside-Copilot sufficient for the "evals don't validate the harness" concern? (2) adoption/discovery only registered as [OPEN] U10 — acceptable? (3) routing mitigations (descriptions + instructions-file note + cross-trigger evals) sufficient for model-decided routing?

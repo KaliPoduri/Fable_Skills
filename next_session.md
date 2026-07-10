@@ -1,8 +1,10 @@
 # next_session.md
 
-Task: PlanGenie run — Spark ETL Assistant Suite plan (3 skills: etl-knowledge-builder, etl-assistant, spark-performance-advisor + sharded KB). NOT the old skills-library plan (archived at archive/2026-06-skills-library-plan/; its status: 23 skills authored/validated/pushed, eval execution pending).
-Status: PLAN.md v3 written. Council round 1 DONE (verdicts in council/LOG.md: R1–R9+R11 accepted, R10 rejected). Round 2 cross-examination packets/dispatch next.
-Key decisions: Copilot-only harness (org has no Claude Code); ops deferred, devs only; Skill C built first (M0 spike → M1 C → M2 KB pilot → M3 B); authoritative job seed; redaction + PR playbook governance; AQE default-on only since Spark 3.2 → minor version blocking (U1).
-Council mechanics: council skill at ~/.claude/skills/council/SKILL.md; Codex via codex-companion.mjs task --background + ONE background poll loop; Claude seat = general-purpose agent, model fable, reads packet file. 5 rounds max (PlanGenie override). Cross-exam carry-over points listed at end of council/LOG.md.
-Next steps: (1) write round-2 per-seat packets (full PLAN v3 + other seat's carried points, verdict instruction AGREE/AGREE WITH CHANGE/REBUT); (2) dispatch both seats; (3) merge, user arbitrates via AskUserQuestion (batched multi-select, pros/cons in question text — user cannot see mid-turn text before tool calls); (4) commit each round; (5) Phase 5 final PLAN.md with implementing-agent block.
-Known issues: user answers with own words → echo-check required (PlanGenie rule 2). All Spark config specifics stay [CANDIDATE] until authored against docs.
+Task: PlanGenie run for Spark ETL Assistant Suite — COMPLETE. PLAN.md v5 is FINAL (ends with implementing-agent instructions block). UNKNOWNS.md final; full council record in council/ (3 rounds, unanimous closure, 18/19 refinements accepted; R10 native-context trial rejected by user).
+Status: All committed on master. Nothing in flight.
+The plan delivers: 3 Copilot Agent Skills (etl-knowledge-builder, etl-assistant, spark-performance-advisor) + sharded etl-knowledge/ KB, for the user's org (GitHub Copilot VS Code only — no Claude Code there). Milestones M0 (feasibility spike + fact lock, blocking) → M1 (Skill C) → M2 (KB + Skill A pilot) → M3 (Skill B).
+Next steps (user-driven):
+1. Implementation starts with M0 — but M0 runs in the ORG's Copilot (agent mode, .agents/skills load test, fact-lock table, baseline capture) — mostly user-side actions, not this machine.
+2. When implementing skills here: follow the Fable Skills library conventions (AUTHORING-GUIDE, validators: tools/validate_skills.py + .venv agentskills CLI); all [CANDIDATE] Spark configs verified against Apache Spark docs for the org's exact minor version (locked at M0).
+3. Older context: skills-library plan archived at archive/2026-06-skills-library-plan/ (23 skills authored/validated/pushed; eval execution still pending — separate track).
+Conventions: master branch; PlanGenie tags stay in PLAN.md ([USER]/[CONFIRMED]/[CANDIDATE]/[OPEN]); [OPEN] items must be raised with the user, never guessed.
