@@ -1,5 +1,33 @@
 # progress.md — Fable Skills
 
+## PROJECT 2: Spark ETL Assistant Suite (active)
+
+### Milestones
+- 2026-07-10 Planning: PlanGenie full run — 15-question interview, draft plan, 3 council rounds (Claude + Codex; round 3 unanimous: 10/10 majors CLOSED, no new majors), 19 refinements arbitrated (18 accepted, R10 native-context trial rejected). PLAN.md FINAL v5 committed with implementing-agent block. Old library plan archived to archive/2026-06-skills-library-plan/.
+
+### Phase tracker (gates in PLAN.md §8)
+| Milestone | Gate | Status |
+|---|---|---|
+| M0 spike + fact lock (BLOCKING) | all checks pass in org Copilot; fact-lock table filled; adoption owner named; M1 entry = U1/U5/A10 resolved | pending — M0 kit to be built locally, then USER runs in org |
+| M1 spark-performance-advisor | slow-job experiment per §6 protocol, threshold recorded BEFORE runs | pending (blocked on M0) |
+| M2 KB format + etl-knowledge-builder pilot | owner sample ≥20%/≥10 jobs incl. negative checks; cost extrapolation green-light | pending |
+| M3 etl-assistant | ≥10 known incidents, zero high-confidence wrong, traps answered "insufficient evidence" | pending |
+| Ops triage | — | deferred by user |
+
+### Architectural decisions (full detail in PLAN.md v5)
+- Copilot-only harness (org has no Claude Code); Skill A needs agent mode; skills from .agents/skills/.
+- 3 skills join THIS library (names fixed): etl-knowledge-builder, etl-assistant, spark-performance-advisor.
+- Sharded etl-knowledge/ KB: thin root index, per-repo indexes, lineage by domain, error-pattern index + dated files; pointers-not-copies; staleness stamps (code-only scope, caveat at point-of-use); dedicated repo preferred.
+- Authoritative job seed + build-time grep cross-checks; regen = reviewable diff; content-based redaction; playbook via PR.
+- Usage-based Copilot billing (since 2026-06-01): HARD-stop budget covering builds AND eval runs (M0).
+
+### Blockers
+- M0 is user-side (org Copilot) — everything downstream waits on its fact-lock results.
+
+---
+
+# PROJECT 1: Fable Skills library (23 skills — done, pilot pending)
+
 ## Milestones
 - 2026-07-06 Planning: PlanGenie interview (all topics answered), 3 research subagents (Copilot mechanics, 67-skill SDLC inventory, authoring best practices), draft plan, 2 council rounds (Claude + Codex — zero unresolved disputes, 17 refinements accepted), PLAN.md FINAL v3 committed.
 - 2026-07-06 Implementation session 1: Phase 0 test kit built (skills/phase0-canary + phase0/PHASE0-CHECKLIST.md — ready for user to run in-org). Phase-0-independent Phase A done: repo scaffold, template/, AUTHORING-GUIDE (incl. provisional eval thresholds), COMPATIBILITY, PER-HARNESS-SETUP, root README catalog, LICENSE/CHANGELOG/VERIFICATION-LOG, tools/validate_skills.py. skills-ref 0.1.1 PROVEN (agentskills CLI validates canary). implementation-notes.md started.

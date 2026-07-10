@@ -1,10 +1,13 @@
 # next_session.md
 
-Task: PlanGenie run for Spark ETL Assistant Suite — COMPLETE. PLAN.md v5 is FINAL (ends with implementing-agent instructions block). UNKNOWNS.md final; full council record in council/ (3 rounds, unanimous closure, 18/19 refinements accepted; R10 native-context trial rejected by user).
-Status: All committed on master. Nothing in flight.
-The plan delivers: 3 Copilot Agent Skills (etl-knowledge-builder, etl-assistant, spark-performance-advisor) + sharded etl-knowledge/ KB, for the user's org (GitHub Copilot VS Code only — no Claude Code there). Milestones M0 (feasibility spike + fact lock, blocking) → M1 (Skill C) → M2 (KB + Skill A pilot) → M3 (Skill B).
-Next steps (user-driven):
-1. Implementation starts with M0 — but M0 runs in the ORG's Copilot (agent mode, .agents/skills load test, fact-lock table, baseline capture) — mostly user-side actions, not this machine.
-2. When implementing skills here: follow the Fable Skills library conventions (AUTHORING-GUIDE, validators: tools/validate_skills.py + .venv agentskills CLI); all [CANDIDATE] Spark configs verified against Apache Spark docs for the org's exact minor version (locked at M0).
-3. Older context: skills-library plan archived at archive/2026-06-skills-library-plan/ (23 skills authored/validated/pushed; eval execution still pending — separate track).
-Conventions: master branch; PlanGenie tags stay in PLAN.md ([USER]/[CONFIRMED]/[CANDIDATE]/[OPEN]); [OPEN] items must be raised with the user, never guessed.
+Task: IMPLEMENT PLAN.md v5 — Spark ETL Assistant Suite (3 Copilot skills + etl-knowledge/ KB spec). Plan is FINAL (PlanGenie + 3 council rounds, unanimous closure). Read PLAN.md in full first; obey its implementing-agent block: [CANDIDATE] = verify before use and log it; [OPEN] = ask the user, never guess; log every deviation in implementation-notes.md ("Spark suite" section, Deviations heading).
+Status: Implementation NOT started. Milestone order is gated (PLAN §8): M0 (BLOCKING, runs in the user's org Copilot) → M1 Skill C → M2 KB + Skill A pilot → M3 Skill B.
+Session 1 goal — build the M0 kit locally so the user can run the spike in-org:
+1. M0 checklist: agent-skills policy, .agents/skills load (incl. multi-root secondary root), ask-mode load test, file-write + git test, session-depth observation. Adapt skills/phase0-canary (existing test skill) for these checks.
+2. Fact-lock table template: billing plan + HARD-stop budget (must cover eval runs too), exact Apache Spark minor version, scheduler type, org policies, history-server access + event-log retention, dev config-change scope.
+3. Baseline sheet (3–5 recent incidents' time-to-RCA) + adoption one-pager skeleton + playbook governance template (reviewer role, approval criteria, disputed-cause handling, security owner).
+4. USER runs M0 in org; record results in the fact-lock table; M1 entry criteria = U1, U5, A10 resolved.
+Only after M0: author spark-performance-advisor (M1) per library conventions — template/, docs/AUTHORING-GUIDE.md, both validators green (tools/validate_skills.py + .venv agentskills CLI), SOURCES.md; every Spark config verified against Apache Spark docs for the LOCKED minor version (AQE default-on only since 3.2).
+Conventions: skills in skills/<name>/; library policy = no scripts inside skills; names fixed: etl-knowledge-builder, etl-assistant, spark-performance-advisor; quote YAML-risky descriptions.
+Key files: PLAN.md, UNKNOWNS.md, council/LOG.md, progress.md (Spark suite section at top), implementation-notes.md.
+Prior project (23-skill library): plan archived at archive/2026-06-skills-library-plan/; its eval execution is still pending — separate track, don't mix.
