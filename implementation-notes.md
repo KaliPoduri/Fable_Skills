@@ -3,6 +3,47 @@
 Log kept per PLAN.md implementing-agent instructions. Decisions as made; every
 deviation under "Deviations" with a one-line reason.
 
+---
+
+# Spark suite (PROJECT 2)
+
+## Decisions
+
+- 2026-07-10 M0 kit built under a throwaway `m0/` directory (NOT `skills/`) —
+  keeps the 23 real library skills and both validators untouched; cleanup is
+  `rm -r m0/` after the M0 gate. Kit = README, M0-CHECKLIST, m0-canary skill,
+  FACT-LOCK, BASELINE, ADOPTION-ONE-PAGER, PLAYBOOK-GOVERNANCE (PLAN §8 M0).
+- 2026-07-10 Canary named `m0-canary`, pure markdown (no script) — Spark-suite
+  library policy is no-scripts, and M0 needs no Python. Proofs: trigger →
+  reference-load → file-write → git; ask mode expected to block write/git.
+- 2026-07-10 Continuing on `master` (standing repo decision, solo private repo);
+  M0 kit is documentation/templates only.
+- 2026-07-10 [OPEN] items (U1, U5, U9, A5-A11, KB home, names, owners) left as
+  blanks in the templates for the USER to resolve during the in-org spike —
+  not guessed. M1 entry gates (U1/U5/A10) flagged in FACT-LOCK.md.
+
+## Verifications
+
+- 2026-07-10 `agentskills validate m0/m0-canary` → "Valid skill" (exit 0) —
+  the canary will actually load in the in-org test.
+- 2026-07-10 `python tools/validate_skills.py` → 23/23 PASS, 0 errors; grep
+  confirms `m0/` is NOT scanned — the throwaway kit stays out of CI.
+- 2026-07-10 Retrieved the deleted `phase0-canary` from git `66fc68f` as the
+  reference pattern (it was removed in `b630598` when Phase 0 was waived).
+
+## Deviations
+
+- 2026-07-10 [DEVIATION] Handoff said "adapt skills/phase0-canary"; that skill
+  no longer exists (deleted with the Phase-0 waiver, commit b630598). Rebuilt
+  as a new pure-markdown `m0-canary` with file-write + git proofs. Reason: M0
+  verifies skill loading + agent-mode file/git + ask-mode + session depth, not
+  script execution or `gh skill install` (distribution is manual-copy-only,
+  already locked). Old canary's gh-install/Python-script proofs are obsolete.
+
+---
+
+# Skills library (PROJECT 1)
+
 ## Decisions
 
 - 2026-07-06 Work continues on `master` — matches repo convention (all planning

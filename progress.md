@@ -3,12 +3,13 @@
 ## PROJECT 2: Spark ETL Assistant Suite (active)
 
 ### Milestones
+- 2026-07-10 Implementation session 1: M0 kit built under `m0/` (throwaway). In-org spike checklist (agent/skills policy, .agents/skills load incl. multi-root, ask-mode, file-write+git, session depth) + pure-markdown `m0-canary` skill (validates green) + FACT-LOCK / BASELINE / ADOPTION-ONE-PAGER / PLAYBOOK-GOVERNANCE templates. Deviation logged: rebuilt canary (phase0-canary was deleted). Awaiting USER to run in org; M1 blocked on U1/U5/A10.
 - 2026-07-10 Planning: PlanGenie full run — 15-question interview, draft plan, 3 council rounds (Claude + Codex; round 3 unanimous: 10/10 majors CLOSED, no new majors), 19 refinements arbitrated (18 accepted, R10 native-context trial rejected). PLAN.md FINAL v5 committed with implementing-agent block. Old library plan archived to archive/2026-06-skills-library-plan/.
 
 ### Phase tracker (gates in PLAN.md §8)
 | Milestone | Gate | Status |
 |---|---|---|
-| M0 spike + fact lock (BLOCKING) | all checks pass in org Copilot; fact-lock table filled; adoption owner named; M1 entry = U1/U5/A10 resolved | pending — M0 kit to be built locally, then USER runs in org |
+| M0 spike + fact lock (BLOCKING) | all checks pass in org Copilot; fact-lock table filled; adoption owner named; M1 entry = U1/U5/A10 resolved | kit BUILT 2026-07-10 (m0/ — checklist, m0-canary skill, fact-lock/baseline/adoption/governance templates; canary validates); awaiting USER in-org run |
 | M1 spark-performance-advisor | slow-job experiment per §6 protocol, threshold recorded BEFORE runs | pending (blocked on M0) |
 | M2 KB format + etl-knowledge-builder pilot | owner sample ≥20%/≥10 jobs incl. negative checks; cost extrapolation green-light | pending |
 | M3 etl-assistant | ≥10 known incidents, zero high-confidence wrong, traps answered "insufficient evidence" | pending |
