@@ -3,16 +3,17 @@
 ## PROJECT 2: Spark ETL Assistant Suite (active)
 
 ### Milestones
+- 2026-07-10 Implementation session 2 [USER-DIRECTED]: user offline from org network → all three skills AUTHORED with expert defaults (version-adaptive: skills ask for U1/U5/A10 facts at intake, never assume). 3 parallel subagents; all Spark facts web-verified (3.5.8 + archive 3.1/3.3/3.4 for version bounds); zero [Unverified] claims. Routing hardening applied bidirectionally (sql-optimizer, systematic-debugger). Validators: 26/26 PASS + agentskills Valid on all touched. README/CHANGELOG/UNKNOWNS updated. ALL in-org gates (M0-M3) remain OPEN — authored ≠ accepted.
 - 2026-07-10 Implementation session 1: M0 kit built under `m0/` (throwaway). In-org spike checklist (agent/skills policy, .agents/skills load incl. multi-root, ask-mode, file-write+git, session depth) + pure-markdown `m0-canary` skill (validates green) + FACT-LOCK / BASELINE / ADOPTION-ONE-PAGER / PLAYBOOK-GOVERNANCE templates. Deviation logged: rebuilt canary (phase0-canary was deleted). Awaiting USER to run in org; M1 blocked on U1/U5/A10.
 - 2026-07-10 Planning: PlanGenie full run — 15-question interview, draft plan, 3 council rounds (Claude + Codex; round 3 unanimous: 10/10 majors CLOSED, no new majors), 19 refinements arbitrated (18 accepted, R10 native-context trial rejected). PLAN.md FINAL v5 committed with implementing-agent block. Old library plan archived to archive/2026-06-skills-library-plan/.
 
 ### Phase tracker (gates in PLAN.md §8)
 | Milestone | Gate | Status |
 |---|---|---|
-| M0 spike + fact lock (BLOCKING) | all checks pass in org Copilot; fact-lock table filled; adoption owner named; M1 entry = U1/U5/A10 resolved | kit BUILT 2026-07-10 (m0/ — checklist, m0-canary skill, fact-lock/baseline/adoption/governance templates; canary validates); awaiting USER in-org run |
-| M1 spark-performance-advisor | slow-job experiment per §6 protocol, threshold recorded BEFORE runs | pending (blocked on M0) |
-| M2 KB format + etl-knowledge-builder pilot | owner sample ≥20%/≥10 jobs incl. negative checks; cost extrapolation green-light | pending |
-| M3 etl-assistant | ≥10 known incidents, zero high-confidence wrong, traps answered "insufficient evidence" | pending |
+| M0 spike + fact lock (BLOCKING) | all checks pass in org Copilot; fact-lock table filled; adoption owner named; M1 entry = U1/U5/A10 resolved | kit BUILT 2026-07-10; awaiting USER in-org run (user offline 2026-07-10 — authoring proceeded on user directive) |
+| M1 spark-performance-advisor | slow-job experiment per §6 protocol, threshold recorded BEFORE runs | AUTHORED 2026-07-10 (version-adaptive); in-org experiment gate OPEN |
+| M2 KB format + etl-knowledge-builder pilot | owner sample ≥20%/≥10 jobs incl. negative checks; cost extrapolation green-light | AUTHORED 2026-07-10 (skill + KB format spec); pilot + sampling gate OPEN |
+| M3 etl-assistant | ≥10 known incidents, zero high-confidence wrong, traps answered "insufficient evidence" | AUTHORED 2026-07-10; incident test-set gate OPEN |
 | Ops triage | — | deferred by user |
 
 ### Architectural decisions (full detail in PLAN.md v5)

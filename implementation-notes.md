@@ -9,6 +9,34 @@ deviation under "Deviations" with a one-line reason.
 
 ## Decisions
 
+- 2026-07-10 (session 2) [USER-DIRECTED] User cannot reach the org network
+  and directed: "go with your expert decisions and defaults wherever
+  necessary." Authoring of M1/M2/M3 skills proceeds WITHOUT the in-org M0
+  run. m0/ kit stays intact for later execution; all in-org acceptance
+  gates (M0 spike, M1 experiment, M2 owner sampling, M3 incident set)
+  remain OPEN. Defaults policy: no org fact is guessed — skills are
+  authored VERSION-ADAPTIVE and ask for facts at intake instead:
+  - U1 Spark minor version: Skill C requires the exact version as intake
+    input before any config advice (PLAN §6 already mandates this);
+    config reference annotated per-version 3.0-3.5, AQE default-on ≥3.2.
+  - U5 history server/retention: reference teaches standard fetch paths
+    (History Server UI, `yarn logs -applicationId`, event-log dirs) with
+    "confirm access/retention with your admin" caveats.
+  - U9 scheduler: Skill A is scheduler-agnostic with a detect-and-confirm
+    step (Airflow/Oozie/cron/Control-M/custom) against the job seed.
+  - A10 config scope: advice defaults to job-scoped (`spark-submit
+    --conf`/job config); cluster-scope flagged as admin-approval territory.
+  - Ask-mode wording: conservative branch of PLAN §1 — "agent mode
+    required" until M0 says otherwise.
+  - U8 session depth: Skill A ships resumable small build steps (R4
+    mitigation) regardless of observed depth.
+  - KB home: dedicated repo (PLAN §3 preferred default); Skill A carries
+    bootstrap instructions.
+  - Budget (R1): Skill A instructs confirming a HARD-stop budget before
+    builds; cannot be set from here.
+  - NOT defaultable (org facts/people): baseline incidents, adoption
+    owner, governance names — m0/ sheets stay blank for the user.
+
 - 2026-07-10 M0 kit built under a throwaway `m0/` directory (NOT `skills/`) —
   keeps the 23 real library skills and both validators untouched; cleanup is
   `rm -r m0/` after the M0 gate. Kit = README, M0-CHECKLIST, m0-canary skill,
@@ -24,6 +52,19 @@ deviation under "Deviations" with a one-line reason.
 
 ## Verifications
 
+- 2026-07-10 (session 2) Three skills authored by 3 parallel subagents;
+  ALL Spark facts web-verified at authoring against official docs —
+  Spark 3.5.8 (live site hosts only the newest patch per minor; older
+  minors via archive.apache.org: 3.1.3/3.3.4/3.4.4 used to bound
+  version-dependent claims — AQE default flip at 3.2.0, shuffleTracking
+  default flip at 3.4). Non-Spark claims verified against official
+  Hadoop/Oracle Java/GNU/POSIX sources. Subagents dropped (not shipped)
+  every claim they could not verify; zero [Unverified] entries.
+- 2026-07-10 (session 2) Full sweep after authoring + routing hardening:
+  `python tools/validate_skills.py` → 26/26 PASS, 0 errors;
+  `agentskills validate` → Valid on all 5 touched skills
+  (etl-knowledge-builder, etl-assistant, spark-performance-advisor,
+  sql-optimizer, systematic-debugger); both edited triggers.json parse.
 - 2026-07-10 `agentskills validate m0/m0-canary` → "Valid skill" (exit 0) —
   the canary will actually load in the in-org test.
 - 2026-07-10 `python tools/validate_skills.py` → 23/23 PASS, 0 errors; grep
@@ -33,6 +74,29 @@ deviation under "Deviations" with a one-line reason.
 
 ## Deviations
 
+- 2026-07-10 (session 2) [USER-DIRECTED DEVIATION] PLAN §8 gate order
+  (M0 blocking before M1-M3) not followed for AUTHORING: user offline
+  from org network, directed expert defaults. All three skills authored
+  in one session (M1+M2+M3 authoring scope); every in-org gate remains
+  OPEN and un-attempted — authored ≠ accepted. m0/ kit untouched.
+- 2026-07-10 (session 2) [DEVIATION] AUTHORING-GUIDE §11 definition of
+  done item "evals authored AND run" — evals authored only; the headless
+  proxy runner is still not stood up (same standing gap as the 23
+  library skills). Acceptance for the Spark suite is the in-org matrix
+  anyway (PLAN §7).
+- 2026-07-10 (session 2) [DECISION] Routing hardening (PLAN §2/R9)
+  applied bidirectionally: sql-optimizer + systematic-debugger
+  descriptions gained one Spark-suite boundary line each + one
+  cross-trigger near-miss eval case each (their primary boundaries stay
+  within the first 250 chars; the Spark line lands after — secondary).
+- 2026-07-10 (session 2) [DECISION] Regeneration preserves errors/ and
+  glossary byte-for-byte (human-curated per §5 governance, not
+  code-derived) — subagent's conservative reading of "reviewable diff,
+  never silent overwrite"; adopted.
+- 2026-07-10 (session 2) [DECISION] repo-instructions routing snippet
+  (§2, [CANDIDATE mechanism]) ships as
+  skills/etl-assistant/assets/repo-instructions-snippet.md — single
+  durable home; mechanism itself still verified at M0.
 - 2026-07-10 [DEVIATION] Handoff said "adapt skills/phase0-canary"; that skill
   no longer exists (deleted with the Phase-0 waiver, commit b630598). Rebuilt
   as a new pure-markdown `m0-canary` with file-write + git proofs. Reason: M0

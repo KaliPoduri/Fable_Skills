@@ -1,6 +1,6 @@
 ---
 name: sql-optimizer
-description: Optimizes slow SQL - reads EXPLAIN plans, fixes index usage, SARGability, join strategy, and anti-patterns like leading-wildcard LIKE and N+1. Use this skill when asked to speed up a slow query or tune SQL. Do not use for table or schema design; use db-schema-designer instead. Migrations belong to db-migration-planner, application-level profiling to performance-optimizer.
+description: Optimizes slow SQL - reads EXPLAIN plans, fixes index usage, SARGability, join strategy, and anti-patterns like leading-wildcard LIKE and N+1. Use this skill when asked to speed up a slow query or tune SQL. Do not use for table or schema design; use db-schema-designer instead. Migrations belong to db-migration-planner, application-level profiling to performance-optimizer, Spark job tuning to spark-performance-advisor.
 metadata:
   version: "1.0.0"
   last-verified: "2026-07-06"

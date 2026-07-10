@@ -1,0 +1,27 @@
+{
+  "skill": "etl-assistant",
+  "cases": [
+    { "prompt": "job orders_daily failed with FetchFailedException, what's the root cause?", "expect": "trigger", "note": "direct: failed job + error + root cause" },
+    { "prompt": "Our nightly ETL job died and YARN says the container exited with code 137 - why?", "expect": "trigger", "note": "failed job, OOM-kill symptom" },
+    { "prompt": "explain how the billing flow works", "expect": "trigger", "note": "direct: explain flow" },
+    { "prompt": "improve this PySpark script", "expect": "trigger", "note": "direct: static script improvement" },
+    { "prompt": "load_customer_dim failed last night, here's the full log - find the cause.", "expect": "trigger", "note": "RCA with pasted log (artifact-receipt checklist first)" },
+    { "prompt": "The sales pipeline throws AnalysisException: table or view not found - what does that mean here?", "expect": "trigger", "note": "failed job, SQL analysis error" },
+    { "prompt": "Walk me through what feeds the revenue_summary table and what runs downstream of it.", "expect": "trigger", "note": "indirect: lineage / explain flow" },
+    { "prompt": "This Spark SQL in our ETL repo looks inefficient - review it and suggest improvements. I haven't run it yet.", "expect": "trigger", "note": "static improvement, explicitly no runtime evidence" },
+    { "prompt": "The job failed with java.lang.OutOfMemoryError: GC overhead limit exceeded on some executors.", "expect": "trigger", "note": "failed job, executor OOM" },
+    { "prompt": "Our ETL job failed but I suspect the upstream file just arrived late, not a code bug - can you check?", "expect": "trigger", "note": "RCA, likely cause-not-in-code" },
+    { "prompt": "Where is the schedule for the inventory job defined and which script is its entry point?", "expect": "trigger", "note": "explain: job navigation via KB" },
+    { "prompt": "What does 'Path does not exist' mean for the orders partition load that failed this morning?", "expect": "trigger", "note": "failed job, data-shaped error" },
+    { "prompt": "The orders_daily job succeeds but takes 4 hours now; here's the physical plan - tune it.", "expect": "no-trigger", "note": "owned by spark-performance-advisor (slow + plan)" },
+    { "prompt": "Here are Spark UI screenshots of our slow join stage - which configs should we change?", "expect": "no-trigger", "note": "owned by spark-performance-advisor (Spark UI evidence)" },
+    { "prompt": "I have the event logs and stage timings for a job that got slower after a new join - optimize the shuffle.", "expect": "no-trigger", "note": "owned by spark-performance-advisor (runtime evidence)" },
+    { "prompt": "Rebuild the ETL knowledge base for all our repos.", "expect": "no-trigger", "note": "owned by etl-knowledge-builder" },
+    { "prompt": "The KB looks stale - regenerate the chunks for the billing repo.", "expect": "no-trigger", "note": "owned by etl-knowledge-builder" },
+    { "prompt": "This Postgres report query is slow - here's the EXPLAIN ANALYZE output, make it fast.", "expect": "no-trigger", "note": "owned by sql-optimizer (database EXPLAIN tuning)" },
+    { "prompt": "MySQL picks a full table scan on this query, EXPLAIN attached - fix the indexing.", "expect": "no-trigger", "note": "owned by sql-optimizer (database EXPLAIN tuning)" },
+    { "prompt": "Our web app's login endpoint throws a TypeError in the frontend - debug it.", "expect": "no-trigger", "note": "owned by systematic-debugger (non-ETL app bug)" },
+    { "prompt": "Write a brand-new Spark job that ingests the vendor feed into the lake.", "expect": "no-trigger", "note": "unrelated (new feature authoring, not RCA/explain/improve)" },
+    { "prompt": "Set up the YARN capacity scheduler queues for the new cluster.", "expect": "no-trigger", "note": "unrelated (cluster ops setup)" }
+  ]
+}

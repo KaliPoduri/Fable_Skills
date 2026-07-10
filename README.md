@@ -10,7 +10,9 @@ Cursor (and, community-verified, Antigravity).
 **Status: Tier 1 authored.** All 21 Tier 1 skills plus the 2 meta skills
 are authored, source-verified, and validator-clean under `skills/`
 (everything marked T1 or Meta below). Tier 2 (30) and the Tier 3 backlog
-(14) are catalog-only for now.
+(14) are catalog-only for now. The Spark ETL suite (3 skills, PLAN.md v5)
+is authored version-adaptive; its in-org acceptance gates (M0–M3) are
+pending.
 
 ## Install
 
@@ -32,14 +34,20 @@ more dilutes skill triggering on every known harness.
 | `quality-security` | review gates | code-reviewer, security-code-reviewer, threat-modeler, test-strategist, test-automation-engineer, dependency-auditor |
 | `data` | data work | data-modeler, db-schema-designer, sql-optimizer, db-migration-planner |
 | `ops-docs` | ship + run + document | cicd-pipeline-designer, release-manager, postmortem-writer, runbook-writer, readme-writer, tech-writer |
+| `spark-etl` | Spark/ETL dev teams | etl-knowledge-builder, etl-assistant, spark-performance-advisor, sql-optimizer, systematic-debugger |
 
-## Catalog — 67 skills (65 lifecycle + 2 meta)
+## Catalog — 70 skills (65 lifecycle + 2 meta + 3 Spark ETL)
 
 Tier 1 (21) authored first · Tier 2 (30) after the pilot gate · Tier 3
 (14) named backlog, authored on demand · `*` = pilot-conditional.
 
 ### Meta (2)
 `skill-creator` · `library-maintainer`
+
+### Spark ETL suite (3 — authored, in-org gates pending)
+`etl-knowledge-builder` (KB generation, agent mode) ·
+`etl-assistant` (failed-job RCA, explain-flow, static improvements) ·
+`spark-performance-advisor` (slow-job tuning from runtime evidence)
 
 ### Product & Discovery (6)
 T1: `prd-writer` · T2: `product-vision-writer`, `product-roadmap-writer`, `user-story-mapper`, `ux-design-reviewer` · T3: `persona-writer`
@@ -81,7 +89,7 @@ procurement/change management.
 
 | Path | What |
 |---|---|
-| `PLAN.md` | authoritative plan (post-council v3) |
+| `PLAN.md` | authoritative plan — Spark ETL suite (v5); library plan archived at `archive/2026-06-skills-library-plan/` |
 | `docs/AUTHORING-GUIDE.md` | binding standards for every skill |
 | `docs/PER-HARNESS-SETUP.md` | install per harness |
 | `docs/COMPATIBILITY.md` | support matrix + evidence |

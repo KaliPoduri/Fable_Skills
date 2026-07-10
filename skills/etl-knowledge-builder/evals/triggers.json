@@ -1,0 +1,26 @@
+{
+  "skill": "etl-knowledge-builder",
+  "cases": [
+    { "prompt": "Rebuild the ETL knowledge base for the billing-etl repo.", "expect": "trigger", "note": "direct keyword" },
+    { "prompt": "The KB is stale, regenerate it.", "expect": "trigger", "note": "direct keyword, regen" },
+    { "prompt": "Set up etl-knowledge for our pipelines.", "expect": "trigger", "note": "first-time setup" },
+    { "prompt": "Generate the knowledge base for the new ingestion repo we just added.", "expect": "trigger", "note": "new repo onboarding" },
+    { "prompt": "warehouse-load changed a lot last sprint - update its chunks in etl-knowledge.", "expect": "trigger", "note": "incremental mode" },
+    { "prompt": "Resume the KB build, the last session got cut off halfway through the jobs.", "expect": "trigger", "note": "resumable build" },
+    { "prompt": "Create the jobs/ and lineage/ files for the warehouse-load repo.", "expect": "trigger", "note": "KB file vocabulary" },
+    { "prompt": "Before we build the whole KB, measure what one repo costs per job.", "expect": "trigger", "note": "pilot cost gate" },
+    { "prompt": "Bootstrap a dedicated repo for etl-knowledge and run the first build.", "expect": "trigger", "note": "KB-repo bootstrap" },
+    { "prompt": "We have no job list anywhere - build the inventory with me and then generate the KB.", "expect": "trigger", "note": "interactive seed" },
+    { "prompt": "Regenerate the ETL knowledge base and open a PR with the changes.", "expect": "trigger", "note": "regen as reviewable diff" },
+    { "prompt": "Why did job daily-billing fail last night? Here's the log.", "expect": "no-trigger", "note": "owned by etl-assistant (root cause)" },
+    { "prompt": "Explain the billing flow end to end.", "expect": "no-trigger", "note": "owned by etl-assistant (explain flow)" },
+    { "prompt": "Improve this PySpark script - it's unreadable and does a cartesian join.", "expect": "no-trigger", "note": "owned by etl-assistant (static improvement)" },
+    { "prompt": "What does the orders_std table contain? Look it up in the KB.", "expect": "no-trigger", "note": "owned by etl-assistant (reads the KB, does not build it)" },
+    { "prompt": "This Spark job got slow - here's the physical plan, tune it.", "expect": "no-trigger", "note": "owned by spark-performance-advisor" },
+    { "prompt": "Our join spills to disk and the stage takes hours - which Spark configs do I change?", "expect": "no-trigger", "note": "owned by spark-performance-advisor" },
+    { "prompt": "Add a retry to the Airflow DAG for the export job.", "expect": "no-trigger", "note": "unrelated (application code change - this skill never modifies app code)" },
+    { "prompt": "Optimize this slow SQL query, here's the EXPLAIN output.", "expect": "no-trigger", "note": "owned by sql-optimizer" },
+    { "prompt": "Write a README for the ingestion repo.", "expect": "no-trigger", "note": "owned by readme-writer" },
+    { "prompt": "Deploy the new version of the warehouse-load job to production.", "expect": "no-trigger", "note": "unrelated (deployment; suite is advise-only, never touches production)" }
+  ]
+}

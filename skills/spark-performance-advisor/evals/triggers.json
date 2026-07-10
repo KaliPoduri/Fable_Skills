@@ -1,0 +1,27 @@
+{
+  "skill": "spark-performance-advisor",
+  "cases": [
+    { "prompt": "This Spark job is slow, here's the physical plan - what's wrong?", "expect": "trigger", "note": "direct keyword + plan" },
+    { "prompt": "My pipeline used to take 20 minutes, now it takes 2 hours. Nothing failed, it just crawls. Where do I start?", "expect": "trigger", "note": "indirect, slow-not-failed" },
+    { "prompt": "What does Exchange hashpartitioning(customer_id, 200) mean in this Spark plan, and is it why my job is slow?", "expect": "trigger", "note": "plan reading" },
+    { "prompt": "The Spark UI shows 2 tasks in one stage taking 25 minutes while the other 198 finish in seconds.", "expect": "trigger", "note": "skew symptom from UI evidence" },
+    { "prompt": "I see Shuffle spill (disk) numbers in the Stages tab of the Spark UI - is that bad and what do I change?", "expect": "trigger", "note": "spill symptom" },
+    { "prompt": "Should I increase spark.sql.shuffle.partitions? Our nightly aggregation writes 200 huge partitions.", "expect": "trigger", "note": "config tuning question" },
+    { "prompt": "Why does my Spark SQL query use SortMergeJoin instead of a broadcast join? The lookup table is only 5 MB.", "expect": "trigger", "note": "join strategy" },
+    { "prompt": "Our PySpark job completes but takes all night since the data grew. Recommend executor memory and cores settings.", "expect": "trigger", "note": "executor sizing for slow job" },
+    { "prompt": "The broadcast in this join takes forever - should I raise spark.sql.broadcastTimeout or stop broadcasting?", "expect": "trigger", "note": "broadcast tuning" },
+    { "prompt": "How do I get the physical plan and stage metrics for a Spark job that already finished yesterday?", "expect": "trigger", "note": "evidence teaching, finished job" },
+    { "prompt": "This job reads 400,000 tiny parquet files and spends hours just scanning. Any Spark setting for that?", "expect": "trigger", "note": "small-files problem" },
+    { "prompt": "Will enabling AQE speed up our jobs? We're on Spark 3.1.", "expect": "trigger", "note": "version-dependent config advice" },
+    { "prompt": "yarn logs for our slow Spark app show long GC pauses on the executors - help me tune it.", "expect": "trigger", "note": "YARN log evidence, slow job" },
+    { "prompt": "My Spark job failed last night with exit code 137 - find the root cause.", "expect": "no-trigger", "note": "owned by etl-assistant (failed job)" },
+    { "prompt": "Here's the stack trace from the orders ETL run - what caused this error?", "expect": "no-trigger", "note": "owned by etl-assistant (error to root cause)" },
+    { "prompt": "Explain what the customer_daily_agg flow does end to end.", "expect": "no-trigger", "note": "owned by etl-assistant (explain flow)" },
+    { "prompt": "Review this ETL SQL script and suggest improvements - it hasn't run yet.", "expect": "no-trigger", "note": "owned by etl-assistant (static improvement, no runtime evidence)" },
+    { "prompt": "This Postgres query takes 30 seconds, here's the EXPLAIN ANALYZE output - make it fast.", "expect": "no-trigger", "note": "owned by sql-optimizer (database engine EXPLAIN)" },
+    { "prompt": "MySQL EXPLAIN shows type: ALL on this query - what index should I add?", "expect": "no-trigger", "note": "owned by sql-optimizer (database engine EXPLAIN)" },
+    { "prompt": "Regenerate the ETL knowledge base for the ingestion repo.", "expect": "no-trigger", "note": "owned by etl-knowledge-builder" },
+    { "prompt": "Write a PySpark job that deduplicates events by user_id.", "expect": "no-trigger", "note": "unrelated (authoring, not tuning)" },
+    { "prompt": "Install Spark on the new cluster nodes and set up the YARN queues.", "expect": "no-trigger", "note": "unrelated (cluster ops)" }
+  ]
+}

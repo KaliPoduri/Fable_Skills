@@ -1,6 +1,6 @@
 ---
 name: systematic-debugger
-description: "Diagnoses bugs hypothesis-first: reproduce, gather evidence, one hypothesis at a time, binary search. Use this skill when asked to debug, why is this failing, intermittent bug, works on my machine. Do not use to fix a known cause; use tdd-developer instead. Do not use for general code quality review; use code-reviewer instead. Covers evidence logs, git bisect, minimal repro, and fix verification."
+description: "Diagnoses bugs hypothesis-first: reproduce, gather evidence, one hypothesis at a time, binary search. Use this skill when asked to debug, why is this failing, intermittent bug, works on my machine. Do not use to fix a known cause; use tdd-developer instead. Do not use for general code quality review; use code-reviewer instead. ETL/Spark job failures belong to etl-assistant. Covers evidence logs, git bisect, minimal repro, and fix verification."
 metadata:
   version: "1.0.0"
   last-verified: "2026-07-06"

@@ -20,7 +20,8 @@
     { "prompt": "Refactor this class to reduce duplication.", "expect": "no-trigger", "note": "unrelated — refactoring, nothing is failing" },
     { "prompt": "Explain how git bisect works.", "expect": "no-trigger", "note": "conceptual question, no active failure to diagnose" },
     { "prompt": "Write a commit message for this bug fix.", "expect": "no-trigger", "note": "owned by git-workflow-expert" },
-    { "prompt": "Set up structured logging for the order service.", "expect": "no-trigger", "note": "unrelated — observability setup, no bug in play" }
+    { "prompt": "Set up structured logging for the order service.", "expect": "no-trigger", "note": "unrelated — observability setup, no bug in play" },
+    { "prompt": "Our nightly Spark ETL job failed with an executor OOM - what's the root cause?", "expect": "no-trigger", "note": "owned by etl-assistant (ETL-estate failure)" }
   ],
-  "_authoring_note": "20 cases: 13 should-trigger, 7 near-miss/no-trigger. Siblings named in the description (tdd-developer, code-reviewer) each have a near-miss case."
+  "_authoring_note": "21 cases: 13 should-trigger, 8 near-miss/no-trigger. Siblings named in the description (tdd-developer, code-reviewer, etl-assistant) each have a near-miss case."
 }

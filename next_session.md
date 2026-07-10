@@ -1,21 +1,15 @@
 # next_session.md
 
-Task: IMPLEMENT PLAN.md v5 — Spark ETL Assistant Suite (3 Copilot skills + etl-knowledge/ KB). Obey PLAN's implementing-agent block: [CANDIDATE] verify+log; [OPEN] ask, never guess; log deviations in implementation-notes.md ("Spark suite" section).
+Task: Spark ETL suite (PLAN.md v5). **All three skills AUTHORED 2026-07-10 session 2** (user offline from org, directed expert defaults): skills/etl-knowledge-builder, etl-assistant, spark-performance-advisor — version-adaptive (they ASK for U1 Spark version / U5 history-server / A10 config-scope at intake; nothing guessed). All Spark facts web-verified (3.5.8 + archives); zero [Unverified]. Validators 26/26 PASS + agentskills Valid ×5. Routing hardening: sql-optimizer + systematic-debugger got Spark boundary lines + near-miss evals.
 
-Status: **M0 kit BUILT (session 1, 2026-07-10); committed, unpushed.** Gate order (PLAN §8): M0 (BLOCKING, runs in USER's org Copilot) → M1 Skill C → M2 KB+Skill A → M3 Skill B. Everything downstream is blocked on the USER running M0 in-org.
+Status: authored ≠ accepted. ALL in-org gates OPEN: M0 spike (m0/ kit intact, run M0-CHECKLIST.md + fill 4 sheets when org access returns), M1 slow-job experiment, M2 KB pilot + owner sampling, M3 ≥10-incident test set. When U1 locks at M0: re-check config-table.md version notes against the locked minor (SOURCES.md has re-verify notes).
 
-Built — `m0/` (throwaway; delete after gate): `M0-CHECKLIST.md` (spike: policy A5, .agents/skills load incl. multi-root A6, ask-mode, file-write+git, session depth U8 + results template) · `m0-canary/` (pure-markdown canary, validates green) · `FACT-LOCK.md` (billing+HARD budget, Spark minor ver U1, scheduler U9, history-server access+retention U5, config-change scope A10 — U1/U5/A10 = M1 gates) · `BASELINE.md` · `ADOPTION-ONE-PAGER.md` · `PLAYBOOK-GOVERNANCE.md`. Deviation logged: canary rebuilt (phase0-canary was deleted).
+NEXT (user-side): org access → run m0/. NEXT (build-side, optional): stand up headless proxy eval runner (evals authored, not executed — standing gap for all 26 skills).
 
-Verified: `agentskills validate m0/m0-canary` → Valid; `validate_skills.py` → 23/23 PASS, m0/ not scanned.
-
-NEXT (blocked on USER): USER runs `m0/M0-CHECKLIST.md` in org Copilot, fills the four sheets. **Do not start M1 until U1, U5, A10 are LOCKED in FACT-LOCK.md.** Then M1 = author `spark-performance-advisor` per library conventions (template/, AUTHORING-GUIDE, both validators, SOURCES.md); every Spark config verified vs Apache Spark docs for the LOCKED minor version (AQE default-on only ≥3.2).
-
-Conventions: skills in skills/<name>/; no scripts in Spark skills; names fixed (etl-knowledge-builder, etl-assistant, spark-performance-advisor); quote YAML-risky descriptions.
-Key files: PLAN.md, UNKNOWNS.md, m0/, implementation-notes.md, progress.md, council/LOG.md. Prior 23-skill library: archived at archive/2026-06-skills-library-plan/ (eval execution still pending — separate track).
+Key files: PLAN.md, implementation-notes.md ("Spark suite" section — session-2 decisions/deviations), progress.md, m0/, UNKNOWNS.md.
+Conventions: no scripts in Spark skills; names fixed; quote YAML-risky descriptions; m0/ deleted only after gate closes.
 
 ### git
-```
-master, ahead of origin — unpushed (gh not authenticated locally; USER pushes)
-```
+Committed on master this session (session-2 commit); user pushes (gh not authenticated locally).
 
 Resume from this handoff unless the user's first message says otherwise.

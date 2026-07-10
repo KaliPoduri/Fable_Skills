@@ -20,6 +20,8 @@
     { "prompt": "Should we normalize this table or keep the JSON column? Pick data types too.", "expect": "no-trigger", "note": "owned by db-schema-designer" },
     { "prompt": "Check this query for SQL injection.", "expect": "no-trigger", "note": "owned by security-code-reviewer" },
     { "prompt": "Write a query that returns monthly revenue by region.", "expect": "no-trigger", "note": "unrelated (query authoring, not tuning)" },
-    { "prompt": "Set up PostgreSQL replication for the analytics cluster.", "expect": "no-trigger", "note": "unrelated (ops)" }
+    { "prompt": "Set up PostgreSQL replication for the analytics cluster.", "expect": "no-trigger", "note": "unrelated (ops)" },
+    { "prompt": "My Spark job is slow - here's the physical plan from the Spark UI SQL tab.", "expect": "no-trigger", "note": "owned by spark-performance-advisor" },
+    { "prompt": "Our Spark ETL job failed with FetchFailedException - find the root cause.", "expect": "no-trigger", "note": "owned by etl-assistant" }
   ]
 }
