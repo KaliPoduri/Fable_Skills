@@ -2,7 +2,8 @@
 
 Plan for: (1) codebase deep-understanding analyzer, (2) Spark log/plan performance advisor.
 Previous plan (skills library) archived at `archive/2026-06-skills-library-plan/`.
-Status: PLAN.md v3 — council round 1 done (R1–R9, R11 accepted; R10 rejected; see council/LOG.md). Round 2 cross-examination next.
+Status: PLAN.md v4 — council round 2 done (S1–S8 all accepted; cross-exam fully settled, no disputes; see council/LOG.md). Round 3 = confirmation pass (user-chosen), then Phase 5 finalization.
+Fact updates from round 2 (both seats verified): Copilot billing is usage-based since 2026-06-01 (premium-request model legacy); edit mode also writes files (agent mode = writes + terminal); gh skill CLI exists since Apr 2026 (public preview).
 New opens from round 1: U9 scheduler type; U10 adoption plan; assumptions A5–A11 (agent-mode policy, multi-root discovery, repo visibility, scheduler-config completeness, history-server access, config-change scope, log sensitivity) — mostly resolved at M0 spike. U2/U3 note: resolved into PLAN §3 design (staleness stamps + scope statement; KB content = navigation/lineage/narrative, pointers not copies).
 
 ## Known knowns

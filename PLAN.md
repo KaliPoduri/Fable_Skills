@@ -1,129 +1,138 @@
-# PLAN.md — Spark ETL Assistant Suite (draft v3, after council round 1)
+# PLAN.md — Spark ETL Assistant Suite (draft v4, after council round 2)
 
 Tags: `[USER]` = said in interview · `[CONFIRMED]` = user-approved or verified (basis noted) · `[CANDIDATE]` = proposal, verify before use · `[OPEN]` = unresolved.
 Register: UNKNOWNS.md. Council log: council/LOG.md. Previous plan archived at `archive/2026-06-skills-library-plan/`.
 
 ## 1. What we're building
 
-- [USER] Two capabilities for Spark-newbie users: (1) a codebase deep-understanding tool for root-cause analysis of job failures, how-it-works questions, and performance advice on repo artifacts; (2) an interactive Spark log/physical-plan performance advisor.
+- [USER] Two capabilities for Apache-Spark-newbie users: (1) a codebase deep-understanding tool for root-cause analysis of job failures, how-it-works questions, and performance advice on repo artifacts; (2) an interactive Spark log/physical-plan performance advisor.
 - [USER] Harness: GitHub Copilot in VS Code (org license) ONLY — the org does not have Claude Code. Org policy allows code and logs in it.
-- [CONFIRMED] (both council seats verified against GitHub/VS Code docs; user approved R2) Skills load in agent-capable Copilot surfaces; Skill A additionally REQUIRES Copilot **agent mode** (only agent mode writes files and runs terminal commands) and that the org's Copilot policy has Agent Skills enabled. In ask mode, skills must state which checks they could not run (e.g. "staleness unchecked") instead of silently skipping them.
-- [USER] Ecosystem: 3–10 repos, hundreds to ~2000 files — SQL, shell scripts, Python/PySpark, scheduler configs, config/params files. Spark 3.x ([OPEN] U1: exact minor version).
-- [USER] Users: the dev team (repos cloned, Spark newbies). Support/ops are out of scope for now (deferred by user).
+- [CONFIRMED] (both council seats, GitHub/VS Code docs; user approved R2/S8) Skills load in agent-capable Copilot surfaces. Skill A requires **agent mode** — the mode that combines file writes with terminal commands (edit mode writes files but has no terminal). Whether skills load in ask mode AT ALL is verified at M0; the "declare unchecked steps" fallback applies only if they do — otherwise adoption material simply states "agent mode required".
+- [CANDIDATE] The org's Copilot policy controls that govern agent features/skills must permit this — the exact policy name/scope is unverified; confirmed at M0 with the Copilot admin.
+- [USER] Ecosystem: 3–10 repos, hundreds to ~2000 files — SQL, shell scripts, Python/PySpark, scheduler configs, config/params files. Apache Spark 3.x ([OPEN] U1: exact minor version).
+- [USER] Users: the dev team (repos cloned, Spark newbies). Support/ops deferred.
 - [USER] Success: #1 correct root causes in minutes not hours; #2 measurable job speedups from the advisor.
-- [CONFIRMED] (user approved R7) Baseline: at M0, record the actual time-to-root-cause of 3–5 recent incidents, so success #1 is measurable against something real.
+- [CONFIRMED] (user approved R7) Baseline: at M0, record actual time-to-root-cause of 3–5 recent incidents.
 - [USER] Constraints: advise-only, never touch production, no hard deadline. A non-prod environment exists for safe testing.
-- [CONFIRMED] (user approved R11) "Advise-only" clarified: never auto-change application code; writing knowledge-base/doc files when the user asks for it is allowed.
+- [CONFIRMED] (user approved R11) "Advise-only" = never auto-change application code; KB/doc writes on user request are allowed.
 
 ## 2. Packaging
 
-- [CONFIRMED] (user approved) **Three Agent Skills in the existing Fable Skills library** — same repo, SKILL.md conventions, validators, source-verified references, evals, manual-copy distribution:
-  - Skill A `etl-knowledge-builder` — a developer runs it (agent mode) to (re)generate the knowledge base. Batch task, run rarely.
-  - Skill B `etl-assistant` — everyday Q&A: paste an error → root cause; how does flow X work; improve this SQL/script (static analysis).
-  - Skill C `spark-performance-advisor` — interactive tuning interview over runtime evidence (physical plans, Spark UI).
+- [CONFIRMED] (user approved) **Three Agent Skills in the existing Fable Skills library** — SKILL.md conventions, validators, source-verified references, evals, manual-copy distribution:
+  - Skill A `etl-knowledge-builder` — dev-run (agent mode) KB (re)generation. Batch, rare.
+  - Skill B `etl-assistant` — everyday Q&A: error → root cause; explain flow X; improve this SQL/script (static).
+  - Skill C `spark-performance-advisor` — interactive tuning over runtime evidence (physical plans, Spark UI).
   - Plus the **knowledge base** — a sharded directory of markdown files (§3).
-- [CONFIRMED] (user approved R11) Skill names above are fixed unless the user renames them by M0 exit — stable names before any evals are written.
-- [CONFIRMED] (both seats verified against GitHub/VS Code docs) Copilot in VS Code reads project skills from `.agents/skills/` (also `.github/skills/`, `.claude/skills/`); the feature is recent and still marked experimental in places — re-verify on breakage (risk R5).
-- [CONFIRMED] (user approved R8) **Routing hardening** (Copilot picks skills by model judgment, not deterministically): each skill description carries a disambiguation line naming when to use the OTHER skills; a short routing + chunk-protocol note is added to each code repo's `copilot-instructions.md` / `AGENTS.md` [CANDIDATE mechanism — verify file name/behavior at M0]; evals include cross-trigger cases; "handoff" between skills means explicitly telling the user which skill to invoke next — no automatic handoff exists.
-- [CANDIDATE] Alternatives rejected in round 1 (user arbitrated): MCP server / RAG app (hosting + maintenance burden), Claude-Code subagent (wrong harness), plain prompt doc (can't carry references/protocol). The Codex seat's "use Copilot's native repo indexing / Spaces instead of a generated KB" was REJECTED by the user — no native-context trial; the generated KB stands.
-- [CONFIRMED] (per repo handoff notes read this session) Library convention "no scripts inside skills" applies — all three are pure markdown.
-- [CANDIDATE] Distribution stays manual-copy (library decision); GitHub's `gh skill` CLI install path exists but is public preview (requires GitHub CLI ≥2.90) — not relied on.
+- [CONFIRMED] (user approved R11) Names fixed unless the user renames by M0 exit.
+- [CONFIRMED] (both seats, GitHub/VS Code docs) Copilot in VS Code reads project skills from `.agents/skills/` (also `.github/skills/`, `.claude/skills/`); feature is recent/experimental in places — re-verify on breakage (R5).
+- [CONFIRMED] (user approved R8/S8) **Routing hardening:** disambiguation lines in every skill description; a routing + chunk-protocol note in each code repo's `copilot-instructions.md` / `AGENTS.md` [CANDIDATE mechanism — M0]; cross-trigger eval cases; explicit invocation examples for all three skills in adoption material; "handoff" = telling the user which skill to invoke next (no automatic mechanism exists).
+- [CANDIDATE] Alternatives rejected in round 1 (user arbitrated): MCP server / RAG app; Claude-Code subagent; plain prompt doc. Codex's native repo indexing/Spaces trial REJECTED by user — the generated KB stands.
+- [CONFIRMED] (user approved; S8 clarification) "No scripts inside skills" is THIS library's local policy, not a platform limit (Copilot supports scripts in skills) — all three skills are pure markdown by our choice.
+- [CONFIRMED] (Claude seat, GitHub changelog 2026-04-16) `gh skill` CLI (public preview, GitHub CLI ≥2.90) now exists as a future install alternative; distribution stays manual-copy for now (library decision).
 
 ## 3. The knowledge base (sharded data model)
 
-- [USER] Must be chunk-navigable and efficient for LLM parsing — never one huge file.
-- [CONFIRMED] (user approved R3) Sharded layout (directory `etl-knowledge/`, all budgets [CANDIDATE] to tune at M2):
+- [USER] Chunk-navigable, efficient for LLM parsing — never one huge file.
+- [CONFIRMED] (user approved R3/S7) Sharded layout (directory `etl-knowledge/`, budgets [CANDIDATE] tuned at M2):
 
   | File | Contents | Budget |
   |---|---|---|
-  | `INDEX.md` | THIN root: ecosystem overview, repo table with links to per-repo indexes, routing guide ("error names table T → lineage/<domain>.md; job J → jobs/<job>.md") | ~100 lines |
-  | `repos/<repo>-index.md` | Per-repo job inventory: job → schedule → entry script → 1-line purpose → chunk link | ~150 lines each |
-  | `jobs/<job>.md` | Per job: plain-language flow narrative, entry points, tables/files read & written, key params and where set, upstream/downstream jobs, known failure points, `repo:path` pointers | ~400 lines each |
-  | `lineage/<domain>.md` | Table lineage split by data domain / table prefix, with a split rule when a file exceeds budget | ~300 lines each |
+  | `INDEX.md` | THIN root: overview, repo table linking per-repo indexes, routing guide | ~100 lines |
+  | `repos/<repo>-index.md` | Per-repo job inventory: job → schedule → entry script → purpose → chunk link; slug↔real-name map | ~150 lines each |
+  | `jobs/<job>.md` | Per job: plain-language flow narrative, entry points, tables/files read & written (each claim with `repo:path:line` pointer), key params and where set, upstream/downstream, known failure points | ~400 lines each |
+  | `lineage/<domain>.md` | Table lineage by data domain/prefix, split rule on budget overflow; claims carry pointers | ~300 lines each |
   | `glossary.md` | Org terms, job families, table naming, newbie language | ~150 lines |
-  | `errors/<YYYY-MM>.md` | Error-pattern → confirmed cause → fix, dated files, split monthly | ~300 lines each |
-  | `meta/generation.md` | Repos + commit hashes, when generated, coverage gaps, sample-verification accuracy %, build-state checklist (resumable builds) | small |
+  | `errors/index.md` | Error-pattern index: symptom/pattern → dated file + entry (errors are retrieved by symptom, not date) | ~150 lines |
+  | `errors/<YYYY-MM>.md` | Dated entries: pattern → confirmed cause → fix (schema §5) | ~300 lines each |
+  | `meta/generation.md` | Repos + commit hashes, generated when, coverage gaps, per-repo verification accuracy %, build-state checklist, per-job build-cost log | small |
 
-- [CONFIRMED] (user approved R11) Filename safety: job chunk files use a slug (lowercase alphanumeric + hyphens); collisions get a numeric suffix; slug↔real-name mapping lives in the per-repo index.
-- [CANDIDATE] **Pointers, not copies:** chunks hold navigation, lineage, and narrative — the live repo stays the source of truth. [CONFIRMED] (user approved R11) Evidence excerpts are allowed but capped (~10 lines, always with a `repo:path:line` pointer, never whole files).
-- [CANDIDATE] **Staleness stamps:** every generated file records source commit hashes; Skill B compares them to the live repo (agent mode) and warns when behind. [CONFIRMED] (user approved R11) Scope statement inside the KB: stamps cover CODE at those commits only — runtime scheduler state, deployed configs, table schemas/stats, and out-of-repo parameters are NOT covered.
-- [CANDIDATE] **Chunk protocol** (in Skill B, and summarized in `copilot-instructions.md` per R8): (1) read root `INDEX.md` first, nothing else; (2) open at most the 1–3 files the routing guide points to; (3) follow pointers into live code before any conclusion about code; (4) never bulk-read the KB.
-- [USER] Regeneration: on demand, by a developer, when they know things changed.
-- [CANDIDATE] Home: dedicated small repo or a folder in the primary workspace, cloned alongside code repos (multi-root workspace) — decided at M0 after the discovery test.
+- [CONFIRMED] (user approved R11) Filename safety: job slugs (lowercase alphanumeric + hyphens, numeric suffix on collision).
+- [CANDIDATE] **Pointers, not copies:** chunks hold navigation/lineage/narrative; live repo is the code source of truth. [CONFIRMED] (user approved R11/S3) Excerpts ≤10 lines with pointers — a brevity rule, NOT a privacy control; privacy is handled by content-based redaction (§7).
+- [CANDIDATE] **Staleness stamps:** generated files record source commits; Skill B compares to live repo (agent mode) and warns. [CONFIRMED] (user approved R11/S3) Scope: stamps cover CODE only — runtime scheduler state, deployed configs, schemas/stats, out-of-repo params are NOT covered; this caveat is emitted at point-of-use in answers (§5/§6), not only in metadata.
+- [CANDIDATE] **Chunk protocol** (in Skill B + copilot-instructions note): read root INDEX first; open ≤3 routed files; verify in live code before concluding; never bulk-read the KB.
+- [USER] Regeneration: on demand, by a developer.
+- [CONFIRMED] (user approved S7) Home: **dedicated small repo preferred** — keeps stale KB text out of Copilot's implicit context in code repos and keeps KB stamping/diffing clean; final call recorded at M0.
 
 ## 4. Skill A — `etl-knowledge-builder` (generator; agent mode required)
 
-- [CONFIRMED] (user approved R4) **The job inventory is seeded from authority, not inferred:** a scheduler export or a human-maintained job list is the input of record; LLM tracing fills in details per job. If neither exists, the builder creates the list interactively with the runner and marks it human-confirmed.
-- [CANDIDATE] Flow per repo: read scheduler configs first → confirm inventory against the authoritative seed → trace each job (entry script → SQL/Python called → tables read/written → params consumed) → write `jobs/` chunks → `lineage/` → per-repo index → root `INDEX.md` last → stamp commits, record coverage gaps and accuracy findings in `meta/generation.md`.
-- [CANDIDATE] **Resumable builds:** `meta/generation.md` keeps a build-state checklist (repo/job done or pending) so a build continues across sessions instead of restarting; sessions may be cut short by quota or session limits (risk R1/R4).
-- [CANDIDATE] Incremental mode: regenerate only one changed repo's chunks; refresh its per-repo index, affected lineage files, and the root index.
-- [CANDIDATE] Generation is LLM-driven (no parser program to maintain — library forbids scripts in skills); the accuracy risk this creates is mitigated by the authoritative seed (above) and the M2 sample-verification gate (§8).
+- [CONFIRMED] (user approved R4) **Authoritative job seed:** scheduler export or human-maintained job list is the inventory of record; LLM tracing fills per-job detail. If neither exists, the builder creates the list interactively and marks it human-confirmed.
+- [CONFIRMED] (user approved S2) **Mechanical cross-checks during build** (instructions in SKILL.md, executed via agent-mode terminal — no shipped scripts): every claimed table read/write is grep-confirmed at the cited site; every entry script's existence is path-confirmed; claims that fail the check are marked unverified in the chunk, never stated as fact.
+- [CANDIDATE] Flow per repo: scheduler configs first → confirm inventory against seed → trace each job → cross-check claims → write `jobs/` chunks → `lineage/` → per-repo index → root `INDEX.md` last → stamp commits; record coverage gaps, accuracy findings, and per-job build cost (prompts/tokens/time) in `meta/generation.md`.
+- [CONFIRMED] (user approved S2) **Regeneration produces a reviewable diff** (KB lives in git; regen lands as a PR/diff, not a silent overwrite).
+- [CANDIDATE] **Resumable builds:** build-state checklist in `meta/generation.md`; sessions may be cut short by limits (R1/R4).
+- [CANDIDATE] Incremental mode: regenerate one changed repo's chunks + its index + affected lineage + root index.
+- [CANDIDATE] Generation is LLM-driven (library policy: no scripts); accuracy risk mitigated by seed + cross-checks + per-repo owner sampling (§8 M2).
 
 ## 5. Skill B — `etl-assistant` (everyday Q&A + RCA)
 
-- [USER] Three jobs in one skill: error → root cause + solution; explain a functionality/flow; improve this SQL/script.
-- [CANDIDATE] **RCA flow:** (1) take the pasted error (plus job name / full log if available); (2) run the safe-to-share checklist (§7) before the user pastes logs; (3) route via root INDEX → per-repo index → job chunk → follow pointers into LIVE code; (4) check staleness stamps (agent mode; in ask mode say "staleness unchecked"); (5) classify cause code / data / infra; (6) fixed answer template: Root cause (plain language) → Evidence (file:line, excerpts ≤10 lines) → Category → Proposed fix (advise-only) → How to verify safely → Confidence (high/medium/low) and what would raise it.
-- [CONFIRMED] (user approved R7) **"Insufficient evidence" is a required behavior:** when the inputs don't support a conclusion, the skill must say so and list what's missing — guessing is a gate-failing defect.
-- [USER] When the cause is NOT in the code: say so plainly, explain why, give step-by-step checks (data file, upstream job, cluster).
-- [CONFIRMED] (user approved R5) **Playbook governance:** after the user confirms a root cause, the skill drafts an entry — fixed schema: date, job, symptom/error pattern, confirmed cause, fix, verification evidence, redaction-check done — and the entry lands via a pull request, never a direct append. Data values are stripped before anything persists.
-- [CANDIDATE] **Explain flow:** route to job chunk(s), narrate in plain language, cite pointers.
-- [CANDIDATE] **Perf-advice flow (static):** analyze the artifact plus KB context; when the user has runtime evidence (plan, UI timings), explicitly tell them to invoke `spark-performance-advisor` (no automatic handoff — R8). Boundary: B advises from code, C from runtime evidence.
+- [USER] Three jobs: error → root cause + solution; explain a flow; improve this SQL/script.
+- [CONFIRMED] (user approved S3) **Artifact-receipt behavior:** when the user pastes/points to a log, plan, or screenshot, the FIRST response runs the safe-to-share checklist and asks confirmation before analysis — newbies paste first and read warnings second.
+- [CANDIDATE] **RCA flow:** (1) error (+job name/full log); (2) route via root INDEX → per-repo index → job chunk → LIVE code via pointers; (3) staleness check (agent mode; otherwise declare unchecked, per §1); (4) classify code / data / infra; (5) template: Root cause (plain language) → Evidence (file:line, excerpts ≤10 lines) → Category → Proposed fix (advise-only) → How to verify safely → Confidence + what would raise it → [CONFIRMED] (user approved S3) runtime-state caveat whenever the diagnosis depends on deployed config/schedule/schema ("KB covers code only — verify the live value before acting").
+- [CONFIRMED] (user approved R7) **"Insufficient evidence" is required behavior** — say so and list what's missing; guessing is a gate-failing defect.
+- [USER] Cause NOT in code: say so plainly, explain why, give step-by-step checks.
+- [CONFIRMED] (user approved R5/S5) **Playbook governance:** after user-confirmed root cause, the skill drafts an entry — schema: date, job, symptom/error pattern, confirmed cause, fix, verification evidence, redaction-check done — landing via PR only. Governance completed at M0: named reviewer role, approval criteria, disputed-cause handling (disputed entries stay out or land marked contested), and a named security owner for anything persisted.
+- [CANDIDATE] **Explain flow:** route to chunk(s), narrate plainly, cite pointers.
+- [CANDIDATE] **Perf-advice flow (static):** artifact + KB context; users with runtime evidence are explicitly told to invoke `spark-performance-advisor`. Boundary: B advises from code, C from runtime evidence.
 - [USER] Ops triage mode: deferred.
 
 ## 6. Skill C — `spark-performance-advisor` (interactive tuning)
 
-- [USER] Inputs users can obtain: physical plan text and Spark UI access; full YARN logs also exist. Platform believed on-prem YARN [OPEN U1].
-- [CONFIRMED] (user approved R11) **Intake separates "job failed" from "job slow"** — different evidence, different flow; failed-job root-causing is Skill B's territory (the intake says so and points there).
-- [USER] Interview back-and-forth in plain language before prescribing; then deliver SQL optimization + specific config parameters for the specific scenario.
-- [CANDIDATE] Intake (one question at a time, newbie-phrased): which job, symptom, what evidence they have; TEACH how to fetch missing evidence — including for FINISHED jobs (Spark History Server / event logs [CANDIDATE verify names and access at M0/U1]) — exact steps depend on platform [OPEN U1, U5].
-- [CONFIRMED] (verified by both council seats against Apache Spark docs) The Spark 3 auto-optimizer is **Adaptive Query Execution (AQE)** and it is default-ON only since Spark 3.2 — earlier 3.x has it off by default. The exact minor version is therefore a REQUIRED input for config advice: the skill asks for it (or how to find it) before prescribing configs.
-- [CANDIDATE] Reference files (each source-verified against official Spark docs for the org's minor version at authoring time): physical-plan reading guide (operators in plain words); diagnosis playbooks (skew, spill, partition count, join strategy, small files, filter pushdown); config reference table (parameter → plain-language meaning → when to change → version notes; job-scoped vs cluster-scoped flagged per parameter).
-- [CONFIRMED] (user approved R7) **Output template with measurement:** Diagnosis → Why (their evidence) → Fix (SQL and/or config) → How to try it in non-prod (baseline = repeated runs, not one) → Minimum improvement worth keeping + rollback step → Confidence. Config changes need the job owner's approval before applying anywhere.
-- [CONFIRMED] (user approved R5) Safe-to-share checklist runs before the user pastes plans/logs/screenshots.
-- [USER] Advise-only; never executes anything against clusters.
+- [USER] Inputs: physical plan text, Spark UI access; full YARN logs exist. Platform believed on-prem YARN [OPEN U1].
+- [CONFIRMED] (user approved R11) Intake separates "job failed" (→ Skill B) from "job slow" (this skill).
+- [USER] Interview back-and-forth in plain language, then SQL optimization + specific config parameters for the specific scenario.
+- [CONFIRMED] (user approved S3) Artifact-receipt behavior as in §5 (checklist first, then analysis).
+- [CANDIDATE] Intake teaches fetching missing evidence — including for FINISHED jobs (Spark History Server / event logs; access AND retention are [OPEN] U5) — exact steps depend on U1.
+- [CONFIRMED] (both seats, Apache Spark docs) The Spark 3 optimizer is **Adaptive Query Execution (AQE)**, default-ON only since Spark 3.2 (`spark.sql.adaptive.enabled`). Exact minor version is REQUIRED input before config advice.
+- [CANDIDATE] Reference files (source-verified against Apache Spark docs for the org's minor version at authoring): physical-plan reading guide; diagnosis playbooks (skew, spill, partition count, join strategy, small files, filter pushdown); config table (parameter → plain meaning → when to change → version notes → job-scoped vs cluster-scoped).
+- [CONFIRMED] (user approved R7/S4) **Output template with experiment protocol:** Diagnosis → Why (their evidence) → Fix → Try it in non-prod under the protocol (same input snapshot; cache state and cluster load noted; ≥3 runs; median + p95; agreed minimum-improvement threshold; rollback step; cost-vs-runtime noted; prod-like data scale or the caveat recorded) → Confidence → runtime-state caveat where relevant. Config changes need job-owner approval.
+- [USER] Advise-only; never executes against clusters.
 
 ## 7. Cross-cutting conventions (all three skills)
 
-- [USER] Newbie contract: no unexplained jargon; every technical term defined in parentheses on first use; steps assume zero Spark knowledge.
-- [CANDIDATE] Honesty contract: every conclusion carries evidence and a confidence label; "I cannot tell from what I have" instead of guessing; staleness warnings mandatory (or "unchecked" declared in ask mode).
-- [CONFIRMED] (user approved R5) **Redaction rules:** a safe-to-share checklist (does this log/plan contain customer identifiers, secrets, tokens, data values?) runs before users paste artifacts; data values are stripped before ANY content persists to the KB.
-- [CANDIDATE] Library conventions: SKILL.md + references/ + evals/ structure, both validators green, SOURCES.md per skill, README per skill — as the existing 23 skills.
-- [CONFIRMED] (user approved R7) Library evals do not validate the target harness — every milestone gate includes smoke tests run INSIDE Copilot (across the models the org actually enables).
+- [USER] Newbie contract: no unexplained jargon; terms defined in parentheses on first use; steps assume zero Spark knowledge.
+- [CANDIDATE] Honesty contract: evidence + confidence on every conclusion; "I cannot tell from what I have" instead of guessing; staleness/runtime caveats at point-of-use.
+- [CONFIRMED] (user approved R5/S3) **Redaction is content-based:** the safe-to-share checklist names content types (secrets, tokens, customer identifiers, raw row values); anything persisted to the KB is stripped of data values regardless of length. Line caps are brevity rules only.
+- [CANDIDATE] Library conventions: SKILL.md + references/ + evals/ + SOURCES.md + README, both validators green.
+- [CONFIRMED] (user approved R7/S4) Library evals are authoring checks only; **acceptance = a recorded matrix of fixed test cases run inside Copilot across the models and modes the org enables**, with failures logged, at every milestone gate.
 
-## 8. Milestones (reordered per R9 — no deadline, quality gates instead)
+## 8. Milestones (no deadline — quality gates)
 
-- [CONFIRMED] (user approved R1) **M0 — feasibility spike (blocking, ~half a day):** in org Copilot agent mode verify: Agent Skills enabled by org policy; skills load from `.agents/skills/` (including from a secondary folder of a multi-root workspace); the agent can write files and run git; observe real session depth/limits. Also capture the success baseline (3–5 recent incidents' time-to-root-cause) and decide the KB home. Gate: all checks pass, or the plan's packaging section is revisited.
-- [CONFIRMED] (user approved R9) **M1 — Skill C first** (no KB dependency, fastest measurable win). Gate [CANDIDATE thresholds]: one genuinely slow job tested end-to-end in non-prod — baseline from repeated runs, advice applied by a human with owner approval, measured improvement above an agreed threshold, or an honest "no safe improvement found"; rollback documented.
-- [CONFIRMED] (user approved R4) **M2 — KB format + Skill A pilot:** one repo, seeded from the authoritative job list; a pipeline owner verifies a random sample of jobs (inputs, outputs, lineage) against ground truth; accuracy % and misses recorded in `meta/generation.md`. Gate [CANDIDATE threshold]: no undetected wrong lineage in the sample; format budgets confirmed or adjusted.
-- [CONFIRMED] (user approved R7) **M3 — Skill B:** tested against a FIXED set of past incidents with known root causes. Gate: zero high-confidence wrong answers; every answer cites evidence; incidents the tool can't resolve produce a correct "insufficient evidence" response.
+- [CONFIRMED] (user approved R1/S1/S5/S6/S7/S8) **M0 — feasibility spike + fact lock (blocking):**
+  - Verify in org Copilot: agent-feature/skills policy enabled; skills load from `.agents/skills/` (incl. secondary root of a multi-root workspace); whether skills load in ask mode; agent writes files + runs git; observe session depth.
+  - **Fact-lock table** recorded in the repo: org billing plan (usage-based vs legacy — GitHub switched to usage-based 2026-06-01) + budget cap; exact Apache Spark minor version; scheduler type (U9); relevant org policies; history-server access + event-log retention (U5); dev config-change permissions (A10).
+  - Capture success baseline (3–5 recent incidents' time-to-root-cause). Decide KB home (dedicated repo preferred). Name the adoption owner; adoption deliverables: rollout channel, "which skill do I use?" one-pager with invocation examples, one demo incident, support channel. Complete playbook governance (reviewer role, approval criteria, disputed-cause handling, security owner).
+  - Gate: all checks pass or §2 is revisited. **M1 entry criteria: U1, U5, A10 resolved.**
+- [CONFIRMED] (user approved R9/S4) **M1 — Skill C first:** one genuinely slow job end-to-end in non-prod under the §6 experiment protocol, owner-approved. Gate: improvement above the agreed threshold, or an honest "no safe improvement found"; rollback documented.
+- [CONFIRMED] (user approved R4/S2/S4/S1) **M2 — KB format + Skill A pilot:** one repo, seeded + cross-checked. Owner verifies a random sample — ≥20% of the repo's jobs or ≥10 jobs, whichever is larger — including negative checks (claims that should NOT be there); second-reviewer signoff for high-value jobs; accuracy % and misses recorded. Per-job build cost measured and extrapolated to the full estate — full build green-lit only if affordable. Gate: no undetected wrong lineage in the sample; budgets confirmed/adjusted.
+- [CONFIRMED] (user approved R7/S4) **M3 — Skill B:** fixed test set of ≥10 past incidents with known causes, including ≥2 whose cause is NOT in the code and ≥2 designed insufficient-evidence traps. Gate: zero high-confidence wrong answers; every answer cites evidence; traps produce correct "insufficient evidence" responses.
 - [USER] Ops triage milestone: deferred.
 
 ## 9. Challenges & Risks
 
-- [CONFIRMED] (Claude seat, GitHub billing docs; user approved R6) R1 Build cost model: one agent-mode user prompt = 1 premium request (tool calls within it are not billed separately), but org premium-request quotas and short-term rate limits can stall multi-session builds. Mitigation: per-repo incremental builds, resumable build-state checklist.
-- [CANDIDATE] R2 Staleness: regen-on-demand means the KB WILL lag. Mitigation: stamps + mandatory warnings + live-code verification + explicit scope statement (stamps cover code only).
-- [CANDIDATE] R3 Confidently-wrong advice applied by newbies. Mitigation: evidence + confidence labels, advise-only, non-prod testing, owner approval for configs, M1–M3 gates test for it.
-- [CANDIDATE] R4 Copilot per-session agentic depth is genuinely undocumented; sessions may cut builds short. Mitigation: resumable builds; M0 observes real limits.
-- [CONFIRMED] (docs/COMPATIBILITY.md + both seats) R5 Skills format is preview-era/experimental and churns; re-verify on breakage.
-- [CANDIDATE] R6 Oversized inputs (plans/logs exceed paste limits). Mitigation: teach extracting the relevant section; accept files placed in the workspace.
-- [CANDIDATE] R7 KB degenerating into a stale code copy. Mitigation: pointers-not-copies + excerpt cap are hard authoring rules.
-- [CANDIDATE] R8 Wrong-KB poisoning (bigger than staleness): LLM tracing errors mislead every later answer. Mitigation: authoritative job seed, owner sample-verification at M2, coverage gaps declared, accuracy % recorded.
-- [CANDIDATE] R9 Skill mis-routing (model-decided): mitigated by disambiguation descriptions, copilot-instructions note, cross-trigger evals.
+- [CONFIRMED] (both round-2 seats, GitHub docs; user approved S1) R1 Cost: GitHub moved Copilot to usage-based (token/AI-credit) billing effective 2026-06-01; the old "1 prompt = 1 premium request" model is legacy. Long, token-heavy KB builds can cost real money. Mitigation: M0 verifies the org's plan + sets a budget cap; M2 measures and extrapolates before the full build; per-repo incremental + resumable builds.
+- [CANDIDATE] R2 Staleness: regen-on-demand lags. Mitigation: stamps + point-of-use caveats + live-code verification.
+- [CANDIDATE] R3 Confidently-wrong advice: evidence + confidence labels, advise-only, non-prod protocol, owner approval, gates test for it.
+- [CANDIDATE] R4 Copilot per-session agentic depth undocumented; builds may cut short. Mitigation: resumable builds; M0 observes limits.
+- [CONFIRMED] (docs/COMPATIBILITY.md + both seats) R5 Skills format preview-era churn; re-verify on breakage.
+- [CANDIDATE] R6 Oversized inputs: teach extracting relevant sections; accept workspace files.
+- [CANDIDATE] R7 KB degenerating into stale code copy: pointers-not-copies + excerpt cap as hard authoring rules.
+- [CANDIDATE] R8 Wrong-KB poisoning (the central KB risk): authoritative seed + build-time mechanical cross-checks + per-repo owner sampling with negative checks + regen diffs + declared coverage gaps.
+- [CANDIDATE] R9 Skill mis-routing (model-decided): disambiguation descriptions, instructions-file note, cross-trigger evals, invocation examples.
 
 ## 10. Remaining Unknowns
 
-- [OPEN] U1 Platform + exact Spark 3.x minor version (blocking for Skill C's config table; AQE default flipped at 3.2). Verify with the platform team.
-- [OPEN] U5 Exact log/plan/UI fetch instructions, incl. history server access for finished jobs — blocked on U1.
-- [OPEN] U8 Copilot per-session agentic depth + org premium-request quota — observed at M0.
-- [OPEN] U9 Which scheduler (the tracing instructions differ by scheduler type) — determined at M0/M2 from the repos themselves.
-- [OPEN] U10 Adoption: how the dev team discovers/learns the skills; owner and channel undecided.
+- [OPEN] U1 Platform + exact Apache Spark 3.x minor version — M0 fact lock; M1 entry criterion.
+- [OPEN] U5 Fetch instructions incl. history-server access AND event-log retention — M0; M1 entry criterion.
+- [OPEN] U8 Copilot per-session agentic depth + org billing plan/quota — observed/locked at M0.
+- [OPEN] U9 Scheduler type — M0 fact lock (Skill A authoring depends on it).
+- [OPEN] U10 Adoption ownership — owner NAMED at M0; deliverables defined in §8.
 
-## 11. Assumptions register (all [OPEN], phrased as questions, mostly resolved by M0)
+## 11. Assumptions register (all [OPEN], resolved by M0 unless noted)
 
-- [OPEN] A5 Is Copilot agent mode (and the Agent Skills feature) enabled by the org's Copilot policy?
+- [OPEN] A5 Do the org's Copilot policy controls permit agent features/skills (exact policy name unverified)?
 - [OPEN] A6 Does skill discovery work from a secondary folder of a multi-root VS Code workspace?
 - [OPEN] A7 Can every dev see/clone all 3–10 repos?
-- [OPEN] A8 Are the scheduler configs in the repos COMPLETE (no jobs defined only inside the scheduler UI)?
-- [OPEN] A9 Do devs have Spark History Server / event-log access for finished jobs?
-- [OPEN] A10 May devs change Spark configs at job scope (vs cluster scope, which needs admins)?
-- [OPEN] A11 Do pasted logs ever contain customer data/secrets (drives how strict the redaction checklist must be)?
+- [OPEN] A8 Are the scheduler configs in the repos COMPLETE (no jobs defined only in the scheduler UI)?
+- [OPEN] A9 Do devs have Spark History Server / event-log access for finished jobs (and how long are logs retained)?
+- [OPEN] A10 May devs change Spark configs at job scope (vs cluster scope)? — M1 entry criterion.
+- [OPEN] A11 Do pasted logs ever contain customer data/secrets (drives redaction strictness)?
