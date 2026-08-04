@@ -33,8 +33,13 @@ def _nbunch_iter(graph, nbunch):
     """
     if nbunch is None:
         return list(graph._node)
-    if nbunch in graph._node:
-        return [nbunch]
+    try:
+        if nbunch in graph._node:
+            return [nbunch]
+    except TypeError:
+        # Unhashable (a list of nodes, as G.edges(sorted(visited)) passes) --
+        # it cannot be a single node, so fall through to the container case.
+        pass
     try:
         return [n for n in nbunch if n in graph._node]
     except TypeError:
