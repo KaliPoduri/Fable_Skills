@@ -135,3 +135,63 @@ back to the string `"unknown"`. Shipping
 `runtime/dist/graphifyy-0.9.32.dist-info/METADATA` and putting that directory on
 `sys.path` makes the real version resolve — keeping `graphify/` byte-identical
 while `--version` and the skill version stamps stay correct.
+
+---
+
+## 11. Bugs in a structural parser only surface as *missing output*
+
+A grammar shim never crashes when it is wrong — it silently produces fewer
+nodes. Every real defect in this port was found by extracting a fixture and
+reading the graph, never by inspecting the parser:
+
+| Symptom in the graph | Actual cause |
+|----------------------|--------------|
+| TypeScript file yielded only a file node | `export` was in `import_keywords`, so `export class Foo {}` was consumed as an import statement and the class never parsed |
+| Classes parsed but no methods | JS/TS methods have no introducing keyword; needed a rule gated on being inside a class body |
+| Go had functions but no methods | `func (s *Store) Add(...)` puts a receiver between keyword and name |
+| C produced one node and no edges | `_get_c_func_name` walks `declarator` → `function_declarator` → `identifier`; without that chain the name resolved to None and the function was skipped |
+| Ruby produced nothing usable | `def…end` needs keyword counting, not bracket matching |
+| Ruby superclass missing after that fix | `end`-style bodies make the *last header token* the base class, so an exclusive range dropped it |
+
+**Lesson:** for this class of work, the fixture-and-diff loop is the whole
+methodology. Budget for it rather than for writing the parser.
+
+## 12. Verify a suspicious absence before "fixing" it
+
+Java's `round(sum)` produced no `calls` edge, which looked exactly like a parser
+bug. It was not: `round` is in upstream's `_LANGUAGE_BUILTIN_GLOBALS` filter,
+alongside `len`, `map` and `type`. The parser was already correct and a "fix"
+would have introduced a false edge.
+
+Tracing to the point where the decision is made — printing the resolved callee
+name, receiver and caller — cost one instrumented run and settled it. Two of the
+three original suspicions in that fixture turned out to be correct-by-design
+(unknown receiver types are deliberately deferred to cross-file resolution).
+
+## 13. Bound the failure mode, then design to it
+
+A pure-Python parser cannot match a full GLR grammar. That is a constraint, not
+a reason to stop — but it does dictate the design rule: **emit only what was
+actually matched.** Unmodelled constructs then produce *no* node, costing recall
+in graphify's inference passes, instead of producing a wrong node that invents
+relationships.
+
+"Fewer edges, never wrong edges" is checkable per code path, which is what makes
+the trade safe to ship — and what makes the README's per-language table an honest
+statement rather than a hedge.
+
+## 14. My own test expectations were wrong three times
+
+The first selftest run had four failures. Three were bad expectations, not bugs:
+
+- `G.edges(nbunch)` yields every edge *incident* to the nbunch (4), not only
+  edges wholly inside it (3).
+- `node_link_graph` correctly returned `Graph`, not `MultiGraph` — the payload
+  records `multigraph: False`, and the stored flag wins over the parameter
+  default. My assertion encoded the default instead of the behaviour.
+- A "cross-file call" I asserted did not exist; the real graph had a different,
+  equally valid set of resolutions.
+
+Only the fourth (Ruby's missing superclass) was a genuine defect. Worth
+remembering when a new test fails: the test is as likely to be wrong as the code,
+and checking the reference semantics first is faster than debugging.

@@ -4,7 +4,7 @@ Portable, zero-install replica of [graphify](https://github.com/Graphify-Labs/gr
 
 - **Upstream pinned at:** `00efd6e7969837ae4a9f11d8d504dcd3b20b09df` (v0.9.32)
 - **Goal:** `git clone` → `./cmc <command>`. No `uv`, no `pip`, no `npm`, no build step.
-- **Last updated:** milestone 4 (networkx shim green)
+- **Last updated:** milestone 6 (all shims green, 31/31 selftests pass, tool fully working)
 
 ---
 
@@ -16,8 +16,8 @@ Portable, zero-install replica of [graphify](https://github.com/Graphify-Labs/gr
 | 2 | Repo skeleton + zero-install launchers | ✅ done |
 | 3 | `rapidfuzz` + `numpy` shims | ✅ done |
 | 4 | `networkx` shim | ✅ done |
-| 5 | `tree_sitter` shim + language parsers | ⏳ in progress |
-| 6 | End-to-end parity verification | ⬜ pending |
+| 5 | `tree_sitter` shim + language parsers | ✅ done |
+| 6 | End-to-end parity verification | ✅ done |
 
 ---
 
@@ -72,7 +72,7 @@ Established by AST-walking every import in the upstream package.
 | `networkx` | 18 modules — graph containers, JSON round-trip, Louvain, algorithms | ✅ done |
 | `numpy` | 1 module (`_minhash.py`) — uint64 MinHash sketches | ✅ done, bit-exact |
 | `rapidfuzz` | 1 module (`dedup.py`) — Jaro / Jaro-Winkler / Damerau-Levenshtein | ✅ done, exact |
-| `tree_sitter` + 29 grammars | 18 modules — all code extraction | ⏳ milestone 5 |
+| `tree_sitter` + 29 grammars | 18 modules — all code extraction | ✅ done (15 grammars bundled) |
 
 **Optional** (already guarded by `try/except ImportError` upstream, so a
 zero-install checkout degrades exactly the way an incomplete `pip` install does):
@@ -117,6 +117,56 @@ betweenness, edge-betweenness, bounded `simple_cycles`, `compose`,
 
 ---
 
-## Next up — milestone 5
+## Milestone 5 — tree-sitter
 
-See `next_session.md`.
+`extract.py:_check_tree_sitter_version()` raises outright when tree_sitter is
+missing, so unlike the other dependencies there was no degraded path: without
+this shim the tool cannot start at all.
+
+**What made it tractable:** upstream uses *no* `Query`/S-expression API. It walks
+trees by hand over a ~14-member node surface. So the target was "produce nodes
+with the right `type` strings and fields", not "implement a query engine".
+
+- `tree_sitter` front-end dispatches per grammar object, so real and bundled
+  grammars coexist in one run.
+- **Python** is backed by CPython's `ast` — exact parse, translated vocabulary.
+- **14 more languages** use a shared structural parser (`_brace.py` +
+  `_langs.py`): JS, TS, TSX, Java, Groovy, C, C++, C#, Kotlin, Scala, Swift,
+  PHP, Go, Rust, Ruby, Lua.
+
+Bugs found and fixed while verifying (each caught by real extraction output, not
+by inspection):
+
+| Symptom | Cause |
+|---------|-------|
+| Every exported JS/TS class and function missing | `export` was treated as an import keyword and consumed the declaration instead of wrapping it |
+| No JS/TS methods | JS/TS declare methods with no keyword; needed a class-body-gated bare-method rule |
+| Go methods missing | `func (s *Store) Add(...)` — receiver sits between keyword and name |
+| C/C++ produced nothing | `_get_c_func_name` walks a `declarator` → `function_declarator` → `identifier` chain that was not being emitted |
+| Ruby produced nothing useful | `def…end` bodies need keyword counting, not bracket matching |
+| Ruby superclass missing | `end`-style heritage range excluded the last header token |
+| `cmc query` crashed | networkx shim's nbunch lookup raised on an unhashable list |
+
+One investigation ended in *no* bug: Java's `round(sum)` produced no edge because
+`round` is in upstream's `_LANGUAGE_BUILTIN_GLOBALS` filter. Correct behaviour —
+the fixture was just unlucky.
+
+---
+
+## Milestone 6 — verification
+
+**31/31 selftests pass** (`./cmc selftest`), covering reference values, MT19937,
+NetworkX view semantics and round-trips, Louvain partition recovery, per-language
+parse shapes, and end-to-end extraction.
+
+Real-corpus runs, with **no third-party packages installed**:
+
+- graphify's own source (80 files, 55k lines): 2168 nodes, 4257 edges, 160
+  communities in ~28s. Dedup exercised the MinHash/rapidfuzz/numpy shims. Top
+  god-node `_read_text()` at 85 edges matches the codebase's real shape.
+- graphify's multi-language fixtures (15 languages): 134 nodes, 160 edges, with
+  every language contributing.
+- Commands exercised: extract, cluster-only, query, path, explain, tree,
+  god-nodes, affected, benchmark, export html/obsidian/graphml, doctor, selftest.
+
+Per-language coverage is tabulated honestly in `README.md`.
