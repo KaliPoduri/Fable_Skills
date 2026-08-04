@@ -95,6 +95,52 @@ class _UInt64:
 uint64 = _UInt64
 
 
+# ── scalar dtype names ────────────────────────────────────────────────────────
+#
+# graphify itself only ever uses uint64, but this shim can be picked up by a
+# *real* third-party package in a mixed environment. NetworkX's GraphML and GEXF
+# writers, for instance, build a type-mapping table by probing numpy for
+# np.float64, np.int32, np.intp and friends -- and crash with AttributeError if
+# any is missing, which is how `cmc export graphml` broke for anyone who had real
+# networkx installed alongside this shim.
+#
+# These are distinct, otherwise-inert classes. They exist to be referenced and
+# isinstance-tested against, which is all such probes do with them; nothing here
+# constructs or computes with them, so no arithmetic behaviour is being
+# approximated. A value produced by this shim is never an instance of one, which
+# is correct -- the arrays above hold plain Python ints.
+
+
+class _ScalarType:
+    """Base for the inert dtype placeholders below."""
+
+
+def _scalar(name: str) -> type:
+    return type(name, (_ScalarType,), {"__module__": __name__})
+
+
+float16 = _scalar("float16")
+float32 = _scalar("float32")
+float64 = _scalar("float64")
+int8 = _scalar("int8")
+int16 = _scalar("int16")
+int32 = _scalar("int32")
+int64 = _scalar("int64")
+uint8 = _scalar("uint8")
+uint16 = _scalar("uint16")
+uint32 = _scalar("uint32")
+intc = _scalar("intc")
+intp = _scalar("intp")
+int_ = _scalar("int_")
+float_ = float64
+bool_ = _scalar("bool_")
+str_ = _scalar("str_")
+number = _scalar("number")
+integer = _scalar("integer")
+floating = _scalar("floating")
+generic = _ScalarType
+
+
 class ndarray:
     """One-dimensional ``uint64`` array.
 

@@ -1,0 +1,42 @@
+#!/bin/sh
+# A Python interpreter that can `import graphify` from this checkout.
+#
+# graphify's git hooks re-run the rebuild with an interpreter recorded in
+# graphify-out/.graphify_python, probing first that
+# `importlib.util.find_spec('graphify')` succeeds there. No system interpreter
+# can satisfy that in a zero-install checkout, so the hooks failed on every
+# commit with "could not locate a Python with graphify installed".
+#
+# This wrapper puts runtime/pythonpath on PYTHONPATH, whose sitecustomize.py
+# adds the checkout to sys.path and activates the shim layer at interpreter
+# startup. Any Python launched through here behaves exactly like ./cmc.
+DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+SELF_DIR="$DIR/bin"
+
+PYTHONPATH="$DIR/runtime/pythonpath${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH
+
+if [ -n "$CMC_PYTHON" ]; then
+    exec "$CMC_PYTHON" "$@"
+fi
+
+# Drop our own bin/ from PATH before resolving. cmc.py prepends it so that
+# `which graphify` finds the launcher, which would otherwise make the lookup
+# below find *this script* and exec itself forever.
+CLEAN_PATH=""
+IFS=:
+for entry in $PATH; do
+    [ "$entry" = "$SELF_DIR" ] && continue
+    CLEAN_PATH="${CLEAN_PATH:+$CLEAN_PATH:}$entry"
+done
+unset IFS
+
+for candidate in python3 python; do
+    resolved=$(PATH="$CLEAN_PATH" command -v "$candidate" 2>/dev/null)
+    if [ -n "$resolved" ] && [ "$resolved" != "$0" ]; then
+        exec "$resolved" "$@"
+    fi
+done
+
+echo "connect_my_code: no Python interpreter found on PATH." >&2
+exit 127

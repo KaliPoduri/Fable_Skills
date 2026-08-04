@@ -197,6 +197,21 @@ class _Parser:
     def _leaf(self, type_name, index) -> Node:
         return self._node(type_name, index, index)
 
+    def _anon(self, index) -> Node:
+        """An *unnamed* leaf carrying a punctuation token's own text as its type.
+
+        Real tree-sitter puts anonymous tokens in `children` (only
+        `named_children` excludes them), and a few graphify passes match on them
+        directly -- `_js_export_statement_is_star` looks for a `"*"` child to
+        detect `export * from`, and `_kotlin_function_return_type_node` walks for
+        the `":"` before a return type. Emitting only named nodes silently
+        disabled both, so the tokens those passes need are emitted here.
+        """
+        token = self.tokens[index]
+        node = self._node(token.text, index, index)
+        node.is_named = False
+        return node
+
     def _is(self, index, text) -> bool:
         return 0 <= index < len(self.tokens) and self.tokens[index].text == text
 
@@ -293,12 +308,15 @@ class _Parser:
         if inner is None:
             # `export { a, b }` / `export * from './x'` -- no declaration to wrap.
             end = self._statement_end(index, hi)
-            children = [
-                self._leaf(self.spec.identifier_type, p) if self.tokens[p].kind == IDENT
-                else self._leaf("string", p)
-                for p in range(index + 1, end + 1)
-                if self.tokens[p].kind in (IDENT, STRING)
-            ]
+            children = []
+            for p in range(index + 1, end + 1):
+                token = self.tokens[p]
+                if token.kind == IDENT:
+                    children.append(self._leaf(self.spec.identifier_type, p))
+                elif token.kind == STRING:
+                    children.append(self._leaf("string", p))
+                elif token.kind == PUNCT and token.text == "*":
+                    children.append(self._anon(p))
             return self._node(node_type, index, end, children=children), end + 1
 
         wrapper = self._node(
@@ -710,6 +728,22 @@ class _Parser:
             )
             fields["declarator"] = declarator
             children = [declarator]
+
+        if params_close is not None:
+            # A `:` between the parameter list and the body introduces a return
+            # type. Kotlin's return-type resolver scans children for exactly that
+            # colon, so it is emitted as an anonymous child followed by the type.
+            for position in range(params_close + 1, brace):
+                token = self.tokens[position]
+                if token.kind == PUNCT and token.text == ":":
+                    children.append(self._anon(position))
+                    for after in range(position + 1, brace):
+                        if self.tokens[after].kind == IDENT:
+                            type_node = self._leaf(self.spec.type_identifier_type, after)
+                            fields.setdefault("return_type", type_node)
+                            children.append(type_node)
+                            break
+                    break
 
         body_children = self._parse_range(brace + 1, close, in_class=False)
         body = self._node(self.spec.function_body_type, brace, close, children=body_children)

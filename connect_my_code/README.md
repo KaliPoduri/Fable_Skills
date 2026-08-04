@@ -531,13 +531,45 @@ Install the corresponding `tree-sitter-*` wheel to enable any of them:
 pip install tree-sitter tree-sitter-elixir     # then re-run extract
 ```
 
+### Known issues
+
+**`export graphml` fails if you install real NetworkX** — an upstream graphify
+bug, not a shim gap. `graphify/export.py:to_graphml` iterates
+`for u, v in H.edges()` and then indexes `H.edges[u, v]`; on the multigraphs
+graphify itself writes, real NetworkX requires `H.edges[u, v, key]` and raises
+`ValueError: not enough values to unpack`. Reproducible with real NetworkX alone:
+
+```python
+import networkx as nx
+G = nx.MultiGraph(); G.add_edge('a', 'b')
+for u, v in G.edges():
+    G.edges[u, v]      # ValueError on a multigraph
+```
+
+The bundled shim accepts the 2-tuple form deliberately, so GraphML export works
+on the zero-install path. If you install real NetworkX and need GraphML, use
+`./cmc export html` or `obsidian` instead, or uninstall NetworkX and let the
+shim serve it. This is worth reporting upstream.
+
 ### How this was verified
 
-`./cmc selftest` runs **34 tests** covering the shim layer: published reference
+`./cmc selftest` runs **43 tests** covering the shim layer: published reference
 values for every metric, the MT19937 vector, NetworkX view semantics and JSON
 round-trips, Louvain's recovery of a planted partition, per-language parse
-shapes, skill installation, and a full end-to-end extraction asserting
-cross-file inheritance and call resolution.
+shapes, skill and git-hook installation, and a full end-to-end extraction
+asserting cross-file inheritance and call resolution.
+
+The suite passes in **both** environments — a bare checkout, and one with real
+`networkx`, `tree-sitter` and `tree-sitter-python` installed alongside. That
+second run is what validates the coexistence design, and it produced two
+concrete results:
+
+- **Byte-identical output.** The same corpus extracted with the bundled NetworkX
+  shim and with real NetworkX 3.6.1 produced the same `graph.json` — every node,
+  every edge, every attribute.
+- **The bundled Python parser agrees with the real C grammar.** With real
+  `tree-sitter-python` installed, the node set extracted from the same file is
+  identical to the bundled parser's.
 
 Beyond the suite, this tree was exercised on graphify's own 80-file, 55k-line
 source: **2168 nodes, 4257 edges, 160 communities in ~28 seconds**, with entity

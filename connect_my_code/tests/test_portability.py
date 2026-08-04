@@ -33,6 +33,65 @@ class TestBootstrap(unittest.TestCase):
                     f"{name} resolved into the shim directory despite a real install",
                 )
 
+    def test_front_end_finder_precedes_the_standard_finders(self):
+        """The delegating front-end must out-rank PathFinder.
+
+        An *appended* finder is never consulted for a name the standard finders
+        can resolve. With a real tree_sitter installed that silently disabled the
+        front-end, so every bundled grammar -- which imports PureGrammar from it
+        -- failed to import and graphify reported them all "not installed".
+        """
+        from runtime.bootstrap import FrontEndFinder, ShimFinder
+
+        kinds = [type(f).__name__ for f in sys.meta_path]
+        self.assertIn("FrontEndFinder", kinds)
+        self.assertIn("ShimFinder", kinds)
+        self.assertEqual(kinds.index("FrontEndFinder"), 0, "front-end must be first")
+        self.assertGreater(
+            kinds.index("ShimFinder"), kinds.index("FrontEndFinder"),
+            "gated shims must stay behind the standard finders",
+        )
+
+    def test_tree_sitter_always_resolves_to_the_front_end(self):
+        """Even with a real tree_sitter present, the bundled front-end loads."""
+        import tree_sitter
+
+        self.assertTrue(hasattr(tree_sitter, "PureGrammar"),
+                        "tree_sitter did not resolve to the bundled front-end")
+        self.assertGreaterEqual(tree_sitter.LANGUAGE_VERSION, 14)
+        self.assertIn(bootstrap.status()["tree_sitter"], ("front-end", "front-end -> real"))
+
+    def test_every_bundled_grammar_imports(self):
+        """Each bundled tree_sitter_<lang> must load and yield a grammar.
+
+        graphify turns an ImportError here into a per-language "not installed"
+        result and carries on, so a broken grammar module is invisible in normal
+        output -- it just silently stops extracting that language.
+        """
+        import importlib
+        import glob
+
+        modules = sorted(
+            os.path.basename(p)[:-3]
+            for p in glob.glob(os.path.join(bootstrap.SHIM_DIR, "tree_sitter_*.py"))
+        )
+        self.assertGreaterEqual(len(modules), 15)
+        for name in modules:
+            with self.subTest(grammar=name):
+                module = importlib.import_module(name)
+                factories = [a for a in dir(module) if a.startswith("language")]
+                self.assertTrue(factories, f"{name} exposes no language() factory")
+                for factory in factories:
+                    # Whether this resolved to the bundled module or a real wheel,
+                    # the grammar must drive a Parser end to end.
+                    from tree_sitter import Language, Parser
+
+                    grammar = getattr(module, factory)()
+                    tree = Parser(Language(grammar)).parse(b"")
+                    self.assertIsNotNone(
+                        tree.root_node, f"{name}.{factory}() produced no tree"
+                    )
+
     def test_shim_directory_is_not_on_sys_path(self):
         """Shims are served by the finder only -- never by path shadowing."""
         self.assertNotIn(bootstrap.SHIM_DIR, sys.path)
@@ -163,6 +222,26 @@ class TestNetworkXShim(unittest.TestCase):
         self.assertIsInstance(restored, nx.Graph)
         self.assertFalse(restored.is_multigraph())
 
+    def test_multigraph_two_tuple_indexing_is_deliberately_lenient(self):
+        """Pins a divergence from NetworkX that keeps GraphML export working.
+
+        graphify/export.py:to_graphml iterates `for u, v in H.edges()` then
+        indexes `H.edges[u, v]`. Real NetworkX requires `[u, v, key]` on a
+        multigraph and raises ValueError, so that exporter fails against real
+        NetworkX on graphify's own multigraph output. The shim accepts the
+        2-tuple so the zero-install path works. See README known issues.
+        """
+        if bootstrap.status().get("networkx") == "real":
+            self.skipTest("real NetworkX installed; it raises here by design")
+
+        import networkx as nx
+
+        graph = nx.MultiGraph()
+        graph.add_edge("a", "b", relation="calls")
+        for u, v in graph.edges():
+            self.assertEqual(graph.edges[u, v], {"relation": "calls"})
+        self.assertEqual(graph.edges["a", "b", 0], {"relation": "calls"})
+
     def test_multigraph_round_trip_keeps_parallel_edges(self):
         import networkx as nx
         from networkx.readwrite import json_graph
@@ -220,6 +299,13 @@ class TestNetworkXShim(unittest.TestCase):
         self.assertEqual(sorted(relabelled.nodes())[0], "r::1")
 
     def test_graphml_writes_valid_xml(self):
+        """Must work against whichever networkx is present.
+
+        Real NetworkX builds its type table by probing numpy for np.float64,
+        np.intp and friends. A numpy shim missing any of them raises
+        AttributeError here, which is how `cmc export graphml` broke in a mixed
+        real-networkx / shim-numpy environment.
+        """
         import tempfile
         import xml.etree.ElementTree as ET
 
@@ -230,6 +316,14 @@ class TestNetworkXShim(unittest.TestCase):
             nx.write_graphml(self._sample_graph(), path)
             root = ET.parse(path).getroot()
         self.assertTrue(root.tag.endswith("graphml"))
+
+    def test_numpy_shim_exposes_the_dtypes_third_parties_probe(self):
+        import numpy as np
+
+        for name in ("float16", "float32", "float64", "int8", "int16", "int32",
+                     "int64", "uint8", "uint16", "uint32", "uint64",
+                     "int_", "intc", "intp", "bool_"):
+            self.assertTrue(hasattr(np, name), f"numpy shim is missing {name}")
 
 
 class TestTreeSitterShim(unittest.TestCase):
@@ -242,7 +336,19 @@ class TestTreeSitterShim(unittest.TestCase):
         return Parser(Language(grammar)).parse(source).root_node
 
     def _find(self, node, node_type):
-        return [n for n in node.descendants() if n.type == node_type]
+        """Depth-first search by node type.
+
+        Walks `children` explicitly rather than using the shim's `descendants()`
+        helper: when a real grammar is installed these are real tree-sitter
+        nodes, which have no such method.
+        """
+        found, stack = [], [node]
+        while stack:
+            current = stack.pop()
+            if current.type == node_type:
+                found.append(current)
+            stack.extend(reversed(current.children))
+        return found
 
     def test_language_version_satisfies_graphify(self):
         """extract.py._check_tree_sitter_version() requires >= 14 and is fatal."""
@@ -268,7 +374,9 @@ class TestTreeSitterShim(unittest.TestCase):
 
         function = self._find(root, "function_definition")[0]
         self.assertEqual(function.child_by_field_name("name").text, b"greet")
-        params = [c.type for c in function.child_by_field_name("parameters").children]
+        # Named children only: real tree-sitter also emits anonymous punctuation
+        # ("(", ",", ")") here, so the named set is the contract both satisfy.
+        params = [c.type for c in function.child_by_field_name("parameters").children if c.is_named]
         self.assertEqual(params, ["identifier", "typed_parameter", "typed_default_parameter"])
         self.assertEqual(function.child_by_field_name("return_type").type, "type")
 
@@ -289,9 +397,12 @@ class TestTreeSitterShim(unittest.TestCase):
         self.assertEqual(chain[-1], "module")
         self.assertIn("function_definition", chain)
         self.assertIn("class_definition", chain)
-        for node in root.descendants():
+        stack = [root]
+        while stack:
+            node = stack.pop()
             self.assertLessEqual(node.start_byte, node.end_byte)
             self.assertLessEqual(node.end_byte, len(source))
+            stack.extend(node.children)
 
     def test_python_tolerates_a_syntax_error(self):
         """tree-sitter always returns a tree; graphify relies on that to keep going."""
@@ -345,6 +456,27 @@ class TestTreeSitterShim(unittest.TestCase):
         klass = self._find(root, "class")[0]
         self.assertEqual(klass.child_by_field_name("superclass").text, b"Base")
 
+    def test_anonymous_tokens_graphify_matches_on_are_emitted(self):
+        """A few passes match anonymous nodes directly, so they must exist.
+
+        `_js_export_statement_is_star` detects `export * from` by looking for a
+        "*" child, and `_kotlin_function_return_type_node` walks for the ":"
+        before a return type. Emitting only named nodes silently disabled both.
+        """
+        root = self._parse("tree_sitter_typescript", b"export * from './x';\n", "language_typescript")
+        export = self._find(root, "export_statement")[0]
+        self.assertTrue(
+            any(c.type == "*" and not c.is_named for c in export.children),
+            "star re-export token missing",
+        )
+
+        root = self._parse("tree_sitter_kotlin", b"fun greet(n: String): Boolean { return true }")
+        declaration = self._find(root, "function_declaration")[0]
+        kinds = [c.type for c in declaration.children]
+        self.assertIn(":", kinds)
+        self.assertLess(kinds.index("function_value_parameters"), kinds.index(":"))
+        self.assertEqual(declaration.children[kinds.index(":") + 1].type, "type_identifier")
+
     def test_strings_and_comments_do_not_open_blocks(self):
         """A brace inside a string or comment must not be treated as structure."""
         source = b'class A {\n  m() { const s = "}{"; /* } */ return 1; }\n}\n'
@@ -391,6 +523,55 @@ class TestSkillInstallation(unittest.TestCase):
         command = _claude_pretooluse_hooks()[0]["hooks"][0]["command"]
         self.assertTrue(os.path.isabs(command.split()[0]), command)
         self.assertIn("hook-guard", command)
+
+    def test_wrapper_interpreter_can_import_graphify(self):
+        """graphify's git hooks probe for such an interpreter and refuse without one.
+
+        The generated post-commit hook runs the rebuild with an interpreter for
+        which importlib.util.find_spec('graphify') succeeds. No system Python
+        satisfies that in a zero-install checkout, so every commit printed
+        "could not locate a Python with graphify installed" until bin/python3
+        existed.
+        """
+        import subprocess
+
+        wrapper = os.path.join(ROOT, "bin", "python3")
+        self.assertTrue(os.access(wrapper, os.X_OK), "bin/python3 is not executable")
+
+        probe = "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('graphify') else 1)"
+        self.assertEqual(
+            subprocess.run([wrapper, "-c", probe], capture_output=True).returncode, 0,
+            "the hook's own probe fails against bin/python3",
+        )
+
+    def test_wrapper_interpreter_does_not_recurse(self):
+        """bin/ is prepended to PATH, so the wrapper must not resolve to itself."""
+        import subprocess
+
+        env = dict(os.environ, PATH=os.path.join(ROOT, "bin") + os.pathsep + os.environ.get("PATH", ""))
+        result = subprocess.run(
+            [os.path.join(ROOT, "bin", "python3"), "-c", "print('alive')"],
+            capture_output=True, text=True, env=env, timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "alive")
+
+    def test_interpreter_hint_is_recorded_for_hooks(self):
+        """A run writes graphify-out/.graphify_python pointing at the wrapper."""
+        import subprocess
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            with open(os.path.join(tmp, "m.py"), "w") as handle:
+                handle.write("class A:\n    def b(self):\n        return 1\n")
+            subprocess.run(
+                [sys.executable, os.path.join(ROOT, "cmc.py"), "extract", ".", "--no-cluster"],
+                cwd=tmp, capture_output=True, text=True, stdin=subprocess.DEVNULL,
+            )
+            marker = os.path.join(tmp, "graphify-out", ".graphify_python")
+            self.assertTrue(os.path.isfile(marker), ".graphify_python was not written")
+            with open(marker) as handle:
+                self.assertEqual(handle.read().strip(), os.path.join(ROOT, "bin", "python3"))
 
     def test_skill_installs_into_a_project(self):
         import subprocess

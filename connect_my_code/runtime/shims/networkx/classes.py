@@ -240,11 +240,29 @@ class _MultiEdgeView(_EdgeView):
             yield u, v
 
     def __getitem__(self, item):
+        """Look up edge attributes by ``(u, v, key)`` or, leniently, ``(u, v)``.
+
+        Real NetworkX requires the 3-tuple on a multigraph and raises
+        ``ValueError`` on a 2-tuple. This accepts both **deliberately**:
+        ``graphify/export.py:to_graphml`` iterates ``for u, v in H.edges()`` and
+        then indexes ``H.edges[u, v]``, which is an upstream bug that makes
+        GraphML export fail outright against real NetworkX on the multigraphs
+        graphify itself writes.
+
+        Keeping the 2-tuple form working is what lets `cmc export graphml`
+        succeed on the zero-install path. Do not "fix" this to match NetworkX
+        strictly without first fixing the upstream call site -- doing so trades a
+        working exporter for bug-compatibility nobody benefits from. The
+        divergence is recorded in README's known-issues section.
+        """
         if len(item) == 3:
             u, v, key = item
             return self._graph._adj[u][v][key]
         u, v = item
-        return self._graph._adj[u][v]
+        keyed = self._graph._adj[u][v]
+        # Return the first parallel edge's attribute dict, mirroring what the
+        # 2-tuple caller expects from a simple graph.
+        return next(iter(keyed.values())) if keyed else {}
 
     def __call__(self, nbunch=None, data=False, default=None, keys=False):
         return _MultiEdgeDataView(self, nbunch, data, default, keys)

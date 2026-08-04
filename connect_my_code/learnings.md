@@ -214,3 +214,60 @@ import-level one was satisfied: `bin/graphify` is the launcher under the name
 *environment* — `PATH` lookups, subprocess calls, entry points, config
 discovery — not just what it imports. Those failures are silent and survive a
 green test suite.
+
+## 16. An untested fallback is a broken fallback
+
+`_ALWAYS_SHIM` looked correct and read correctly in review. It was dead code:
+the finder holding it was *appended* to `sys.meta_path`, so for any name the
+standard finders could already resolve it was never consulted. The whole
+mechanism only mattered when a real wheel was present — which no test had.
+
+The failure was maximally unhelpful: installing real `tree-sitter` (the most
+likely wheel a user adds) took extraction from 134 nodes to 4, with graphify
+cheerfully reporting each language as "not installed".
+
+**Lesson:** a conditional branch that only fires in an environment you have never
+constructed is untested code regardless of how carefully it was written.
+Construct the environment. Installing one wheel found four bugs in twenty
+minutes, after three commits of "verified" work.
+
+## 17. Shims get consumed by other libraries, not just by the target
+
+Every earlier fidelity question was "does graphify get the right answer from my
+shim". Real NetworkX asked a different one: it probes `numpy` for `np.float64`,
+`np.intp` and a dozen other dtypes to build a type table, and raises
+`AttributeError` on the first one missing.
+
+graphify itself only ever touches `uint64`, so scoping the shim to that was
+defensible right up until a *real* third-party package met it in a mixed
+environment.
+
+**Lesson:** a shim's API surface is the union of what every package that might
+import it expects — not just what the one you targeted uses.
+
+## 18. Leniency that hides an upstream bug is worth keeping, and worth pinning
+
+`graphify/export.py:to_graphml` indexes `H.edges[u, v]` on a multigraph. Real
+NetworkX requires `[u, v, key]` and raises. My shim accepted both, which is why
+GraphML export worked on the zero-install path and broke the moment real
+NetworkX was installed.
+
+The strict-compatibility instinct is to match NetworkX and let it fail
+identically. That trades a working exporter for bug-compatibility nobody
+benefits from. The right move was to keep the leniency, document *why* it
+diverges, and add a test pinning it — so a future contributor tightening the
+shim "for correctness" gets a failure that explains itself.
+
+## 19. Environment-resolved dependencies fail silently, twice over
+
+Learning 15 covered `shutil.which("graphify")`. The git hooks were the same
+class of failure through a different mechanism: they probe for an interpreter
+where `find_spec('graphify')` succeeds. Neither is an import; neither shows up in
+a green test suite; both make an install *appear* to succeed and then fail later,
+somewhere else.
+
+The pattern is worth naming: **anything a tool resolves from the environment
+rather than from Python's import system needs its own explicit satisfaction, and
+its own test.** For this port that meant an executable named `graphify` on PATH,
+and an interpreter that can import the package — provided by `bin/graphify` and
+`bin/python3` respectively, neither of which required touching upstream.

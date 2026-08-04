@@ -88,59 +88,107 @@ def real_module(name: str):
     spec = _real_spec(name)
     if spec is None or spec.loader is None:
         return None
+
+    # Execute under the module's REAL name, not the alias. A compiled package
+    # like tree_sitter resolves its own submodules relatively (`from ._binding
+    # import ...`), and those lookups key off the executing module's __name__ --
+    # under an alias they resolve to `_cmc_real_tree_sitter._binding`, which does
+    # not exist, and the whole import fails. The shim occupying the public name
+    # is put back afterwards so the front-end keeps serving it.
+    saved = sys.modules.get(name)
     try:
         module = importlib.util.module_from_spec(spec)
-        sys.modules[alias] = module
+        sys.modules[name] = module
         spec.loader.exec_module(module)
+        sys.modules[alias] = module
     except Exception:
         sys.modules.pop(alias, None)
         return None
+    finally:
+        if saved is not None:
+            sys.modules[name] = saved
+        else:
+            sys.modules.pop(name, None)
     return module
 
 
+def _spec_for(fullname: str, target_file: str):
+    """Build an import spec pointing at a bundled shim file."""
+    if os.path.basename(target_file) == "__init__.py":
+        return importlib.util.spec_from_file_location(
+            fullname, target_file, submodule_search_locations=[os.path.dirname(target_file)]
+        )
+    return importlib.util.spec_from_file_location(fullname, target_file)
+
+
 class ShimFinder(importlib.abc.MetaPathFinder):
-    """Serves bundled pure-stdlib modules for names the environment lacks."""
+    """Serves bundled modules for names the environment lacks.
+
+    Appended to ``sys.meta_path``, so the standard finders get first refusal and
+    this is consulted only for what they could not supply.
+    """
 
     def find_spec(self, fullname, path=None, target=None):
         target_file = _shim_target(fullname)
-        if target_file is None:
+        if target_file is None or fullname in _ALWAYS_SHIM:
             return None
-        if fullname not in _ALWAYS_SHIM and _real_spec(fullname) is not None:
+        if _real_spec(fullname) is not None:
             RESOLUTION[fullname] = "real"
             return None  # defer to the genuine package
         RESOLUTION[fullname] = "shim"
-        if os.path.basename(target_file) == "__init__.py":
-            spec = importlib.util.spec_from_file_location(
-                fullname, target_file, submodule_search_locations=[os.path.dirname(target_file)]
-            )
-        else:
-            spec = importlib.util.spec_from_file_location(fullname, target_file)
-        return spec
+        return _spec_for(fullname, target_file)
+
+
+class FrontEndFinder(importlib.abc.MetaPathFinder):
+    """Serves the delegating front-ends in :data:`_ALWAYS_SHIM`.
+
+    *Prepended* to ``sys.meta_path``, unlike :class:`ShimFinder`. That ordering
+    is the whole point: an appended finder is never consulted for a name the
+    standard finders can already resolve, so with a real ``tree_sitter``
+    installed the front-end would never load. Its bundled grammars
+    (``tree_sitter_java`` and friends) import ``PureGrammar`` from it, so they
+    would all fail with ImportError and graphify would report every one of them
+    as "not installed" -- silently dropping every language but Python.
+
+    The front-end still hands off to the real extension per language via
+    :func:`real_module`, which reaches past ``sys.meta_path`` entirely.
+    """
+
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname not in _ALWAYS_SHIM:
+            return None
+        target_file = _shim_target(fullname)
+        if target_file is None:
+            return None
+        RESOLUTION[fullname] = "front-end"
+        return _spec_for(fullname, target_file)
 
 
 _installed = False
 
 
 def install() -> None:
-    """Append the shim finder to ``sys.meta_path`` (idempotent).
-
-    Appending rather than prepending keeps normal resolution order intact: the
-    standard finders get first refusal on every name, and we are consulted only
-    for what they could not supply.
-    """
+    """Install both finders on ``sys.meta_path`` (idempotent)."""
     global _installed
     if _installed:
         return
+    sys.meta_path.insert(0, FrontEndFinder())
     sys.meta_path.append(ShimFinder())
     _installed = True
 
 
 def status() -> dict[str, str]:
-    """Report real-vs-shim resolution for every dependency we can stand in for.
+    """Report how every dependency we can stand in for actually resolves.
 
     Drives ``cmc doctor``. Probes each shippable name rather than reading
     :data:`RESOLUTION`, so the report is complete even for modules that this run
     never happened to import.
+
+    Names in :data:`_ALWAYS_SHIM` are never plain "real": the bundled front-end
+    always loads and decides per call whether to delegate. Reporting them as
+    "real" would claim the shim is out of the picture when it is not, so they get
+    their own labels -- ``front-end -> real`` when a genuine extension sits
+    behind them, ``front-end`` when nothing does.
     """
     names = set()
     for entry in os.listdir(SHIM_DIR):
@@ -149,4 +197,12 @@ def status() -> dict[str, str]:
             names.add(entry[:-3])
         elif os.path.isfile(os.path.join(full, "__init__.py")):
             names.add(entry)
-    return {n: ("real" if _real_spec(n) is not None else "shim") for n in sorted(names)}
+
+    resolution = {}
+    for name in sorted(names):
+        has_real = _real_spec(name) is not None
+        if name in _ALWAYS_SHIM:
+            resolution[name] = "front-end -> real" if has_real else "front-end"
+        else:
+            resolution[name] = "real" if has_real else "shim"
+    return resolution

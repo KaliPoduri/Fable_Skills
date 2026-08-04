@@ -4,7 +4,7 @@ Portable, zero-install replica of [graphify](https://github.com/Graphify-Labs/gr
 
 - **Upstream pinned at:** `00efd6e7969837ae4a9f11d8d504dcd3b20b09df` (v0.9.32)
 - **Goal:** `git clone` → `./cmc <command>`. No `uv`, no `pip`, no `npm`, no build step.
-- **Last updated:** milestone 6 + polish (34/34 selftests, skill install working, full README)
+- **Last updated:** milestone 7 — coexistence audit (43/43 selftests in BOTH environments)
 
 ---
 
@@ -18,6 +18,7 @@ Portable, zero-install replica of [graphify](https://github.com/Graphify-Labs/gr
 | 4 | `networkx` shim | ✅ done |
 | 5 | `tree_sitter` shim + language parsers | ✅ done |
 | 6 | End-to-end parity verification | ✅ done |
+| 7 | Real-wheel coexistence audit | ✅ done |
 
 ---
 
@@ -184,3 +185,80 @@ Real-corpus runs, with **no third-party packages installed**:
   god-nodes, affected, benchmark, export html/obsidian/graphml, doctor, selftest.
 
 Per-language coverage is tabulated honestly in `README.md`.
+
+
+---
+
+## Milestone 7 — the coexistence audit
+
+The design's central promise is "install a real wheel and it takes over". That
+had **never been tested** — no real wheel had ever been present. Installing
+`networkx`, then `tree-sitter` + `tree-sitter-python`, found four defects, two of
+them severe.
+
+### 1. The delegating front-end never loaded (severe)
+
+`_ALWAYS_SHIM` was dead code. `ShimFinder` was *appended* to `sys.meta_path`, so
+the standard finders resolved `tree_sitter` to the real wheel first and the
+bundled front-end was never consulted. Every bundled grammar imports
+`PureGrammar` from it, so with real tree-sitter installed they all failed to
+import and graphify reported each as "not installed".
+
+**Result: 134 nodes collapsed to 4.** Installing tree-sitter — the single most
+likely wheel a user would add — broke every language but Python.
+
+Fixed by splitting the finder in two: `FrontEndFinder` is *prepended* and claims
+only `_ALWAYS_SHIM` names; `ShimFinder` stays appended for the gated ones.
+
+### 2. `real_module()` could not load the real extension
+
+Loading the real `tree_sitter` under a private alias broke its internal relative
+imports (`from ._binding import ...` resolved against the alias). Fixed by
+executing it under its true name and restoring the front-end afterwards.
+
+### 3. Real NetworkX crashed on the numpy shim
+
+NetworkX's GraphML and GEXF writers build a type table by probing numpy for
+`np.float64`, `np.intp` and a dozen more. The shim defined only `uint64`, so
+`cmc export graphml` died with `AttributeError` for anyone with real networkx
+and shim numpy. Fixed by adding inert scalar dtype placeholders.
+
+### 4. Git hooks failed on every commit
+
+`graphify hook install` succeeded, then every commit printed *"could not locate a
+Python with graphify installed"*. The generated hook probes for an interpreter
+where `importlib.util.find_spec('graphify')` succeeds — which no system Python
+can satisfy in a zero-install checkout.
+
+Fixed with `bin/python3`, a wrapper that puts `runtime/pythonpath` (containing a
+`sitecustomize.py`) on `PYTHONPATH`, plus `cmc.py` recording that path in
+`graphify-out/.graphify_python`, which is the hint the hook already looks for.
+Verified end to end: commit → background rebuild → graph updated.
+
+### Two upstream bugs, deliberately not patched
+
+- `export.py:to_graphml` indexes `H.edges[u, v]` on a multigraph, which real
+  NetworkX rejects. The shim is lenient on purpose so the exporter works; the
+  divergence is pinned by a test and documented in README's known issues.
+- Anonymous punctuation: `_js_export_statement_is_star` and
+  `_kotlin_function_return_type_node` match `"*"` and `":"` child nodes. The
+  bundled parsers emitted only *named* nodes, so both passes silently never
+  fired. Now emitted — worth +2 nodes and +6 edges on the fixture corpus.
+
+### Verification
+
+| Environment | Result |
+|-------------|--------|
+| Bare checkout | 43/43 tests pass |
+| Real `networkx` + `tree-sitter` + `tree-sitter-python` | 43/43 pass (1 skipped by design) |
+
+Two parity results worth recording:
+
+- **Byte-identical `graph.json`** between the bundled NetworkX shim and real
+  NetworkX 3.6.1 on the same corpus — every node, edge and attribute.
+- **The bundled Python parser's node set matches the real C grammar's** on the
+  same file.
+
+Commands exercised beyond the earlier sweep: `update`, `diagnose multigraph`,
+`check-update`, `export callflow-html`, `save-result`, `reflect`, `hook
+install/status`, `global add/list/path`, `install --platform claude`.

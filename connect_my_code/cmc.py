@@ -70,9 +70,16 @@ def _doctor() -> int:
     width = max(len(n) for n in status) if status else 0
     for name, kind in sorted(status.items(), key=lambda kv: (kv[1], kv[0])):
         print("    %-*s  %s" % (width, name, kind))
-    shimmed = sum(1 for k in status.values() if k == "shim")
+    counts = {}
+    for kind in status.values():
+        counts[kind] = counts.get(kind, 0) + 1
     print()
-    print("  %d of %d dependencies served by bundled shims." % (shimmed, len(status)))
+    print("  %d dependencies: %s" % (
+        len(status),
+        ", ".join(f"{n} {kind}" for kind, n in sorted(counts.items())),
+    ))
+    print("  'front-end' = bundled tree-sitter front-end, delegating per language")
+    print("  Install any real wheel and it takes over on the next run.")
     return 0
 
 
@@ -102,8 +109,41 @@ def main() -> int:
     # graphify's CLI reads sys.argv directly and reports errors via SystemExit.
     from graphify.__main__ import main as graphify_main
 
-    graphify_main()
+    try:
+        graphify_main()
+    finally:
+        _record_interpreter()
     return 0
+
+
+def _record_interpreter() -> None:
+    """Point ``graphify-out/.graphify_python`` at the wrapper interpreter.
+
+    graphify's git hooks re-run the rebuild with the interpreter named in this
+    file, after checking that ``graphify`` is importable there. Upstream expects
+    the skill to write it; in a zero-install checkout no system interpreter would
+    satisfy the check, so the hook fails on every commit. ``bin/python3`` does
+    satisfy it, so that is what gets recorded.
+
+    Best-effort and silent: this runs after every command, and failing to write a
+    hook hint must never turn a successful extraction into an error.
+    """
+    wrapper = os.path.join(ROOT, "bin", "python3")
+    if not os.path.isfile(wrapper):
+        return
+    out_dir = os.environ.get("GRAPHIFY_OUT", "graphify-out")
+    try:
+        if not os.path.isdir(out_dir):
+            return
+        marker = os.path.join(out_dir, ".graphify_python")
+        if os.path.isfile(marker):
+            with open(marker, encoding="utf-8") as handle:
+                if handle.read().strip() == wrapper:
+                    return
+        with open(marker, "w", encoding="utf-8") as handle:
+            handle.write(wrapper + "\n")
+    except OSError:
+        pass
 
 
 if __name__ == "__main__":
