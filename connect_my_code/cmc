@@ -1,0 +1,24 @@
+#!/bin/sh
+# connect_my_code launcher (macOS / Linux / BSD / WSL / Git-Bash).
+#
+#   ./cmc extract .
+#
+# Picks the first usable interpreter: $CMC_PYTHON, then python3, then python.
+# Nothing is installed and nothing is written outside the target project.
+set -e
+
+DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+if [ -n "$CMC_PYTHON" ]; then
+    exec "$CMC_PYTHON" "$DIR/cmc.py" "$@"
+fi
+
+for candidate in python3 python; do
+    if command -v "$candidate" >/dev/null 2>&1; then
+        exec "$candidate" "$DIR/cmc.py" "$@"
+    fi
+done
+
+echo "connect_my_code: no Python interpreter found on PATH." >&2
+echo "Install Python 3.10+ or set CMC_PYTHON=/path/to/python." >&2
+exit 127

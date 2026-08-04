@@ -1,0 +1,6 @@
+Metadata-Version: 2.1
+Name: graphifyy
+Version: 0.9.32
+Summary: connect_my_code -- zero-install portable distribution of the graphify knowledge-graph tool
+License: Apache-2.0
+Requires-Python: >=3.10

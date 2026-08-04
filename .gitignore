@@ -1,3 +1,8 @@
 .venv/
 __pycache__/
 *.pyc
+
+# Reference clone of upstream graphify, used only for analysis and parity
+# checks. It carries its own .git, so it is not committed here.
+# Recreate with: git clone https://github.com/Graphify-Labs/graphify graphify
+/graphify/
