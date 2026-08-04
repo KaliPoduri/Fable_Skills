@@ -353,6 +353,64 @@ class TestTreeSitterShim(unittest.TestCase):
         self.assertEqual(len(self._find(root, "method_definition")), 1)
 
 
+class TestSkillInstallation(unittest.TestCase):
+    """graphify installs itself into AI assistants; the hooks it writes must run.
+
+    The installers embed an executable resolved via shutil.which("graphify").
+    A zero-install checkout has no such binary, so without bin/graphify on PATH
+    every generated hook would carry a bare `graphify` that fails at runtime.
+    """
+
+    def test_graphify_name_resolves_to_the_launcher(self):
+        import shutil
+        import subprocess
+
+        # cmc.py prepends bin/ to PATH; replicate that for an in-process check.
+        bin_dir = os.path.join(ROOT, "bin")
+        os.environ["PATH"] = bin_dir + os.pathsep + os.environ.get("PATH", "")
+
+        from graphify.install import _resolve_graphify_exe
+
+        self.assertEqual(shutil.which("graphify"), os.path.join(bin_dir, "graphify"))
+        self.assertTrue(_resolve_graphify_exe().endswith("bin/graphify"))
+
+        # And that path is genuinely executable.
+        result = subprocess.run(
+            [os.path.join(bin_dir, "graphify"), "--version"],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("0.9.32", result.stdout)
+
+    def test_generated_hook_command_is_absolute(self):
+        bin_dir = os.path.join(ROOT, "bin")
+        os.environ["PATH"] = bin_dir + os.pathsep + os.environ.get("PATH", "")
+
+        from graphify.install import _claude_pretooluse_hooks
+
+        command = _claude_pretooluse_hooks()[0]["hooks"][0]["command"]
+        self.assertTrue(os.path.isabs(command.split()[0]), command)
+        self.assertIn("hook-guard", command)
+
+    def test_skill_installs_into_a_project(self):
+        import subprocess
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            env = dict(os.environ, HOME=tmp)
+            result = subprocess.run(
+                [sys.executable, os.path.join(ROOT, "cmc.py"), "install", "--platform", "claude"],
+                cwd=tmp, capture_output=True, text=True, env=env, stdin=subprocess.DEVNULL,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            skill = os.path.join(tmp, ".claude", "skills", "graphify", "SKILL.md")
+            self.assertTrue(os.path.isfile(skill), "SKILL.md was not written")
+            self.assertTrue(
+                os.path.isdir(os.path.join(tmp, ".claude", "skills", "graphify", "references")),
+                "progressive-disclosure references sidecar missing",
+            )
+
+
 class TestEndToEndPipeline(unittest.TestCase):
     """The whole tool, on a corpus written to a temp directory."""
 

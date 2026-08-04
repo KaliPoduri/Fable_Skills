@@ -195,3 +195,22 @@ The first selftest run had four failures. Three were bad expectations, not bugs:
 Only the fourth (Ruby's missing superclass) was a genuine defect. Worth
 remembering when a new test fails: the test is as likely to be wrong as the code,
 and checking the reference semantics first is faster than debugging.
+
+## 15. A dependency can be missing in ways `import` never reveals
+
+Every shim gap so far showed up as an `ImportError` or a wrong number. The skill
+installers failed differently: `graphify/install.py` resolves an executable with
+`shutil.which("graphify")` and falls back to the bare string `"graphify"`. In a
+zero-install checkout that fallback always wins, so `./cmc install` succeeded,
+printed "Done", wrote a valid-looking config — and every hook it generated
+pointed at a binary that does not exist.
+
+Nothing imports anything here. No test that only exercises the Python API would
+catch it. The fix was to satisfy the *shell-level* contract the same way the
+import-level one was satisfied: `bin/graphify` is the launcher under the name
+`which()` looks for, with `bin/` prepended to `PATH` by the launcher.
+
+**Lesson:** when porting, inventory what a project resolves from the
+*environment* — `PATH` lookups, subprocess calls, entry points, config
+discovery — not just what it imports. Those failures are silent and survive a
+green test suite.

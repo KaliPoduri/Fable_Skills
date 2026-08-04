@@ -1,8 +1,8 @@
 # Next session — connect_my_code
 
 **Status: all six milestones complete.** The tool runs from a bare clone with no
-third-party packages, 31/31 selftests pass, and Python plus 14 other languages
-extract successfully.
+third-party packages, 34/34 selftests pass, Python plus 14 other languages
+extract successfully, and skill installation into AI assistants works.
 
 ---
 
@@ -11,7 +11,7 @@ extract successfully.
 ```bash
 cd connect_my_code
 ./cmc doctor      # real-vs-shim resolution for every dependency
-./cmc selftest    # 31 portability tests
+./cmc selftest    # 34 portability tests
 ./cmc extract /path/to/project --code-only
 ```
 

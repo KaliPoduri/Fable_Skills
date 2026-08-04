@@ -4,7 +4,7 @@ Portable, zero-install replica of [graphify](https://github.com/Graphify-Labs/gr
 
 - **Upstream pinned at:** `00efd6e7969837ae4a9f11d8d504dcd3b20b09df` (v0.9.32)
 - **Goal:** `git clone` → `./cmc <command>`. No `uv`, no `pip`, no `npm`, no build step.
-- **Last updated:** milestone 6 (all shims green, 31/31 selftests pass, tool fully working)
+- **Last updated:** milestone 6 + polish (34/34 selftests, skill install working, full README)
 
 ---
 
@@ -155,9 +155,23 @@ the fixture was just unlucky.
 
 ## Milestone 6 — verification
 
-**31/31 selftests pass** (`./cmc selftest`), covering reference values, MT19937,
+**34/34 selftests pass** (`./cmc selftest`), covering reference values, MT19937,
 NetworkX view semantics and round-trips, Louvain partition recovery, per-language
-parse shapes, and end-to-end extraction.
+parse shapes, skill installation, and end-to-end extraction.
+
+### Late find: the skill installers wrote broken hooks
+
+`graphify/install.py:_resolve_graphify_exe()` embeds an executable path resolved
+via `shutil.which("graphify")`. A zero-install checkout has no such binary, so
+every hook written into a Claude Code / Cursor / Codex config carried a bare
+`graphify` that would fail at runtime — the AI-assistant integration, which is
+arguably graphify's headline feature, was silently broken.
+
+Fixed without touching upstream: `bin/graphify` is the launcher under that name,
+and `cmc.py` prepends `bin/` to `PATH` so `which()` resolves to it and the
+installers embed a working absolute path. Verified end to end — `graphify
+--version` reports 0.9.32 and `graphify hook-guard read` emits the correct
+PreToolUse JSON.
 
 Real-corpus runs, with **no third-party packages installed**:
 

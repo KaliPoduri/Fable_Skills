@@ -1,0 +1,12 @@
+#!/bin/sh
+# `graphify` under its own name, for the skill/hook installers.
+#
+# graphify's install subsystem writes hook commands into AI-assistant configs
+# (Claude Code, Cursor, Codex, ...) and resolves the executable to embed via
+# shutil.which("graphify"). A zero-install checkout has no such binary, so every
+# generated hook would carry a bare `graphify` that fails at runtime.
+#
+# The launcher prepends this directory to PATH, so which() finds this script and
+# the installers embed its absolute path. Nothing is installed system-wide, and
+# graphify's own sources stay untouched.
+exec "$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)/cmc" "$@"

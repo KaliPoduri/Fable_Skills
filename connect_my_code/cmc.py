@@ -40,6 +40,18 @@ def _prepare() -> None:
     for entry in (ROOT, os.path.join(ROOT, "runtime", "dist")):
         if entry not in sys.path:
             sys.path.insert(0, entry)
+
+    # graphify's skill/hook installers embed an executable path resolved with
+    # shutil.which("graphify"). A zero-install checkout has no such binary, so
+    # every generated hook would carry a bare `graphify` that fails at runtime.
+    # bin/graphify is this launcher under that name; putting it first on PATH
+    # makes which() resolve to it, so installers write a working absolute path.
+    bin_dir = os.path.join(ROOT, "bin")
+    if os.path.isdir(bin_dir):
+        path = os.environ.get("PATH", "")
+        if bin_dir not in path.split(os.pathsep):
+            os.environ["PATH"] = bin_dir + os.pathsep + path
+
     from runtime import bootstrap
 
     bootstrap.install()
